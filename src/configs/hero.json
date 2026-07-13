@@ -1,0 +1,13 @@
+{
+  "camera": {
+    "position": [3, 1.8, 5.5],
+    "target": [0, 0.45, 0],
+    "fov": 35
+  },
+  "postprocessing": {
+    "bloomIntensity": 0,
+    "focusDistance": 0,
+    "bokehScale": 0,
+    "exposure": 1
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "powerbox-3d-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "model:inspect": "gltf-transform inspect public/assets/models/powerbox-scene-raw.glb",
+    "model:validate": "gltf-transform validate public/assets/models/powerbox-scene-web.glb"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.4.1",
+    "@types/three": "^0.185.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "lil-gui": "^0.21.0",
+    "postprocessing": "^6.39.2",
+    "three": "^0.185.1"
+  }
+}
