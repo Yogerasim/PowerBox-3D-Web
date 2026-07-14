@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "generatedAt": "2026-07-14T16:27:05.611784+00:00",
+  "generatedAt": "2026-07-14T17:08:30.078059+00:00",
   "sourceBlend": "PowerBox_WEB_EXPORT.blend",
   "scene": {
     "name": "Scene",
@@ -110,7 +110,7 @@
         "Object_0",
         "defaultMaterial.001"
       ],
-      "fileSizeBytes": 17422304,
+      "fileSizeBytes": 5009944,
       "instanceCount": 0
     },
     {
@@ -880,8 +880,8 @@
     "instanceCount": 19,
     "lightCount": 0,
     "cameraCount": 0,
-    "collectionGlbBytes": 26431760,
+    "collectionGlbBytes": 14019400,
     "prototypeGlbBytes": 636288,
-    "totalGlbBytes": 27068048
+    "totalGlbBytes": 14655688
   }
 }
