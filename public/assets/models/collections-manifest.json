@@ -1,80 +1,63 @@
 {
-  "version": 1,
-  "generatedAt": "2026-07-14T11:08:38.522357+00:00",
+  "version": 3,
+  "generatedAt": "2026-07-14T15:02:42.425196+00:00",
   "sourceBlend": "PowerBox_WEB_EXPORT.blend",
-  "exportMode": "direct",
-  "coordinateSystem": "gltf-y-up",
   "scene": {
     "name": "Scene",
-    "frame": 0,
-    "unitScale": 1.0,
     "worldColor": [
       0.05087608844041824,
       0.05087608844041824,
       0.05087608844041824
     ],
     "exposureStops": 0.0,
-    "viewTransform": "None",
     "renderEngine": "BLENDER_EEVEE",
-    "resolution": [
-      1920,
-      1080
-    ]
+    "cameraMode": "orthographic"
   },
   "activeCamera": null,
   "collections": [
+    {
+      "name": "Chip",
+      "slug": "chip",
+      "file": "chip.glb",
+      "parent": null,
+      "children": [],
+      "defaultVisible": true,
+      "objectCount": 2,
+      "objects": [
+        "imagetostl_mesh12.001",
+        "imagetostl_mesh2.001"
+      ],
+      "fileSizeBytes": 4707880,
+      "instanceCount": 0
+    },
     {
       "name": "Details_Box",
       "slug": "details-box",
       "file": "details-box.glb",
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
-      "objectCount": 6,
-      "objectTypes": {
-        "MESH": 6
-      },
+      "objectCount": 4,
       "objects": [
         "Block",
         "C14 Combo Socket (AC-14-F16) v1",
         "Object_4.001",
-        "imagetostl_mesh12.001",
-        "imagetostl_mesh2.001",
         "library_parts_baked_1_library_parts_baked_1_0.004"
       ],
-      "externalParents": [],
-      "fileSizeBytes": 17381792
+      "fileSizeBytes": 1398548,
+      "instanceCount": 1
     },
     {
       "name": "Led_Lights",
       "slug": "led-lights",
-      "file": "led-lights.glb",
+      "file": null,
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
-      "objectCount": 9,
-      "objectTypes": {
-        "MESH": 9
-      },
-      "objects": [
-        "Floor",
-        "yoke_top_crossbar",
-        "yoke_top_crossbar.001",
-        "yoke_top_crossbar.002",
-        "yoke_top_crossbar.003",
-        "yoke_top_crossbar.004",
-        "yoke_top_crossbar.005",
-        "yoke_top_crossbar.006",
-        "yoke_top_crossbar.007"
-      ],
-      "externalParents": [],
-      "fileSizeBytes": 4524612
+      "objectCount": 0,
+      "objects": [],
+      "fileSizeBytes": 0,
+      "instanceCount": 8
     },
     {
       "name": "New_korpus",
@@ -82,14 +65,8 @@
       "file": "new-korpus.glb",
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
       "objectCount": 7,
-      "objectTypes": {
-        "MESH": 7
-      },
       "objects": [
         "Cube.001monolit",
         "Cube.006",
@@ -99,8 +76,8 @@
         "Plane.026",
         "Plane.027"
       ],
-      "externalParents": [],
-      "fileSizeBytes": 1820384
+      "fileSizeBytes": 1694740,
+      "instanceCount": 0
     },
     {
       "name": "Plugs",
@@ -108,28 +85,13 @@
       "file": "plugs.glb",
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
-      "objectCount": 10,
-      "objectTypes": {
-        "MESH": 10
-      },
+      "objectCount": 1,
       "objects": [
-        "Object_0.001",
-        "Object_0.002",
-        "Object_0.003",
-        "Object_0.004",
-        "Object_0.005",
-        "Object_0.006",
-        "Object_0.007",
-        "Object_0.008",
-        "Object_0.009",
         "Object_0.010"
       ],
-      "externalParents": [],
-      "fileSizeBytes": 557332
+      "fileSizeBytes": 64444,
+      "instanceCount": 8
     },
     {
       "name": "scene",
@@ -137,43 +99,28 @@
       "file": "scene.glb",
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
-      "objectCount": 3,
-      "objectTypes": {
-        "MESH": 3
-      },
+      "objectCount": 4,
       "objects": [
         "Cube.005",
+        "Floor",
         "Object_0",
         "defaultMaterial.001"
       ],
-      "externalParents": [],
-      "fileSizeBytes": 13674052
+      "fileSizeBytes": 1370056,
+      "instanceCount": 0
     },
     {
       "name": "Socets",
       "slug": "socets",
-      "file": "socets.glb",
+      "file": null,
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
-      "objectCount": 3,
-      "objectTypes": {
-        "MESH": 3
-      },
-      "objects": [
-        "Plane.015",
-        "Plane.016",
-        "Plane.028"
-      ],
-      "externalParents": [],
-      "fileSizeBytes": 3565732
+      "objectCount": 0,
+      "objects": [],
+      "fileSizeBytes": 0,
+      "instanceCount": 3
     },
     {
       "name": "Wagos",
@@ -181,14 +128,8 @@
       "file": "wagos.glb",
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
       "objectCount": 9,
-      "objectTypes": {
-        "MESH": 9
-      },
       "objects": [
         "Wago 3er",
         "Wago 3er.001",
@@ -200,8 +141,8 @@
         "Wago 5er.002",
         "Wago 5er.003"
       ],
-      "externalParents": [],
-      "fileSizeBytes": 233512
+      "fileSizeBytes": 233644,
+      "instanceCount": 0
     },
     {
       "name": "Wire",
@@ -209,14 +150,8 @@
       "file": "wire.glb",
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
       "objectCount": 35,
-      "objectTypes": {
-        "MESH": 35
-      },
       "objects": [
         "BézierCurve",
         "BézierCurve.001",
@@ -254,8 +189,8 @@
         "BézierCurve.033",
         "BézierCurve.034"
       ],
-      "externalParents": [],
-      "fileSizeBytes": 409516
+      "fileSizeBytes": 409652,
+      "instanceCount": 0
     },
     {
       "name": "Wire 2",
@@ -263,14 +198,8 @@
       "file": "wire-2.glb",
       "parent": null,
       "children": [],
-      "depth": 0,
       "defaultVisible": true,
-      "blenderHideViewport": false,
-      "blenderHideRender": false,
       "objectCount": 10,
-      "objectTypes": {
-        "MESH": 10
-      },
       "objects": [
         "BézierCurve.035",
         "BézierCurve.036",
@@ -283,17 +212,696 @@
         "BézierCurve.043",
         "BézierCurve.044"
       ],
-      "externalParents": [],
-      "fileSizeBytes": 337760
+      "fileSizeBytes": 337896,
+      "instanceCount": 0
+    }
+  ],
+  "prototypes": [
+    {
+      "asset": "led-light",
+      "file": "led-light.glb",
+      "fileSizeBytes": 129040,
+      "objectCount": 1
+    },
+    {
+      "asset": "plug",
+      "file": "plug.glb",
+      "fileSizeBytes": 65012,
+      "objectCount": 1
+    },
+    {
+      "asset": "socket",
+      "file": "socket.glb",
+      "fileSizeBytes": 442236,
+      "objectCount": 1
+    }
+  ],
+  "instances": [
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_01",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        -1.0349750390048484e-08,
+        1.0349750390048484e-08,
+        0.23677468299865723,
+        0.0,
+        0.23677471280097961,
+        1.2607624455540645e-07,
+        1.0349745060977966e-08,
+        0.0,
+        -1.2607624455540645e-07,
+        0.23677471280097961,
+        -1.0349757495475842e-08,
+        0.0,
+        2.0,
+        -0.2100503146648407,
+        9.181590598927869e-09,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_02",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        -1.0349750390048484e-08,
+        -1.0349750390048484e-08,
+        -0.23677468299865723,
+        0.0,
+        -0.23677471280097961,
+        1.2607624455540645e-07,
+        1.0349745060977966e-08,
+        0.0,
+        1.2607624455540645e-07,
+        0.23677471280097961,
+        -1.0349757495475842e-08,
+        0.0,
+        -2.0,
+        -0.2100503146648407,
+        9.181590598927869e-09,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_03",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        -0.23677468299865723,
+        3.3723767644400346e-15,
+        7.715098604421655e-08,
+        0.0,
+        7.715100025507127e-08,
+        1.3642599583363335e-07,
+        0.23677471280097961,
+        0.0,
+        -4.108085399634476e-14,
+        0.23677471280097961,
+        -1.3642599583363335e-07,
+        0.0,
+        0.0,
+        -0.21005022525787354,
+        2.0,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_04",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        0.23677468299865723,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.1572649327717954e-07,
+        -0.23677471280097961,
+        0.0,
+        0.0,
+        0.23677471280097961,
+        1.1572649327717954e-07,
+        0.0,
+        0.0,
+        -0.21005040407180786,
+        -2.0,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_05",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        -0.1674249768257141,
+        -7.3183783477759334e-09,
+        -0.1674249768257141,
+        0.0,
+        -0.1674250066280365,
+        1.3339462157091475e-07,
+        0.1674250066280365,
+        0.0,
+        8.914936699966347e-08,
+        0.23677471280097961,
+        -9.949911827789037e-08,
+        0.0,
+        -1.4142135381698608,
+        -0.21005025506019592,
+        1.4142135381698608,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_06",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        0.16742496192455292,
+        7.318378791865143e-09,
+        0.1674249917268753,
+        0.0,
+        0.1674250215291977,
+        1.1875786753989814e-07,
+        -0.1674249917268753,
+        0.0,
+        -8.914937410509083e-08,
+        0.23677471280097961,
+        7.879960861600921e-08,
+        0.0,
+        1.4142135381698608,
+        -0.21005037426948547,
+        -1.4142135381698608,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_07",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        0.1674249768257141,
+        -7.3183783477759334e-09,
+        -0.1674249768257141,
+        0.0,
+        -0.1674250066280365,
+        1.1875786753989814e-07,
+        -0.1674250066280365,
+        0.0,
+        8.914936699966347e-08,
+        0.23677471280097961,
+        7.879960861600921e-08,
+        0.0,
+        -1.41421377658844,
+        -0.21005037426948547,
+        -1.4142134189605713,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_LED_LIGHT_08",
+      "asset": "led-light",
+      "group": "Led_Lights",
+      "matrix": [
+        -0.16742494702339172,
+        7.318379680043563e-09,
+        0.1674250066280365,
+        0.0,
+        0.1674250364303589,
+        1.3339462157091475e-07,
+        0.1674249768257141,
+        0.0,
+        -8.914938121051819e-08,
+        0.23677471280097961,
+        -9.949910406703566e-08,
+        0.0,
+        1.41421377658844,
+        -0.21005025506019592,
+        1.4142134189605713,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_01",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        0.011256532743573189,
+        0.9999366402626038,
+        3.632712264334259e-08,
+        0.0,
+        -0.9999366402626038,
+        0.011256532743573189,
+        -8.247754834656007e-08,
+        0.0,
+        -8.288123609645481e-08,
+        -3.539640758276619e-08,
+        1.0,
+        0.0,
+        -0.07939621061086655,
+        -0.007605272810906172,
+        -0.07376506179571152,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_02",
+      "asset": "plug",
+      "group": "Details_Box",
+      "matrix": [
+        0.2539541721343994,
+        0.9319441914558411,
+        0.258819043636322,
+        0.0,
+        -0.06804683059453964,
+        -0.2497136890888214,
+        0.9659258127212524,
+        0.0,
+        0.964819610118866,
+        -0.26291272044181824,
+        1.8810279556191745e-08,
+        0.0,
+        -0.11678982526063919,
+        -0.0811188742518425,
+        -0.003343564225360751,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_03",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        0.011256532743573189,
+        0.9999366402626038,
+        3.632712264334259e-08,
+        0.0,
+        -0.9999366402626038,
+        0.011256532743573189,
+        -8.247754834656007e-08,
+        0.0,
+        -8.288123609645481e-08,
+        -3.539640758276619e-08,
+        1.0,
+        0.0,
+        -0.02612564153969288,
+        -0.007605272810906172,
+        -0.07376506179571152,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_04",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        0.011256532743573189,
+        0.9999366402626038,
+        3.632712264334259e-08,
+        0.0,
+        -0.9999366402626038,
+        0.011256532743573189,
+        -8.247754834656007e-08,
+        0.0,
+        -8.288123609645481e-08,
+        -3.539640758276619e-08,
+        1.0,
+        0.0,
+        0.0798882320523262,
+        -0.007605272810906172,
+        -0.07376506179571152,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_05",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        0.011256532743573189,
+        0.9999366402626038,
+        3.632712264334259e-08,
+        0.0,
+        -0.9999366402626038,
+        0.011256532743573189,
+        -8.247754834656007e-08,
+        0.0,
+        -8.288123609645481e-08,
+        -3.539640758276619e-08,
+        1.0,
+        0.0,
+        0.026650650426745415,
+        -0.007605272810906172,
+        -0.07376506179571152,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_06",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        -0.011256532743573189,
+        0.9999366402626038,
+        -1.2323752685006184e-07,
+        0.0,
+        0.9999366402626038,
+        0.011256532743573189,
+        3.6471909936608427e-08,
+        0.0,
+        3.785682878287844e-08,
+        -1.2281918770895572e-07,
+        -1.0,
+        0.0,
+        -0.02614213339984417,
+        -0.0076052662916481495,
+        0.07307199388742447,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_07",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        -0.011256532743573189,
+        0.9999366402626038,
+        -1.2323752685006184e-07,
+        0.0,
+        0.9999366402626038,
+        0.011256532743573189,
+        3.6471909936608427e-08,
+        0.0,
+        3.785682878287844e-08,
+        -1.2281918770895572e-07,
+        -1.0,
+        0.0,
+        -0.07937971502542496,
+        -0.0076052662916481495,
+        0.07307200133800507,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_08",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        -0.011256532743573189,
+        0.9999366402626038,
+        -1.2323752685006184e-07,
+        0.0,
+        0.9999366402626038,
+        0.011256532743573189,
+        3.6471909936608427e-08,
+        0.0,
+        3.785682878287844e-08,
+        -1.2281918770895572e-07,
+        -1.0,
+        0.0,
+        0.026634158566594124,
+        -0.0076052662916481495,
+        0.07307199388742447,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_PLUG_09",
+      "asset": "plug",
+      "group": "Plugs",
+      "matrix": [
+        -0.011256532743573189,
+        0.9999366402626038,
+        -1.2323752685006184e-07,
+        0.0,
+        0.9999366402626038,
+        0.011256532743573189,
+        3.6471909936608427e-08,
+        0.0,
+        3.785682878287844e-08,
+        -1.2281918770895572e-07,
+        -1.0,
+        0.0,
+        0.07990472763776779,
+        -0.0076052662916481495,
+        0.07307198643684387,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_SOCKET_01",
+      "asset": "socket",
+      "group": "Socets",
+      "matrix": [
+        0.050208717584609985,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.050208717584609985,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.050208717584609985,
+        0.0,
+        0.00021113501861691475,
+        -0.006630570162087679,
+        -0.042842574417591095,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_SOCKET_02",
+      "asset": "socket",
+      "group": "Socets",
+      "matrix": [
+        -0.050208717584609985,
+        -7.151217005817504e-16,
+        -1.6360077736976564e-08,
+        0.0,
+        7.151217005817504e-16,
+        0.050208717584609985,
+        -4.389385299674586e-09,
+        0.0,
+        1.6360077736976564e-08,
+        -4.389385299674586e-09,
+        -0.050208717584609985,
+        0.0,
+        0.00021113501861691475,
+        -0.0066305664367973804,
+        0.04274614155292511,
+        1.0
+      ]
+    },
+    {
+      "name": "WEB_INSTANCE_SOCKET_03",
+      "asset": "socket",
+      "group": "Socets",
+      "matrix": [
+        -0.050208717584609985,
+        -1.6360079513333403e-08,
+        7.581306249448971e-09,
+        0.0,
+        -7.581303584913712e-09,
+        -6.5840781715564844e-09,
+        -0.050208717584609985,
+        0.0,
+        1.6360079513333403e-08,
+        -0.050208717584609985,
+        6.584075507021225e-09,
+        0.0,
+        -0.804695188999176,
+        -0.24089981615543365,
+        0.05742172524333,
+        1.0
+      ]
     }
   ],
   "lights": [],
   "cameras": [],
+  "optimization": {
+    "textures": [
+      {
+        "name": "dark_metal.png",
+        "before": [
+          1024,
+          1024
+        ],
+        "after": [
+          512,
+          512
+        ],
+        "packed": true
+      },
+      {
+        "name": "Folding_Table_baseColor.jpg",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "Folding_Table_metallicRoughness_metal.jpg",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "Folding_Table_metallicRoughness_rough.jpg",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "Folding_Table_normal.jpg",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "led_diffuser.png",
+        "before": [
+          1024,
+          1024
+        ],
+        "after": [
+          512,
+          512
+        ],
+        "packed": true
+      },
+      {
+        "name": "library-parts-baked-1_baseColor.png.008",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "library-parts-baked-1_baseColor.png.009",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "library-parts-baked-1_normal.jpg.004",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "sanserviera_decimated_baseColor.jpg",
+        "before": [
+          4096,
+          4096
+        ],
+        "after": [
+          2048,
+          2048
+        ],
+        "packed": true
+      },
+      {
+        "name": "vlpqdf1_2K_Albedo.jpg",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "wdvlbdds_2K_Albedo.jpg",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      },
+      {
+        "name": "wdvlbdds_2K_Normal.jpg",
+        "before": [
+          2048,
+          2048
+        ],
+        "after": [
+          1024,
+          1024
+        ],
+        "packed": true
+      }
+    ],
+    "instanceFamilies": [
+      {
+        "collection": "Led_Lights",
+        "asset": "led-light",
+        "instanceCount": 8,
+        "prototypePartCount": 1,
+        "prototypeCollection": "__WEB_PROTO_LED_LIGHT",
+        "anchor": "yoke_top_crossbar",
+        "maxMatrixError": 2.384185791015625e-07,
+        "mode": "suffix-assembly"
+      },
+      {
+        "asset": "plug",
+        "instanceCount": 9,
+        "prototypeCollection": "__WEB_PROTO_PLUG",
+        "prototypePartCount": 1,
+        "mode": "mesh-fingerprint",
+        "groups": [
+          "Details_Box",
+          "Plugs"
+        ]
+      },
+      {
+        "asset": "socket",
+        "instanceCount": 3,
+        "prototypeCollection": "__WEB_PROTO_SOCKET",
+        "prototypePartCount": 1,
+        "mode": "mesh-fingerprint",
+        "groups": [
+          "Socets"
+        ]
+      }
+    ]
+  },
   "failures": [],
   "summary": {
-    "collectionCount": 9,
+    "collectionCount": 10,
+    "prototypeCount": 3,
+    "instanceCount": 20,
     "lightCount": 0,
     "cameraCount": 0,
-    "totalGlbBytes": 42504692
+    "collectionGlbBytes": 10216860,
+    "prototypeGlbBytes": 636288,
+    "totalGlbBytes": 10853148
   }
 }

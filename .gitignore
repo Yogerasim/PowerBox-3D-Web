@@ -22,3 +22,6 @@ blender/cache/
 
 # Local Blender processing backups
 blender/backups/
+
+# Local source backups
+.local-backups/

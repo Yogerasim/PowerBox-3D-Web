@@ -11,7 +11,8 @@
     "model:validate": "gltf-transform validate public/assets/models/powerbox-scene-web.glb",
     "export:collections": "./run_export_collections.sh",
     "viewer:dev": "vite --open /viewer.html",
-    "viewer:build": "vite build"
+    "viewer:build": "vite build",
+    "scene:optimize-v2": "./run_powerbox_optimize_v2.sh"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.4.1",
