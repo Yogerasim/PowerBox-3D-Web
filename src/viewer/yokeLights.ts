@@ -27,12 +27,12 @@ interface YokeLightSettings {
   width: number;
   height: number;
   showHelpers: boolean;
-  flicker: boolean;
-  flickerSpeedHz: number;
-  flickerDepth: number;
+  switching: boolean;
+  switchingSpeedHz: number;
+  dutyCycle: number;
   randomness: number;
   phaseSpread: number;
-  minimumBrightness: number;
+  offLevel: number;
 }
 
 export interface YokeLightRig {
@@ -78,13 +78,13 @@ function smoothNoise(
   );
 }
 
-function flickerSignal(
+function hardSwitchSignal(
   timeSeconds: number,
   index: number,
   runtime: RuntimeYokeLight,
   settings: YokeLightSettings,
 ): number {
-  if (!settings.flicker || settings.flickerDepth <= 0) {
+  if (!settings.switching) {
     return 1;
   }
 
@@ -94,41 +94,36 @@ function flickerSignal(
     Math.PI *
     2;
 
-  const sine =
+  const periodicSignal =
     0.5 +
     0.5 *
       Math.sin(
         timeSeconds *
-          settings.flickerSpeedHz *
+          settings.switchingSpeedHz *
           Math.PI *
           2 +
           phase,
       );
 
-  const noise = smoothNoise(
+  const randomSignal = smoothNoise(
     timeSeconds *
-      settings.flickerSpeedHz *
+      settings.switchingSpeedHz *
       1.37 +
       index * 3.71,
     runtime.seed,
   );
 
-  const mixed = MathUtils.lerp(
-    sine,
-    noise,
+  const timingSignal = MathUtils.lerp(
+    periodicSignal,
+    randomSignal,
     settings.randomness,
   );
 
-  const shaped = Math.max(
-    settings.minimumBrightness,
-    mixed,
-  );
+  const threshold = 1 - settings.dutyCycle;
+  const isOn = timingSignal >= threshold;
 
-  return MathUtils.lerp(
-    1,
-    shaped,
-    settings.flickerDepth,
-  );
+  // Exact two-state output. There is no interpolation or fade.
+  return isOn ? 1 : settings.offLevel;
 }
 
 function applyTransform(
@@ -217,12 +212,12 @@ export function createYokeLightRig(): YokeLightRig {
     width: DEFAULT_EFFECTIVE_WIDTH,
     height: DEFAULT_EFFECTIVE_HEIGHT,
     showHelpers: false,
-    flicker: false,
-    flickerSpeedHz: 2,
-    flickerDepth: 0.85,
-    randomness: 0.3,
+    switching: false,
+    switchingSpeedHz: 2,
+    dutyCycle: 0.5,
+    randomness: 0,
     phaseSpread: 1,
-    minimumBrightness: 0.03,
+    offLevel: 0,
   };
 
   const runtimeLights = YOKE_AREA_LIGHTS.map(
@@ -297,43 +292,39 @@ export function createYokeLightRig(): YokeLightRig {
       .name("Show helpers")
       .onChange(syncStaticSettings);
 
-    const flickerFolder = folder.addFolder("Flicker");
+    const switchingFolder = folder.addFolder(
+      "Hard switching",
+    );
 
-    flickerFolder
-      .add(settings, "flicker")
+    switchingFolder
+      .add(settings, "switching")
       .name("Enabled");
 
-    flickerFolder
+    switchingFolder
       .add(
         settings,
-        "flickerSpeedHz",
+        "switchingSpeedHz",
         0.05,
         20,
         0.01,
       )
       .name("Speed Hz");
 
-    flickerFolder
-      .add(settings, "flickerDepth", 0, 1, 0.01)
-      .name("Depth");
+    switchingFolder
+      .add(settings, "dutyCycle", 0.05, 0.95, 0.01)
+      .name("On duration");
 
-    flickerFolder
+    switchingFolder
       .add(settings, "randomness", 0, 1, 0.01)
-      .name("Randomness");
+      .name("Random timing");
 
-    flickerFolder
+    switchingFolder
       .add(settings, "phaseSpread", 0, 1, 0.01)
       .name("Phase spread");
 
-    flickerFolder
-      .add(
-        settings,
-        "minimumBrightness",
-        0,
-        1,
-        0.01,
-      )
-      .name("Minimum");
+    switchingFolder
+      .add(settings, "offLevel", 0, 1, 0.01)
+      .name("Off level");
 
     const individualFolder = folder.addFolder(
       "Individual lights",
@@ -380,7 +371,7 @@ export function createYokeLightRig(): YokeLightRig {
         return;
       }
 
-      const modulation = flickerSignal(
+      const modulation = hardSwitchSignal(
         timeSeconds,
         index,
         runtime,

@@ -209,7 +209,7 @@ const environmentRenderTarget =
   pmremGenerator.fromScene(roomEnvironment, 0.04);
 
 scene.environment = environmentRenderTarget.texture;
-scene.environmentIntensity = 0.8;
+scene.environmentIntensity = 0.15;
 
 roomEnvironment.dispose();
 pmremGenerator.dispose();
@@ -251,7 +251,7 @@ let targetGroupCount = 0;
 
 const settings = {
   exposure: 1,
-  environment: 0.8,
+  environment: 0.15,
   lightMultiplier: 1,
   shadows: false,
   showBlenderLights: true,
