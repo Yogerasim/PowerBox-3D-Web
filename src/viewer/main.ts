@@ -29,6 +29,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
+import { createYokeLightRig } from "./yokeLights";
 import { clone as cloneObject } from "three/addons/utils/SkeletonUtils.js";
 
 import type {
@@ -197,6 +198,9 @@ const lightRoot = new Group();
 lightRoot.name = "POWERBOX_BLENDER_LIGHTS";
 
 scene.add(modelRoot, lightRoot);
+
+const yokeLightRig = createYokeLightRig();
+scene.add(yokeLightRig.root);
 
 const pmremGenerator = new PMREMGenerator(renderer);
 const roomEnvironment = new RoomEnvironment();
@@ -785,6 +789,8 @@ function addViewerGUI(): void {
       rebuildLights();
     });
 
+  yokeLightRig.addGUI(gui);
+
   const cameraActions = {
     useBlenderCamera: () => {
       const blenderCamera = selectedBlenderCamera();
@@ -959,6 +965,7 @@ function resize(): void {
 
 function render(): void {
   controls.update();
+  yokeLightRig.update(performance.now() * 0.001);
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 }
