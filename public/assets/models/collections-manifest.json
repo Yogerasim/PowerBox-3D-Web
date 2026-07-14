@@ -1,0 +1,299 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-14T11:08:38.522357+00:00",
+  "sourceBlend": "PowerBox_WEB_EXPORT.blend",
+  "exportMode": "direct",
+  "coordinateSystem": "gltf-y-up",
+  "scene": {
+    "name": "Scene",
+    "frame": 0,
+    "unitScale": 1.0,
+    "worldColor": [
+      0.05087608844041824,
+      0.05087608844041824,
+      0.05087608844041824
+    ],
+    "exposureStops": 0.0,
+    "viewTransform": "None",
+    "renderEngine": "BLENDER_EEVEE",
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "activeCamera": null,
+  "collections": [
+    {
+      "name": "Details_Box",
+      "slug": "details-box",
+      "file": "details-box.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 6,
+      "objectTypes": {
+        "MESH": 6
+      },
+      "objects": [
+        "Block",
+        "C14 Combo Socket (AC-14-F16) v1",
+        "Object_4.001",
+        "imagetostl_mesh12.001",
+        "imagetostl_mesh2.001",
+        "library_parts_baked_1_library_parts_baked_1_0.004"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 17381792
+    },
+    {
+      "name": "Led_Lights",
+      "slug": "led-lights",
+      "file": "led-lights.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 9,
+      "objectTypes": {
+        "MESH": 9
+      },
+      "objects": [
+        "Floor",
+        "yoke_top_crossbar",
+        "yoke_top_crossbar.001",
+        "yoke_top_crossbar.002",
+        "yoke_top_crossbar.003",
+        "yoke_top_crossbar.004",
+        "yoke_top_crossbar.005",
+        "yoke_top_crossbar.006",
+        "yoke_top_crossbar.007"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 4524612
+    },
+    {
+      "name": "New_korpus",
+      "slug": "new-korpus",
+      "file": "new-korpus.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 7,
+      "objectTypes": {
+        "MESH": 7
+      },
+      "objects": [
+        "Cube.001monolit",
+        "Cube.006",
+        "Plane.023",
+        "Plane.024",
+        "Plane.025",
+        "Plane.026",
+        "Plane.027"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 1820384
+    },
+    {
+      "name": "Plugs",
+      "slug": "plugs",
+      "file": "plugs.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 10,
+      "objectTypes": {
+        "MESH": 10
+      },
+      "objects": [
+        "Object_0.001",
+        "Object_0.002",
+        "Object_0.003",
+        "Object_0.004",
+        "Object_0.005",
+        "Object_0.006",
+        "Object_0.007",
+        "Object_0.008",
+        "Object_0.009",
+        "Object_0.010"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 557332
+    },
+    {
+      "name": "scene",
+      "slug": "scene",
+      "file": "scene.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 3,
+      "objectTypes": {
+        "MESH": 3
+      },
+      "objects": [
+        "Cube.005",
+        "Object_0",
+        "defaultMaterial.001"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 13674052
+    },
+    {
+      "name": "Socets",
+      "slug": "socets",
+      "file": "socets.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 3,
+      "objectTypes": {
+        "MESH": 3
+      },
+      "objects": [
+        "Plane.015",
+        "Plane.016",
+        "Plane.028"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 3565732
+    },
+    {
+      "name": "Wagos",
+      "slug": "wagos",
+      "file": "wagos.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 9,
+      "objectTypes": {
+        "MESH": 9
+      },
+      "objects": [
+        "Wago 3er",
+        "Wago 3er.001",
+        "Wago 3er.002",
+        "Wago 3er.003",
+        "Wago 3er.004",
+        "Wago 5er",
+        "Wago 5er.001",
+        "Wago 5er.002",
+        "Wago 5er.003"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 233512
+    },
+    {
+      "name": "Wire",
+      "slug": "wire",
+      "file": "wire.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 35,
+      "objectTypes": {
+        "MESH": 35
+      },
+      "objects": [
+        "BézierCurve",
+        "BézierCurve.001",
+        "BézierCurve.002",
+        "BézierCurve.003",
+        "BézierCurve.004",
+        "BézierCurve.005",
+        "BézierCurve.006",
+        "BézierCurve.007",
+        "BézierCurve.008",
+        "BézierCurve.009",
+        "BézierCurve.010",
+        "BézierCurve.011",
+        "BézierCurve.012",
+        "BézierCurve.013",
+        "BézierCurve.014",
+        "BézierCurve.015",
+        "BézierCurve.016",
+        "BézierCurve.017",
+        "BézierCurve.018",
+        "BézierCurve.019",
+        "BézierCurve.020",
+        "BézierCurve.021",
+        "BézierCurve.022",
+        "BézierCurve.023",
+        "BézierCurve.024",
+        "BézierCurve.025",
+        "BézierCurve.026",
+        "BézierCurve.027",
+        "BézierCurve.028",
+        "BézierCurve.029",
+        "BézierCurve.030",
+        "BézierCurve.031",
+        "BézierCurve.032",
+        "BézierCurve.033",
+        "BézierCurve.034"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 409516
+    },
+    {
+      "name": "Wire 2",
+      "slug": "wire-2",
+      "file": "wire-2.glb",
+      "parent": null,
+      "children": [],
+      "depth": 0,
+      "defaultVisible": true,
+      "blenderHideViewport": false,
+      "blenderHideRender": false,
+      "objectCount": 10,
+      "objectTypes": {
+        "MESH": 10
+      },
+      "objects": [
+        "BézierCurve.035",
+        "BézierCurve.036",
+        "BézierCurve.037",
+        "BézierCurve.038",
+        "BézierCurve.039",
+        "BézierCurve.040",
+        "BézierCurve.041",
+        "BézierCurve.042",
+        "BézierCurve.043",
+        "BézierCurve.044"
+      ],
+      "externalParents": [],
+      "fileSizeBytes": 337760
+    }
+  ],
+  "lights": [],
+  "cameras": [],
+  "failures": [],
+  "summary": {
+    "collectionCount": 9,
+    "lightCount": 0,
+    "cameraCount": 0,
+    "totalGlbBytes": 42504692
+  }
+}
