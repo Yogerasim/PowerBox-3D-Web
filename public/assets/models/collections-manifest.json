@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "generatedAt": "2026-07-14T15:02:42.425196+00:00",
+  "generatedAt": "2026-07-14T16:27:05.611784+00:00",
   "sourceBlend": "PowerBox_WEB_EXPORT.blend",
   "scene": {
     "name": "Scene",
@@ -37,15 +37,17 @@
       "parent": null,
       "children": [],
       "defaultVisible": true,
-      "objectCount": 4,
+      "objectCount": 5,
       "objects": [
         "Block",
         "C14 Combo Socket (AC-14-F16) v1",
+        "Object_0.002",
         "Object_4.001",
         "library_parts_baked_1_library_parts_baked_1_0.004"
       ],
-      "fileSizeBytes": 1398548,
-      "instanceCount": 1
+      "fileSizeBytes": 1435516,
+      "instanceCount": 0,
+      "evaluatedFaces": 4707
     },
     {
       "name": "Led_Lights",
@@ -76,8 +78,9 @@
         "Plane.026",
         "Plane.027"
       ],
-      "fileSizeBytes": 1694740,
-      "instanceCount": 0
+      "fileSizeBytes": 1820424,
+      "instanceCount": 0,
+      "evaluatedFaces": 15371
     },
     {
       "name": "Plugs",
@@ -107,7 +110,7 @@
         "Object_0",
         "defaultMaterial.001"
       ],
-      "fileSizeBytes": 1370056,
+      "fileSizeBytes": 17422304,
       "instanceCount": 0
     },
     {
@@ -441,29 +444,6 @@
         -0.07939621061086655,
         -0.007605272810906172,
         -0.07376506179571152,
-        1.0
-      ]
-    },
-    {
-      "name": "WEB_INSTANCE_PLUG_02",
-      "asset": "plug",
-      "group": "Details_Box",
-      "matrix": [
-        0.2539541721343994,
-        0.9319441914558411,
-        0.258819043636322,
-        0.0,
-        -0.06804683059453964,
-        -0.2497136890888214,
-        0.9659258127212524,
-        0.0,
-        0.964819610118866,
-        -0.26291272044181824,
-        1.8810279556191745e-08,
-        0.0,
-        -0.11678982526063919,
-        -0.0811188742518425,
-        -0.003343564225360751,
         1.0
       ]
     },
@@ -872,7 +852,7 @@
       },
       {
         "asset": "plug",
-        "instanceCount": 9,
+        "instanceCount": 8,
         "prototypeCollection": "__WEB_PROTO_PLUG",
         "prototypePartCount": 1,
         "mode": "mesh-fingerprint",
@@ -897,11 +877,11 @@
   "summary": {
     "collectionCount": 10,
     "prototypeCount": 3,
-    "instanceCount": 20,
+    "instanceCount": 19,
     "lightCount": 0,
     "cameraCount": 0,
-    "collectionGlbBytes": 10216860,
+    "collectionGlbBytes": 26431760,
     "prototypeGlbBytes": 636288,
-    "totalGlbBytes": 10853148
+    "totalGlbBytes": 27068048
   }
 }
