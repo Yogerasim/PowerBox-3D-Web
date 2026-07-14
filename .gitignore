@@ -25,3 +25,9 @@ blender/backups/
 
 # Local source backups
 .local-backups/
+
+# Blender source scenes — local only
+blender/PowerBox_MASTER.blend
+blender/PowerBox_WEB_EXPORT.blend
+blender/backups/
+*.blend1
