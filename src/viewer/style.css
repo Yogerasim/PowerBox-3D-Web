@@ -216,3 +216,39 @@ body.presentation-story-mode .viewer-stage { position: fixed; }
   }
   .presentation-story-copy { padding: 20px; border-radius: 18px; }
 }
+
+/* Presentation mobile scrolling V20.2 */
+
+html.presentation-story-mode,
+body.presentation-story-mode {
+  height: auto !important;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.presentation-story-mode {
+  scroll-snap-type: y mandatory;
+}
+
+body.presentation-story-mode
+.presentation-story-preview {
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+
+body.presentation-story-mode
+.presentation-story-section {
+  touch-action: pan-y;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+body.presentation-story-mode
+.viewer-stage canvas {
+  pointer-events: none;
+  touch-action: pan-y !important;
+}
+

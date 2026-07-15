@@ -252,6 +252,19 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
         start: "top top",
         end: "bottom bottom",
         scrub: state.scrollSmoothing,
+        snap: {
+          snapTo:
+            1 / Math.max(
+              shots.length - 1,
+              1,
+            ),
+          duration: {
+            min: 0.18,
+            max: 0.45,
+          },
+          delay: 0.04,
+          ease: "power1.inOut",
+        },
         invalidateOnRefresh: true,
         onUpdate: (trigger) => {
           const index = MathUtils.clamp(
@@ -306,7 +319,24 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
 
   function setStoryPreview(enabled: boolean): void {
     state.storyPreview = enabled;
-    document.body.classList.toggle("presentation-story-mode", enabled);
+    document.body.classList.toggle(
+    "presentation-story-mode",
+    enabled,
+  );
+
+  document.documentElement.classList.toggle(
+    "presentation-story-mode",
+    enabled,
+  );
+
+  storyRoot.style.pointerEvents =
+    enabled ? "auto" : "none";
+
+  options.canvas.style.pointerEvents =
+    enabled ? "none" : "auto";
+
+  options.canvas.style.touchAction =
+    enabled ? "pan-y" : "none";
     storyRoot.hidden = !enabled;
     options.controls.enabled = !enabled;
     if (enabled) {
