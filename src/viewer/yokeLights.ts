@@ -1,32 +1,76 @@
 import type GUI from "lil-gui";
 import {
   Color,
+  Euler,
   Group,
   MathUtils,
-  Quaternion,
-  RectAreaLight,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Object3D,
+  SpotLight,
+  SpotLightHelper,
+  Vector3,
 } from "three";
-import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 import {
   YOKE_AREA_LIGHTS,
   type YokeAreaLightConfig,
 } from "./yokeLightConfig";
 
+type EmissiveMaterial =
+  | MeshStandardMaterial
+  | MeshPhysicalMaterial;
+
 interface PerLightSettings {
   enabled: boolean;
   gain: number;
   phase: number;
+
+  positionX: number;
+  positionY: number;
+  positionZ: number;
+
+  rotationX: number;
+  rotationY: number;
+  rotationZ: number;
+
+  angleOffset: number;
+  penumbraOffset: number;
 }
 
 interface YokeLightSettings {
   enabled: boolean;
+
   energyWatts: number;
   webCalibration: number;
   brightness: number;
   color: string;
-  width: number;
-  height: number;
+
+  aimAtTarget: boolean;
+  targetX: number;
+  targetY: number;
+  targetZ: number;
+  targetDistance: number;
+
+  rotationX: number;
+  rotationY: number;
+  rotationZ: number;
+
+  distance: number;
+  coneAngleDegrees: number;
+  penumbra: number;
+  decay: number;
+
+  castShadows: boolean;
+  shadowBias: number;
+  shadowNormalBias: number;
+
   showHelpers: boolean;
+
+  panelGlow: number;
+  indicatorGlow: number;
+  indicatorColor: string;
+
   switching: boolean;
   switchingSpeedHz: number;
   dutyCycle: number;
@@ -39,19 +83,51 @@ export interface YokeLightRig {
   root: Group;
   addGUI: (gui: GUI) => void;
   update: (timeSeconds: number) => void;
+  registerLedLightRoot: (root: Object3D) => void;
+}
+
+interface EmissiveBinding {
+  material: EmissiveMaterial;
+  runtimeIndex: number;
+}
+
+interface IndicatorBinding {
+  material: EmissiveMaterial;
 }
 
 interface RuntimeYokeLight {
   config: YokeAreaLightConfig;
-  light: RectAreaLight;
-  helper: RectAreaLightHelper;
+  light: SpotLight;
+  helper: SpotLightHelper;
   settings: PerLightSettings;
   seed: number;
 }
 
-const DEFAULT_EFFECTIVE_WIDTH = 1.0 * 0.16;
-const DEFAULT_EFFECTIVE_HEIGHT = 0.25 * 2.14;
-const DEFAULT_WEB_CALIBRATION = 0.02;
+const DIFFUSER_MATERIAL_NAME =
+  "led_diffuser_emissive_strip";
+
+const INDICATOR_MATERIAL_NAME =
+  "powerbox_signal_orange";
+
+function normalizeMaterialName(name: string): string {
+  return name
+    .replace(/__YOKE_\d+$/i, "")
+    .replace(/\.\d{3}$/i, "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function isNamedMaterial(
+  material: EmissiveMaterial,
+  expectedName: string,
+): boolean {
+  return (
+    normalizeMaterialName(material.name) ===
+    normalizeMaterialName(expectedName)
+  );
+}
 
 function fract(value: number): number {
   return value - Math.floor(value);
@@ -120,34 +196,170 @@ function hardSwitchSignal(
   );
 
   const threshold = 1 - settings.dutyCycle;
-  const isOn = timingSignal >= threshold;
 
-  // Exact two-state output. There is no interpolation or fade.
-  return isOn ? 1 : settings.offLevel;
+  return timingSignal >= threshold
+    ? 1
+    : settings.offLevel;
 }
 
-function applyTransform(
-  light: RectAreaLight,
-  config: YokeAreaLightConfig,
-): void {
-  light.position.set(
-    config.position[0],
-    config.position[1],
-    config.position[2],
+function isEmissiveMaterial(
+  material: unknown,
+): material is EmissiveMaterial {
+  return (
+    material instanceof MeshStandardMaterial ||
+    material instanceof MeshPhysicalMaterial
   );
+}
 
-  light.quaternion.copy(
-    new Quaternion(
-      config.quaternionXYZW[0],
-      config.quaternionXYZW[1],
-      config.quaternionXYZW[2],
-      config.quaternionXYZW[3],
-    ).normalize(),
+function materialNamesInRoot(root: Object3D): string[] {
+  const names = new Set<string>();
+
+  root.traverse((object) => {
+    if (!(object instanceof Mesh)) {
+      return;
+    }
+
+    const materials = Array.isArray(object.material)
+      ? object.material
+      : [object.material];
+
+    for (const material of materials) {
+      if (material?.name) {
+        names.add(material.name);
+      }
+    }
+  });
+
+  return [...names].sort((a, b) =>
+    a.localeCompare(b),
   );
+}
 
-  light.scale.set(1, 1, 1);
-  light.updateMatrix();
-  light.updateMatrixWorld(true);
+function cloneAndRegisterMaterials(
+  root: Object3D,
+  runtimeIndex: number,
+  diffuserBindings: EmissiveBinding[],
+  indicatorBindings: IndicatorBinding[],
+): {
+  diffuserCount: number;
+  indicatorCount: number;
+} {
+  let diffuserCount = 0;
+  let indicatorCount = 0;
+
+  root.traverse((object) => {
+    if (!(object instanceof Mesh)) {
+      return;
+    }
+
+    const sourceMaterials = Array.isArray(object.material)
+      ? object.material
+      : [object.material];
+
+    const nextMaterials = sourceMaterials.map((source) => {
+      if (!isEmissiveMaterial(source)) {
+        return source;
+      }
+
+      const isDiffuser = isNamedMaterial(
+        source,
+        DIFFUSER_MATERIAL_NAME,
+      );
+
+      const isIndicator = isNamedMaterial(
+        source,
+        INDICATOR_MATERIAL_NAME,
+      );
+
+      if (!isDiffuser && !isIndicator) {
+        return source;
+      }
+
+      const material = source.clone();
+      material.name =
+        `${source.name}__YOKE_${runtimeIndex + 1}`;
+
+      if (isDiffuser) {
+        material.emissive.set(0xffffff);
+
+        diffuserBindings.push({
+          material,
+          runtimeIndex,
+        });
+
+        diffuserCount += 1;
+
+        console.info(
+          `[PowerBox] Strobe material "${source.name}" ` +
+          `→ Yoke ${runtimeIndex + 1}`,
+        );
+      }
+
+      if (isIndicator) {
+        indicatorBindings.push({
+          material,
+        });
+
+        indicatorCount += 1;
+
+        console.info(
+          `[PowerBox] Constant indicator "${source.name}"`,
+        );
+      }
+
+      return material;
+    });
+
+    object.material = Array.isArray(object.material)
+      ? nextMaterials
+      : nextMaterials[0];
+  });
+
+  return {
+    diffuserCount,
+    indicatorCount,
+  };
+}
+
+function nearestRuntimeIndex(
+  position: Vector3,
+  runtimes: RuntimeYokeLight[],
+  reserved: Set<number>,
+): number {
+  let bestIndex = -1;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  runtimes.forEach((runtime, index) => {
+    if (reserved.has(index)) {
+      return;
+    }
+
+    const distance = position.distanceToSquared(
+      runtime.light.position,
+    );
+
+    if (distance < bestDistance) {
+      bestIndex = index;
+      bestDistance = distance;
+    }
+  });
+
+  if (bestIndex >= 0) {
+    return bestIndex;
+  }
+
+  runtimes.forEach((runtime, index) => {
+    const distance = position.distanceToSquared(
+      runtime.light.position,
+    );
+
+    if (distance < bestDistance) {
+      bestIndex = index;
+      bestDistance = distance;
+    }
+  });
+
+  return Math.max(bestIndex, 0);
 }
 
 function createRuntimeLight(
@@ -161,24 +373,34 @@ function createRuntimeLight(
     config.colorLinearRGB[2],
   );
 
-  const light = new RectAreaLight(
+  const light = new SpotLight(
     color,
-    config.energyWatts * DEFAULT_WEB_CALIBRATION,
-    settings.width,
-    settings.height,
+    config.energyWatts * settings.webCalibration,
+    settings.distance,
+    MathUtils.degToRad(settings.coneAngleDegrees),
+    settings.penumbra,
+    settings.decay,
   );
 
-  light.name = `YOKE_WEB__${config.name}`;
+  light.name = `YOKE_BEAM__${config.name}`;
+  light.position.set(
+    config.position[0],
+    config.position[1],
+    config.position[2],
+  );
+
+  light.target.name = `YOKE_TARGET__${config.name}`;
+
+  light.castShadow = settings.castShadows;
+  light.shadow.mapSize.set(1024, 1024);
+  light.shadow.bias = settings.shadowBias;
+  light.shadow.normalBias = settings.shadowNormalBias;
+
   light.userData.blenderObject = config.name;
   light.userData.blenderEnergyWatts = config.energyWatts;
-  light.userData.sourceDirectionMinusZ = [
-    ...config.directionMinusZ,
-  ];
 
-  applyTransform(light, config);
-
-  const helper = new RectAreaLightHelper(light);
-  helper.name = `YOKE_HELPER__${config.name}`;
+  const helper = new SpotLightHelper(light);
+  helper.name = `YOKE_SPOT_HELPER__${config.name}`;
   helper.visible = settings.showHelpers;
 
   return {
@@ -189,29 +411,156 @@ function createRuntimeLight(
       enabled: true,
       gain: 1,
       phase: index / YOKE_AREA_LIGHTS.length,
+
+      positionX: 0,
+      positionY: 0,
+      positionZ: 0,
+
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: 0,
+
+      angleOffset: 0,
+      penumbraOffset: 0,
     },
     seed: 100 + index * 19,
   };
 }
 
+function updateBeamTransform(
+  runtime: RuntimeYokeLight,
+  settings: YokeLightSettings,
+): void {
+  runtime.light.position.set(
+    runtime.config.position[0] +
+      runtime.settings.positionX,
+    runtime.config.position[1] +
+      runtime.settings.positionY,
+    runtime.config.position[2] +
+      runtime.settings.positionZ,
+  );
+
+  const direction = settings.aimAtTarget
+    ? new Vector3(
+        settings.targetX,
+        settings.targetY,
+        settings.targetZ,
+      ).sub(runtime.light.position)
+    : new Vector3(
+        runtime.config.directionMinusZ[0],
+        runtime.config.directionMinusZ[1],
+        runtime.config.directionMinusZ[2],
+      ).multiplyScalar(-1);
+
+  if (direction.lengthSq() < 0.000001) {
+    direction.set(0, -1, 0);
+  }
+
+  direction.normalize();
+
+  direction.applyEuler(
+    new Euler(
+      MathUtils.degToRad(settings.rotationX),
+      MathUtils.degToRad(settings.rotationY),
+      MathUtils.degToRad(settings.rotationZ),
+      "XYZ",
+    ),
+  );
+
+  direction.applyEuler(
+    new Euler(
+      MathUtils.degToRad(runtime.settings.rotationX),
+      MathUtils.degToRad(runtime.settings.rotationY),
+      MathUtils.degToRad(runtime.settings.rotationZ),
+      "XYZ",
+    ),
+  );
+
+  direction.normalize();
+
+  runtime.light.target.position
+    .copy(runtime.light.position)
+    .addScaledVector(
+      direction,
+      settings.targetDistance,
+    );
+
+  runtime.light.angle = MathUtils.degToRad(
+    MathUtils.clamp(
+      settings.coneAngleDegrees +
+        runtime.settings.angleOffset,
+      1,
+      89,
+    ),
+  );
+
+  runtime.light.penumbra = MathUtils.clamp(
+    settings.penumbra +
+      runtime.settings.penumbraOffset,
+    0,
+    1,
+  );
+
+  runtime.light.distance = settings.distance;
+  runtime.light.decay = settings.decay;
+  runtime.light.castShadow = settings.castShadows;
+  runtime.light.shadow.bias = settings.shadowBias;
+  runtime.light.shadow.normalBias =
+    settings.shadowNormalBias;
+
+  runtime.light.target.updateMatrixWorld(true);
+  runtime.light.updateMatrixWorld(true);
+  runtime.helper.update();
+}
+
 export function createYokeLightRig(): YokeLightRig {
   const root = new Group();
-  root.name = "YOKE_AREA_LIGHTS_WEB";
+  root.name = "YOKE_DIRECTIONAL_LIGHT_RIG";
 
   const lightGroup = new Group();
-  lightGroup.name = "YOKE_AREA_LIGHTS";
+  lightGroup.name = "YOKE_SPOT_LIGHTS";
 
-  root.add(lightGroup);
+  const targetGroup = new Group();
+  targetGroup.name = "YOKE_SPOT_TARGETS";
+
+  const helperGroup = new Group();
+  helperGroup.name = "YOKE_SPOT_HELPERS";
+
+  root.add(lightGroup, targetGroup, helperGroup);
 
   const settings: YokeLightSettings = {
     enabled: true,
+
     energyWatts: 10,
-    webCalibration: DEFAULT_WEB_CALIBRATION,
+    webCalibration: 3,
     brightness: 1,
     color: "#ffffff",
-    width: DEFAULT_EFFECTIVE_WIDTH,
-    height: DEFAULT_EFFECTIVE_HEIGHT,
+
+    aimAtTarget: true,
+    targetX: 0,
+    targetY: 0.3,
+    targetZ: 0,
+    targetDistance: 10,
+
+    rotationX: 0,
+    rotationY: 0,
+    rotationZ: 0,
+
+    distance: 8,
+    coneAngleDegrees: 30,
+    penumbra: 0.12,
+    decay: 2,
+
+    castShadows: false,
+    shadowBias: -0.0002,
+    shadowNormalBias: 0.02,
+
     showHelpers: false,
+
+    panelGlow: 3,
+    indicatorGlow: 0.12,
+    indicatorColor: "#ff5a14",
+
     switching: false,
     switchingSpeedHz: 2,
     dutyCycle: 0.5,
@@ -225,71 +574,241 @@ export function createYokeLightRig(): YokeLightRig {
       createRuntimeLight(config, index, settings),
   );
 
+  const diffuserBindings: EmissiveBinding[] = [];
+  const indicatorBindings: IndicatorBinding[] = [];
+  const registeredRoots = new WeakSet<Object3D>();
+  const reservedRuntimeIndexes = new Set<number>();
+
   for (const runtime of runtimeLights) {
-    runtime.light.add(runtime.helper);
     lightGroup.add(runtime.light);
+    targetGroup.add(runtime.light.target);
+    helperGroup.add(runtime.helper);
   }
 
   function syncStaticSettings(): void {
     const color = new Color(settings.color);
+    const indicatorColor = new Color(
+      settings.indicatorColor,
+    );
 
     root.visible = settings.enabled;
+    helperGroup.visible = settings.showHelpers;
 
-    for (const runtime of runtimeLights) {
+    runtimeLights.forEach((runtime) => {
       runtime.light.color.copy(color);
-      runtime.light.width = settings.width;
-      runtime.light.height = settings.height;
       runtime.helper.visible = settings.showHelpers;
-      runtime.helper.updateMatrixWorld(true);
+
+      updateBeamTransform(runtime, settings);
+    });
+
+    indicatorBindings.forEach((binding) => {
+      binding.material.emissive.copy(indicatorColor);
+      binding.material.emissiveIntensity =
+        settings.indicatorGlow;
+    });
+  }
+
+  function registerLedLightRoot(
+    ledRoot: Object3D,
+  ): void {
+    if (registeredRoots.has(ledRoot)) {
+      return;
     }
+
+    registeredRoots.add(ledRoot);
+    ledRoot.updateWorldMatrix(true, true);
+
+    const worldPosition = ledRoot.getWorldPosition(
+      new Vector3(),
+    );
+
+    const runtimeIndex = nearestRuntimeIndex(
+      worldPosition,
+      runtimeLights,
+      reservedRuntimeIndexes,
+    );
+
+    reservedRuntimeIndexes.add(runtimeIndex);
+
+    const result = cloneAndRegisterMaterials(
+      ledRoot,
+      runtimeIndex,
+      diffuserBindings,
+      indicatorBindings,
+    );
+
+    console.info(
+      `[PowerBox] LED "${ledRoot.name}" → Yoke ${runtimeIndex + 1}; ` +
+      `diffuser=${result.diffuserCount}, ` +
+      `indicator=${result.indicatorCount}`,
+    );
+
+    if (
+      result.diffuserCount === 0 ||
+      result.indicatorCount === 0
+    ) {
+      console.info(
+        `[PowerBox] Materials inside "${ledRoot.name}":`,
+        materialNamesInRoot(ledRoot),
+      );
+    }
+
+    syncStaticSettings();
   }
 
   function addGUI(gui: GUI): void {
-    const folder = gui.addFolder("Yoke Area Lights");
+    const folder = gui.addFolder("Yoke Beams + LED");
 
     folder
       .add(settings, "enabled")
       .name("Enabled")
       .onChange(syncStaticSettings);
 
-    folder
-      .add(settings, "energyWatts", 0, 100, 0.1)
-      .name("Blender energy W");
+    const lightFolder = folder.addFolder(
+      "Light output",
+    );
 
-    folder
+    lightFolder
+      .add(settings, "energyWatts", 0, 100, 0.1)
+      .name("Source energy W");
+
+    lightFolder
       .add(
         settings,
         "webCalibration",
         0,
-        0.2,
-        0.001,
+        20,
+        0.01,
       )
       .name("Web calibration");
 
-    folder
+    lightFolder
       .add(settings, "brightness", 0, 20, 0.01)
       .name("Master brightness");
 
-    folder
+    lightFolder
       .addColor(settings, "color")
-      .name("Color")
+      .name("Light color")
       .onChange(syncStaticSettings);
 
-    const shapeFolder = folder.addFolder("Area shape");
+    const aimingFolder = folder.addFolder(
+      "Aim and rotation",
+    );
 
-    shapeFolder
-      .add(settings, "width", 0.02, 2, 0.01)
-      .name("Width m")
+    aimingFolder
+      .add(settings, "aimAtTarget")
+      .name("Aim at target")
       .onChange(syncStaticSettings);
 
-    shapeFolder
-      .add(settings, "height", 0.02, 2, 0.01)
-      .name("Height m")
+    aimingFolder
+      .add(settings, "targetX", -5, 5, 0.01)
+      .name("Target X")
       .onChange(syncStaticSettings);
 
-    shapeFolder
+    aimingFolder
+      .add(settings, "targetY", -2, 5, 0.01)
+      .name("Target Y")
+      .onChange(syncStaticSettings);
+
+    aimingFolder
+      .add(settings, "targetZ", -5, 5, 0.01)
+      .name("Target Z")
+      .onChange(syncStaticSettings);
+
+    aimingFolder
+      .add(settings, "rotationX", -180, 180, 0.1)
+      .name("Global rotate X")
+      .onChange(syncStaticSettings);
+
+    aimingFolder
+      .add(settings, "rotationY", -180, 180, 0.1)
+      .name("Global rotate Y")
+      .onChange(syncStaticSettings);
+
+    aimingFolder
+      .add(settings, "rotationZ", -180, 180, 0.1)
+      .name("Global rotate Z")
+      .onChange(syncStaticSettings);
+
+    const beamFolder = folder.addFolder(
+      "Beam shape",
+    );
+
+    beamFolder
+      .add(settings, "coneAngleDegrees", 1, 89, 0.1)
+      .name("Cone angle")
+      .onChange(syncStaticSettings);
+
+    beamFolder
+      .add(settings, "penumbra", 0, 1, 0.01)
+      .name("Edge softness")
+      .onChange(syncStaticSettings);
+
+    beamFolder
+      .add(settings, "distance", 0.5, 30, 0.1)
+      .name("Distance")
+      .onChange(syncStaticSettings);
+
+    beamFolder
+      .add(settings, "decay", 0, 2, 0.01)
+      .name("Decay")
+      .onChange(syncStaticSettings);
+
+    beamFolder
       .add(settings, "showHelpers")
-      .name("Show helpers")
+      .name("Show cones")
+      .onChange(syncStaticSettings);
+
+    const shadowFolder = folder.addFolder("Shadows");
+
+    shadowFolder
+      .add(settings, "castShadows")
+      .name("Cast shadows")
+      .onChange(syncStaticSettings);
+
+    shadowFolder
+      .add(
+        settings,
+        "shadowBias",
+        -0.01,
+        0.01,
+        0.0001,
+      )
+      .name("Shadow bias")
+      .onChange(syncStaticSettings);
+
+    shadowFolder
+      .add(
+        settings,
+        "shadowNormalBias",
+        0,
+        0.2,
+        0.001,
+      )
+      .name("Normal bias")
+      .onChange(syncStaticSettings);
+
+    const materialFolder = folder.addFolder(
+      "Lamp materials",
+    );
+
+    materialFolder
+      .add(settings, "panelGlow", 0, 20, 0.01)
+      .name("Diffuser strobe");
+
+    materialFolder
+      .add(
+        settings,
+        "indicatorGlow",
+        0,
+        2,
+        0.01,
+      )
+      .name("Orange indicator");
+
+    materialFolder
+      .addColor(settings, "indicatorColor")
+      .name("Indicator color")
       .onChange(syncStaticSettings);
 
     const switchingFolder = folder.addFolder(
@@ -341,11 +860,89 @@ export function createYokeLightRig(): YokeLightRig {
 
       itemFolder
         .add(runtime.settings, "gain", 0, 3, 0.01)
-        .name("Gain");
+        .name("Intensity");
+
+      const positionFolder = itemFolder.addFolder(
+        "Position offset",
+      );
+
+      positionFolder
+        .add(runtime.settings, "positionX", -3, 3, 0.01)
+        .name("X")
+        .onChange(syncStaticSettings);
+
+      positionFolder
+        .add(runtime.settings, "positionY", -3, 3, 0.01)
+        .name("Y")
+        .onChange(syncStaticSettings);
+
+      positionFolder
+        .add(runtime.settings, "positionZ", -3, 3, 0.01)
+        .name("Z")
+        .onChange(syncStaticSettings);
+
+      const rotationFolder = itemFolder.addFolder(
+        "Rotation offset",
+      );
+
+      rotationFolder
+        .add(
+          runtime.settings,
+          "rotationX",
+          -180,
+          180,
+          0.1,
+        )
+        .name("Rotate X")
+        .onChange(syncStaticSettings);
+
+      rotationFolder
+        .add(
+          runtime.settings,
+          "rotationY",
+          -180,
+          180,
+          0.1,
+        )
+        .name("Rotate Y")
+        .onChange(syncStaticSettings);
+
+      rotationFolder
+        .add(
+          runtime.settings,
+          "rotationZ",
+          -180,
+          180,
+          0.1,
+        )
+        .name("Rotate Z")
+        .onChange(syncStaticSettings);
+
+      itemFolder
+        .add(
+          runtime.settings,
+          "angleOffset",
+          -40,
+          40,
+          0.1,
+        )
+        .name("Cone offset")
+        .onChange(syncStaticSettings);
+
+      itemFolder
+        .add(
+          runtime.settings,
+          "penumbraOffset",
+          -1,
+          1,
+          0.01,
+        )
+        .name("Softness offset")
+        .onChange(syncStaticSettings);
 
       itemFolder
         .add(runtime.settings, "phase", 0, 1, 0.01)
-        .name("Phase");
+        .name("Strobe phase");
     });
 
     syncStaticSettings();
@@ -356,33 +953,63 @@ export function createYokeLightRig(): YokeLightRig {
       return;
     }
 
-    const baseIntensity =
-      settings.energyWatts *
-      settings.webCalibration *
-      settings.brightness;
+    const lightColor = new Color(settings.color);
+    const indicatorColor = new Color(
+      settings.indicatorColor,
+    );
+
+    const modulationByIndex: number[] = [];
 
     runtimeLights.forEach((runtime, index) => {
       const enabled = runtime.settings.enabled;
 
+      const modulation = enabled
+        ? hardSwitchSignal(
+            timeSeconds,
+            index,
+            runtime,
+            settings,
+          )
+        : 0;
+
+      modulationByIndex[index] = modulation;
+
       runtime.light.visible = enabled;
-
-      if (!enabled) {
-        runtime.light.intensity = 0;
-        return;
-      }
-
-      const modulation = hardSwitchSignal(
-        timeSeconds,
-        index,
-        runtime,
-        settings,
-      );
+      runtime.light.color.copy(lightColor);
 
       runtime.light.intensity =
-        baseIntensity *
+        settings.energyWatts *
+        settings.webCalibration *
+        settings.brightness *
         runtime.settings.gain *
         modulation;
     });
+
+    diffuserBindings.forEach((binding) => {
+      const runtime =
+        runtimeLights[binding.runtimeIndex];
+
+      const modulation =
+        modulationByIndex[binding.runtimeIndex] ?? 0;
+
+      binding.material.emissive.copy(lightColor);
+      binding.material.emissiveIntensity =
+        settings.panelGlow *
+        runtime.settings.gain *
+        modulation;
+    });
+
+    indicatorBindings.forEach((binding) => {
+      binding.material.emissive.copy(indicatorColor);
+      binding.material.emissiveIntensity =
+        settings.indicatorGlow;
+    });
+
+    if (settings.showHelpers) {
+      runtimeLights.forEach((runtime) => {
+        runtime.helper.update();
+      });
+    }
   }
 
   syncStaticSettings();
@@ -391,5 +1018,6 @@ export function createYokeLightRig(): YokeLightRig {
     root,
     addGUI,
     update,
+    registerLedLightRoot,
   };
 }

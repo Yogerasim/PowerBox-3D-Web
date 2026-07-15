@@ -30,6 +30,13 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { createYokeLightRig } from "./yokeLights";
+import { loadSceneLabPreset } from "./sceneLabPreset";
+import { Vector2 } from "three";
+import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { clone as cloneObject } from "three/addons/utils/SkeletonUtils.js";
 
 import type {
@@ -191,6 +198,52 @@ controls.dampingFactor = 0.08;
 controls.target.set(0, 0.8, 0);
 controls.update();
 
+const composer = new EffectComposer(renderer);
+const renderPass = new RenderPass(scene, camera);
+const bloomPass = new UnrealBloomPass(
+  new Vector2(window.innerWidth, window.innerHeight),
+  0.65,
+  0.35,
+  1.1,
+);
+const bokehPass = new BokehPass(scene, camera, {
+  focus: camera.position.distanceTo(controls.target),
+  aperture: 0.003,
+  maxblur: 0.012,
+});
+bokehPass.materialBokeh.defines.PERSPECTIVE_CAMERA = 0;
+bokehPass.materialBokeh.needsUpdate = true;
+bokehPass.setSize(window.innerWidth, window.innerHeight);
+
+const bokehUniforms = bokehPass.uniforms as {
+  focus: { value: number };
+  aperture: { value: number };
+  maxblur: { value: number };
+};
+
+const outputPass = new OutputPass();
+
+composer.addPass(renderPass);
+composer.addPass(bloomPass);
+composer.addPass(bokehPass);
+composer.addPass(outputPass);
+composer.setSize(window.innerWidth, window.innerHeight);
+
+const postSettings = {
+  bloom: true,
+  bloomStrength: 0.65,
+  bloomRadius: 0.35,
+  bloomThreshold: 1.1,
+  depthOfField: false,
+  autoFocus: true,
+  focusDistance: camera.position.distanceTo(controls.target),
+  aperture: 0.003,
+  maxBlur: 0.012,
+};
+
+bloomPass.enabled = postSettings.bloom;
+bokehPass.enabled = postSettings.depthOfField;
+
 const modelRoot = new Group();
 modelRoot.name = "POWERBOX_GROUPS";
 
@@ -209,7 +262,7 @@ const environmentRenderTarget =
   pmremGenerator.fromScene(roomEnvironment, 0.04);
 
 scene.environment = environmentRenderTarget.texture;
-scene.environmentIntensity = 0.15;
+scene.environmentIntensity = 0.03;
 
 roomEnvironment.dispose();
 pmremGenerator.dispose();
@@ -251,10 +304,10 @@ let targetGroupCount = 0;
 
 const settings = {
   exposure: 1,
-  environment: 0.15,
+  environment: 0.03,
   lightMultiplier: 1,
   shadows: false,
-  showBlenderLights: true,
+  showBlenderLights: false,
 };
 
 function setProgress(
@@ -418,6 +471,10 @@ async function loadInstancesIntoGroup(
 
     applyMatrix(clone, instance.matrix);
     clone.traverse(configureMesh);
+
+    if (entry.name === "Led_Lights") {
+      yokeLightRig.registerLedLightRoot(clone);
+    }
 
     groupRoot.add(clone);
   }
@@ -791,6 +848,65 @@ function addViewerGUI(): void {
 
   yokeLightRig.addGUI(gui);
 
+  queueMicrotask(() => {
+    void loadSceneLabPreset(gui);
+  });
+
+  const postFolder = gui.addFolder("Post FX");
+
+  postFolder
+    .add(postSettings, "bloom")
+    .name("Bloom")
+    .onChange((value: boolean) => {
+      bloomPass.enabled = value;
+    });
+
+  postFolder
+    .add(postSettings, "bloomStrength", 0, 3, 0.01)
+    .name("Bloom strength")
+    .onChange((value: number) => {
+      bloomPass.strength = value;
+    });
+
+  postFolder
+    .add(postSettings, "bloomRadius", 0, 1, 0.01)
+    .name("Bloom radius")
+    .onChange((value: number) => {
+      bloomPass.radius = value;
+    });
+
+  postFolder
+    .add(postSettings, "bloomThreshold", 0, 3, 0.01)
+    .name("Bloom threshold")
+    .onChange((value: number) => {
+      bloomPass.threshold = value;
+    });
+
+  const dofFolder = postFolder.addFolder("Depth of field");
+
+  dofFolder
+    .add(postSettings, "depthOfField")
+    .name("Enabled")
+    .onChange((value: boolean) => {
+      bokehPass.enabled = value;
+    });
+
+  dofFolder
+    .add(postSettings, "autoFocus")
+    .name("Focus on target");
+
+  dofFolder
+    .add(postSettings, "focusDistance", 0.1, 30, 0.01)
+    .name("Focus distance");
+
+  dofFolder
+    .add(postSettings, "aperture", 0, 0.02, 0.0001)
+    .name("Aperture");
+
+  dofFolder
+    .add(postSettings, "maxBlur", 0, 0.05, 0.0005)
+    .name("Max blur");
+
   const cameraActions = {
     useBlenderCamera: () => {
       const blenderCamera = selectedBlenderCamera();
@@ -960,13 +1076,27 @@ function resize(): void {
     window.innerHeight,
   );
 
+  composer.setSize(window.innerWidth, window.innerHeight);
+  bokehPass.setSize(window.innerWidth, window.innerHeight);
   updateOrthographicProjection();
 }
 
 function render(): void {
   controls.update();
+  if (postSettings.depthOfField) {
+    const focusDistance = postSettings.autoFocus
+      ? camera.position.distanceTo(controls.target)
+      : postSettings.focusDistance;
+
+    bokehUniforms.focus.value = focusDistance;
+    bokehUniforms.aperture.value =
+      postSettings.aperture;
+    bokehUniforms.maxblur.value =
+      postSettings.maxBlur;
+  }
+
   yokeLightRig.update(performance.now() * 0.001);
-  renderer.render(scene, camera);
+  composer.render();
   requestAnimationFrame(render);
 }
 
