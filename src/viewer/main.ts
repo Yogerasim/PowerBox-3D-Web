@@ -30,6 +30,7 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { createYokeLightRig } from "./yokeLights";
+import { createPresentationCameraSystem } from "./presentationCameras";
 import { loadSceneLabPreset } from "./sceneLabPreset";
 import { Vector2 } from "three";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
@@ -153,6 +154,7 @@ renderer.setSize(
 );
 
 stage.appendChild(renderer.domElement);
+renderer.domElement.classList.add("is-loading");
 
 const scene = new Scene();
 scene.background = new Color(0x050505);
@@ -273,6 +275,18 @@ const gui = new GUI({
   title: "PowerBox Scene Lab",
   width: 330,
 });
+const presentationCameraSystem =
+  createPresentationCameraSystem({
+    camera,
+    controls,
+    canvas: renderer.domElement,
+    postSettings,
+    getOrthographicHeight: () => orthographicHeight,
+    setOrthographicHeight: (value) => {
+      orthographicHeight = value;
+    },
+    updateProjection: updateOrthographicProjection,
+  });
 
 interface LoadedGroup {
   entry: CollectionEntry;
@@ -1056,10 +1070,12 @@ async function initialize(): Promise<void> {
 
   updateStats();
   rebuildLights();
+  await presentationCameraSystem.load();
   addViewerGUI();
+  presentationCameraSystem.addGUI(gui);
   await loadSceneLabPreset(gui);
   await loadDefaultGroups();
-}
+  presentationCameraSystem.markSceneReady();}
 
 function resize(): void {
   renderer.setPixelRatio(
@@ -1074,10 +1090,12 @@ function resize(): void {
   composer.setSize(window.innerWidth, window.innerHeight);
   bokehPass.setSize(window.innerWidth, window.innerHeight);
   updateOrthographicProjection();
+  presentationCameraSystem.refreshScroll();
 }
 
 function render(): void {
   controls.update();
+  presentationCameraSystem.update();
   if (postSettings.depthOfField) {
     const focusDistance = postSettings.autoFocus
       ? camera.position.distanceTo(controls.target)

@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "shots": [
+    {
+      "id": "hero",
+      "label": "Цифровой сигнал. Физический свет.",
+      "position": [
+        -9.851993,
+        18.851783,
+        -11.883361
+      ],
+      "target": [
+        -0.522776,
+        0.230966,
+        0.454048
+      ],
+      "zoom": 1.682219,
+      "orthographicHeight": 8,
+      "dof": {
+        "enabled": true,
+        "autoFocus": true,
+        "focusDistance": 7.95,
+        "aperture": 0.0119,
+        "maxBlur": 0.0005
+      }
+    },
+    {
+      "id": "problem",
+      "label": "Световая система не должна превращаться в хаос.",
+      "position": [
+        5.851221,
+        2.16077,
+        4.149969
+      ],
+      "target": [
+        0.246426,
+        0.080332,
+        0.019528
+      ],
+      "zoom": 22.218468,
+      "orthographicHeight": 8,
+      "dof": {
+        "enabled": true,
+        "autoFocus": false,
+        "focusDistance": 7.45,
+        "aperture": 0.02,
+        "maxBlur": 0.016
+      }
+    },
+    {
+      "id": "channels",
+      "label": "Каждый источник света под отдельным контролем.",
+      "position": [
+        0.087178,
+        7.005467,
+        -0.631628
+      ],
+      "target": [
+        -0.09264,
+        0.201963,
+        -0.632845
+      ],
+      "zoom": 1.273661,
+      "orthographicHeight": 8,
+      "dof": {
+        "enabled": false,
+        "autoFocus": true,
+        "focusDistance": 30,
+        "aperture": 0.02,
+        "maxBlur": 0.016
+      }
+    },
+    {
+      "id": "control",
+      "label": "TouchDesigner, UDP, Web UI и MIDI.",
+      "position": [
+        -3.886194,
+        1.311785,
+        -6.39403
+      ],
+      "target": [
+        -0.054796,
+        0.122752,
+        -0.313809
+      ],
+      "zoom": 10.761414,
+      "orthographicHeight": 8,
+      "dof": {
+        "enabled": true,
+        "autoFocus": true,
+        "focusDistance": 23.94,
+        "aperture": 0.02,
+        "maxBlur": 0.016
+      }
+    },
+    {
+      "id": "reliability",
+      "label": "Продуманная структура внутри.",
+      "position": [
+        3.374081,
+        2.426023,
+        -1.259976
+      ],
+      "target": [
+        0.027502,
+        0.614684,
+        0.033066
+      ],
+      "zoom": 2.463973,
+      "orthographicHeight": 8,
+      "dof": {
+        "enabled": true,
+        "autoFocus": true,
+        "focusDistance": 23.94,
+        "aperture": 0.02,
+        "maxBlur": 0.016
+      }
+    },
+    {
+      "id": "installation",
+      "label": "Свет становится участником пространства.",
+      "position": [
+        -5.002364,
+        3.098685,
+        -9.578519
+      ],
+      "target": [
+        -0.527451,
+        0.339968,
+        -0.410387
+      ],
+      "zoom": 3.253723,
+      "orthographicHeight": 8,
+      "dof": {
+        "enabled": true,
+        "autoFocus": true,
+        "focusDistance": 23.94,
+        "aperture": 0.02,
+        "maxBlur": 0.016
+      }
+    },
+    {
+      "id": "contact",
+      "label": "Соберите свою световую систему.",
+      "position": [
+        -4.893034,
+        7.278887,
+        -0.148014
+      ],
+      "target": [
+        0.044224,
+        -0.043766,
+        -0.195287
+      ],
+      "zoom": 13.857165,
+      "orthographicHeight": 8,
+      "dof": {
+        "enabled": true,
+        "autoFocus": true,
+        "focusDistance": 23.94,
+        "aperture": 0.02,
+        "maxBlur": 0.016
+      }
+    }
+  ]
+}
