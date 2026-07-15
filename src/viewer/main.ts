@@ -847,12 +847,7 @@ function addViewerGUI(): void {
     });
 
   yokeLightRig.addGUI(gui);
-
-  queueMicrotask(() => {
-    void loadSceneLabPreset(gui);
-  });
-
-  const postFolder = gui.addFolder("Post FX");
+const postFolder = gui.addFolder("Post FX");
 
   postFolder
     .add(postSettings, "bloom")
@@ -1062,7 +1057,7 @@ async function initialize(): Promise<void> {
   updateStats();
   rebuildLights();
   addViewerGUI();
-
+  await loadSceneLabPreset(gui);
   await loadDefaultGroups();
 }
 

@@ -1,721 +1,344 @@
 {
-  "version": 1,
-  "createdAt": "2026-07-15T13:59:06.654Z",
-  "controllers": [
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.21"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": false
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "22.9"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1.24"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.57"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "#ffffff"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "#ffffff"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.3"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "-1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1.20000000000002"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "38.8"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.2"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "11.2"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "2"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": false
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.01"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.099"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "3"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.12"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "#ff5a14"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "#ff5a14"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.09"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.5"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.125"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.25"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.375"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.5"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.625"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.75"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "-0.14"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.875"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.4"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "1.05"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": false
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "23.94"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.0052"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": "0.0075"
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
-    },
-    {
-      "path": [],
-      "name": "unnamed",
-      "value": true
+  "controllers": {},
+  "folders": {
+    "Scene": {
+      "controllers": {
+        "Exposure": 0.21,
+        "Environment": 0,
+        "Light multiplier": 1,
+        "Blender lights": false,
+        "Preview shadows": true
+      },
+      "folders": {}
+    },
+    "Yoke Beams + LED": {
+      "controllers": {
+        "Enabled": true
+      },
+      "folders": {
+        "Light output": {
+          "controllers": {
+            "Source energy W": 22.9,
+            "Web calibration": 1.24,
+            "Master brightness": 0.57,
+            "Light color": "#ffffff"
+          },
+          "folders": {}
+        },
+        "Aim and rotation": {
+          "controllers": {
+            "Aim at target": true,
+            "Target X": 0,
+            "Target Y": 0.3,
+            "Target Z": 0,
+            "Global rotate X": 0,
+            "Global rotate Y": -1,
+            "Global rotate Z": 1.20000000000002
+          },
+          "folders": {}
+        },
+        "Beam shape": {
+          "controllers": {
+            "Cone angle": 39.3,
+            "Edge softness": 0.2,
+            "Distance": 11.2,
+            "Decay": 2,
+            "Show cones": false
+          },
+          "folders": {}
+        },
+        "Shadows": {
+          "controllers": {
+            "Cast shadows": true,
+            "Shadow bias": 0.01,
+            "Normal bias": 0.062
+          },
+          "folders": {}
+        },
+        "Lamp materials": {
+          "controllers": {
+            "Diffuser strobe": 3,
+            "Orange indicator": 0.12,
+            "Indicator color": "#ff5a14"
+          },
+          "folders": {}
+        },
+        "Hard switching": {
+          "controllers": {
+            "Enabled": true,
+            "Speed Hz": 0.62,
+            "On duration": 0.5,
+            "Random timing": 1,
+            "Phase spread": 0.56,
+            "Off level": 0.14
+          },
+          "folders": {}
+        },
+        "Individual lights": {
+          "controllers": {},
+          "folders": {
+            "1 · Area": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": 0,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0
+                  },
+                  "folders": {}
+                }
+              }
+            },
+            "2 · Area.001": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": 0,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0.125
+                  },
+                  "folders": {}
+                }
+              }
+            },
+            "3 · Area.002": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": 0,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0.25
+                  },
+                  "folders": {}
+                }
+              }
+            },
+            "4 · Area.003": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": 0,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0.375
+                  },
+                  "folders": {}
+                }
+              }
+            },
+            "5 · Area.004": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": 0,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0.5
+                  },
+                  "folders": {}
+                }
+              }
+            },
+            "6 · Area.005": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": 0,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0.625
+                  },
+                  "folders": {}
+                }
+              }
+            },
+            "7 · Area.006": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": 0,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0.75
+                  },
+                  "folders": {}
+                }
+              }
+            },
+            "8 · Area.007": {
+              "controllers": {
+                "Enabled": true,
+                "Intensity": 1,
+                "Cone offset": -0.14,
+                "Softness offset": 0,
+                "Strobe phase": 0
+              },
+              "folders": {
+                "Position offset": {
+                  "controllers": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "folders": {}
+                },
+                "Rotation offset": {
+                  "controllers": {
+                    "Rotate X": 0,
+                    "Rotate Y": 0,
+                    "Rotate Z": 0.875
+                  },
+                  "folders": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Post FX": {
+      "controllers": {
+        "Bloom": true,
+        "Bloom strength": 0.01,
+        "Bloom radius": 0.92,
+        "Bloom threshold": 1.05
+      },
+      "folders": {
+        "Depth of field": {
+          "controllers": {
+            "Enabled": true,
+            "Focus on target": true,
+            "Focus distance": 23.94,
+            "Aperture": 0.02,
+            "Max blur": 0.016
+          },
+          "folders": {}
+        }
+      }
+    },
+    "Camera": {
+      "controllers": {},
+      "folders": {}
+    },
+    "Collections": {
+      "controllers": {
+        "Chip (4.5 MB)": true,
+        "Details_Box (1.4 MB)": true,
+        "Led_Lights (8 instances)": true,
+        "New_korpus (1.7 MB)": true,
+        "Plugs (63 KB)": true,
+        "scene (4.8 MB)": true,
+        "Socets (3 instances)": true,
+        "Wagos (228 KB)": true,
+        "Wire (400 KB)": true,
+        "Wire 2 (330 KB)": true
+      },
+      "folders": {}
+    },
+    "Actions": {
+      "controllers": {},
+      "folders": {}
     }
-  ]
+  }
 }
