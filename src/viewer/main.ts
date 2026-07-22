@@ -284,7 +284,7 @@ const loader = new GLTFLoader();
 
 const gui = new GUI({
   title: "PowerBox Scene Lab",
-  width: 330,
+  width: Math.min(390, window.innerWidth - 16),
 });
 interface LoadedGroup {
   entry: CollectionEntry;

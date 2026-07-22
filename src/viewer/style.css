@@ -83,7 +83,14 @@ body { overflow: hidden; }
 }
 .viewer-progress.is-hidden { visibility: hidden; opacity: 0; }
 
-.lil-gui.root {
+.lil-gui.lil-root {
+  --width: 360px;
+  --font-size: 12px;
+  --input-font-size: 12px;
+  --widget-height: 28px;
+  --padding: 5px;
+  --spacing: 5px;
+  --name-width: 48%;
   --background-color: rgba(12,12,12,.86);
   --widget-color: rgba(255,255,255,.08);
   --hover-color: rgba(255,255,255,.13);
@@ -96,7 +103,14 @@ body { overflow: hidden; }
 @media (max-width: 760px) {
   .viewer-header { width: calc(100vw - 20px); padding: 18px; }
   .viewer-stats, .viewer-help { display: none; }
-  .lil-gui.root { max-height: 55vh; overflow-y: auto; }
+  .lil-gui.lil-root {
+    --width: min(390px, calc(100vw - 16px));
+    --font-size: 13px;
+    --input-font-size: 13px;
+    --widget-height: 32px;
+    max-height: 68vh;
+    overflow-y: auto;
+  }
 }
 
 /* Presentation Cameras V20 */
