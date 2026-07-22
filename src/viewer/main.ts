@@ -148,7 +148,12 @@ renderer.shadowMap.enabled = false;
 renderer.shadowMap.type = PCFShadowMap;
 
 renderer.setPixelRatio(
-  Math.min(window.devicePixelRatio, 2),
+  Math.min(
+    window.devicePixelRatio,
+    matchMedia("(max-width: 760px), (pointer: coarse)").matches
+      ? 1.35
+      : 2,
+  ),
 );
 
 renderer.setSize(
@@ -314,6 +319,50 @@ const settings = {
   showBlenderLights: false,
 };
 
+const energyState = {
+  autoPauseMinutes: 5,
+  paused: false,
+  status: "Running · auto-pause in 5 min",
+};
+
+let renderRequested = true;
+let energyTimer: number | null = null;
+
+function requestRender(): void {
+  renderRequested = true;
+}
+
+function scheduleEnergyPause(): void {
+  if (energyTimer !== null) {
+    window.clearTimeout(energyTimer);
+  }
+
+  const delay = Math.max(0.1, energyState.autoPauseMinutes) * 60_000;
+  energyState.status =
+    `Running · auto-pause in ${energyState.autoPauseMinutes} min`;
+  energyTimer = window.setTimeout(() => {
+    setEnergyPaused(true, "Frozen after time limit");
+  }, delay);
+}
+
+function setEnergyPaused(paused: boolean, reason = "Paused manually"): void {
+  energyState.paused = paused;
+  yokeLightRig.setAnimationPaused(paused);
+  renderer.shadowMap.autoUpdate = !paused;
+
+  if (paused) {
+    energyState.status = reason;
+    if (energyTimer !== null) window.clearTimeout(energyTimer);
+    energyTimer = null;
+  } else {
+    renderer.shadowMap.needsUpdate = true;
+    scheduleEnergyPause();
+  }
+
+  requestRender();
+  gui.controllersRecursive().forEach((controller) => controller.updateDisplay());
+}
+
 function getSceneState(): SceneState {
   return {
     exposure: settings.exposure,
@@ -344,6 +393,7 @@ function applySceneState(state: SceneState): void {
     }
   });
   yokeLightRig.applyState(state.yoke);
+  requestRender();
   gui.controllersRecursive().forEach((controller) => controller.updateDisplay());
 }
 
@@ -359,6 +409,8 @@ const presentationCameraSystem = createPresentationCameraSystem({
   getSceneState,
   applySceneState,
   setInteractiveChannel: yokeLightRig.setInteractiveChannel,
+  setPerformanceControls: yokeLightRig.setPerformanceControls,
+  requestRender,
 });
 
 function setProgress(
@@ -898,7 +950,33 @@ function addViewerGUI(): void {
     });
 
   yokeLightRig.addGUI(gui);
-const postFolder = gui.addFolder("Post FX");
+
+  const energyFolder = gui.addFolder("Performance guard");
+
+  energyFolder
+    .add(energyState, "autoPauseMinutes", 1, 20, 1)
+    .name("Freeze after min")
+    .onChange(() => {
+      if (!energyState.paused) scheduleEnergyPause();
+    });
+
+  energyFolder
+    .add(energyState, "paused")
+    .name("Animation frozen")
+    .listen()
+    .onChange((paused: boolean) => setEnergyPaused(paused));
+
+  energyFolder
+    .add({ resume: () => setEnergyPaused(false) }, "resume")
+    .name("Resume + reset timer");
+
+  energyFolder
+    .add(energyState, "status")
+    .name("Status")
+    .listen()
+    .disable();
+
+  const postFolder = gui.addFolder("Post FX");
 
   postFolder
     .add(postSettings, "bloom")
@@ -1113,11 +1191,17 @@ async function initialize(): Promise<void> {
   await loadSceneLabPreset(gui);
   await loadDefaultGroups();
   presentationCameraSystem.markSceneReady();
+  scheduleEnergyPause();
 }
 
 function resize(): void {
   renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2),
+    Math.min(
+      window.devicePixelRatio,
+      matchMedia("(max-width: 760px), (pointer: coarse)").matches
+        ? 1.35
+        : 2,
+    ),
   );
 
   renderer.setSize(
@@ -1146,12 +1230,25 @@ function render(): void {
       postSettings.maxBlur;
   }
 
-  yokeLightRig.update(performance.now() * 0.001);
-  composer.render();
+  if (!energyState.paused) {
+    yokeLightRig.update(performance.now() * 0.001);
+    composer.render();
+  } else if (renderRequested) {
+    composer.render();
+    renderRequested = false;
+  }
   requestAnimationFrame(render);
 }
 
 window.addEventListener("resize", resize);
+controls.addEventListener("change", requestRender);
+gui.onChange(requestRender);
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    setEnergyPaused(true, "Frozen while tab is hidden");
+  }
+});
 
 initialize().catch((error: unknown) => {
   console.error(

@@ -274,6 +274,10 @@ body.presentation-story-mode {
   display: block;
 }
 
+.presentation-overlay.is-editor .presentation-dots {
+  bottom: 18px;
+}
+
 .presentation-shot-label {
   position: absolute;
   left: clamp(20px, 5vw, 72px);
@@ -315,21 +319,47 @@ body.presentation-story-mode {
   transform: scale(1.45);
 }
 
-.presentation-channels {
+.presentation-interaction {
   position: absolute;
   left: 50%;
   bottom: 58px;
   display: none;
-  grid-template-columns: repeat(8, minmax(42px, 1fr));
   gap: 8px;
   width: min(680px, calc(100vw - 32px));
+  padding: 12px;
   transform: translateX(-50%);
   pointer-events: auto;
+  background: rgba(8,8,8,.72);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 14px;
+  backdrop-filter: blur(16px);
 }
 
-.presentation-channels.is-visible { display: grid; }
+.presentation-interaction.is-visible { display: grid; }
 
-.presentation-channels button {
+.presentation-patterns,
+.presentation-channels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.presentation-channels {
+  grid-template-columns: repeat(8, minmax(42px, 1fr));
+}
+
+.presentation-interaction label {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+}
+
+.presentation-interaction input { width: 100%; }
+
+.presentation-interaction button {
   min-height: 44px;
   color: rgba(255,255,255,.72);
   background: rgba(8,8,8,.72);
@@ -338,7 +368,7 @@ body.presentation-story-mode {
   backdrop-filter: blur(12px);
 }
 
-.presentation-channels button.is-active {
+.presentation-interaction button.is-active {
   color: #fff;
   background: #ff6b2c;
   border-color: #ff6b2c;
@@ -352,10 +382,10 @@ body.presentation-story-mode > .lil-gui {
 
 @media (max-width: 760px), (pointer: coarse) {
   .presentation-shot-label { bottom: 84px; }
-  .presentation-channels {
-    grid-template-columns: repeat(4, 1fr);
+  .presentation-interaction {
     bottom: 54px;
   }
+  .presentation-channels { grid-template-columns: repeat(4, 1fr); }
   .presentation-dots { bottom: 18px; }
   body.presentation-story-mode .viewer-stage canvas {
     touch-action: none !important;

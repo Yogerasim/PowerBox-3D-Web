@@ -1,6 +1,12 @@
 {
   "version": 2,
   "defaultLocale": "ru",
+  "audio": {
+    "url": null,
+    "autoplay": true,
+    "loop": true,
+    "volume": 0.3
+  },
   "shots": [
     {
       "id": "hero",

@@ -2,7 +2,10 @@ import type GUI from "lil-gui";
 import { MathUtils, OrthographicCamera, Vector3 } from "three";
 import type { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { gsap } from "gsap";
-import type { YokeLightState } from "./yokeLights";
+import type {
+  SwitchingPattern,
+  YokeLightState,
+} from "./yokeLights";
 
 export type Locale = "ru" | "en";
 
@@ -49,6 +52,12 @@ export interface PresentationShot {
 export interface PresentationShotConfig {
   version: 2;
   defaultLocale: Locale;
+  audio?: {
+    url: string | null;
+    autoplay: boolean;
+    loop: boolean;
+    volume: number;
+  };
   shots: PresentationShot[];
 }
 
@@ -62,6 +71,12 @@ interface Options {
   getSceneState: () => SceneState;
   applySceneState: (state: SceneState) => void;
   setInteractiveChannel: (index: number, enabled: boolean | null) => void;
+  setPerformanceControls: (
+    pattern: SwitchingPattern,
+    speedHz: number,
+    dutyCycle: number,
+  ) => void;
+  requestRender: () => void;
 }
 
 export interface PresentationCameraSystem {
@@ -92,6 +107,14 @@ function isConfig(value: unknown): value is PresentationShotConfig {
     candidate.shots.length === 7;
 }
 
+function migrateConfig(config: PresentationShotConfig): void {
+  config.shots.forEach((current) => {
+    if (current.scene) {
+      current.scene.yoke.settings.switchingPattern ??= "random";
+    }
+  });
+}
+
 function downloadConfig(config: PresentationShotConfig): void {
   const blob = new Blob([JSON.stringify(config, null, 2)], {
     type: "application/json",
@@ -114,6 +137,8 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   let touchStartY = 0;
   let touchStartX = 0;
   const channelStates = Array.from({ length: 8 }, () => false);
+  let manualChannels = false;
+  let audio: HTMLAudioElement | null = null;
 
   const state = {
     currentShot: "hero",
@@ -121,7 +146,13 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     showText: false,
     locale: "ru" as Locale,
     transitionDuration: 0.85,
+    performancePattern: "random" as SwitchingPattern,
+    performanceSpeed: 2,
+    performanceDuty: 0.5,
     status: "Loading shots…",
+    audioEnabled: true,
+    audioVolume: 0.3,
+    audioStatus: "No loop configured",
   };
 
   const overlay = document.createElement("div");
@@ -129,22 +160,83 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   overlay.innerHTML = `
     <div class="presentation-shot-label" aria-live="polite"></div>
     <div class="presentation-dots" aria-label="Presentation shots"></div>
-    <div class="presentation-channels" aria-label="PowerBox channels"></div>
+    <div class="presentation-interaction" aria-label="PowerBox interactive lighting">
+      <div class="presentation-patterns" aria-label="Lighting patterns"></div>
+      <label>Speed <input data-light-control="speed" type="range" min="0.05" max="12" step="0.05" value="2"></label>
+      <label>On time <input data-light-control="duty" type="range" min="0.05" max="0.95" step="0.01" value="0.5"></label>
+      <div class="presentation-channels" aria-label="PowerBox channels"></div>
+    </div>
   `;
   document.body.appendChild(overlay);
 
   const label = overlay.querySelector<HTMLElement>(".presentation-shot-label")!;
   const dots = overlay.querySelector<HTMLElement>(".presentation-dots")!;
   const channels = overlay.querySelector<HTMLElement>(".presentation-channels")!;
+  const interaction = overlay.querySelector<HTMLElement>(".presentation-interaction")!;
+  const patterns = overlay.querySelector<HTMLElement>(".presentation-patterns")!;
+  const speedControl = overlay.querySelector<HTMLInputElement>("[data-light-control='speed']")!;
+  const dutyControl = overlay.querySelector<HTMLInputElement>("[data-light-control='duty']")!;
+
+  const patternLabels: Array<[SwitchingPattern, string]> = [
+    ["chase", "Circle"],
+    ["random", "Random"],
+    ["single", "Crackle"],
+  ];
+
+  function applyPerformanceControls(): void {
+    manualChannels = false;
+    options.setPerformanceControls(
+      state.performancePattern,
+      state.performanceSpeed,
+      state.performanceDuty,
+    );
+    patterns.querySelectorAll<HTMLButtonElement>("button").forEach((button) => {
+      button.classList.toggle(
+        "is-active",
+        button.dataset.pattern === state.performancePattern,
+      );
+    });
+    channels.querySelectorAll("button").forEach((button) =>
+      button.classList.remove("is-active"));
+    options.requestRender();
+  }
+
+  patternLabels.forEach(([pattern, title]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = title;
+    button.dataset.pattern = pattern;
+    button.addEventListener("click", () => {
+      state.performancePattern = pattern;
+      applyPerformanceControls();
+    });
+    patterns.appendChild(button);
+  });
+
+  speedControl.addEventListener("input", () => {
+    state.performanceSpeed = Number(speedControl.value);
+    applyPerformanceControls();
+  });
+
+  dutyControl.addEventListener("input", () => {
+    state.performanceDuty = Number(dutyControl.value);
+    applyPerformanceControls();
+  });
 
   for (let index = 0; index < 8; index += 1) {
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = `CH${index + 1}`;
     button.addEventListener("click", () => {
+      if (!manualChannels) {
+        manualChannels = true;
+        channelStates.fill(false);
+      }
       channelStates[index] = !channelStates[index];
-      options.setInteractiveChannel(index, channelStates[index]);
+      channelStates.forEach((enabled, channelIndex) =>
+        options.setInteractiveChannel(channelIndex, enabled));
       button.classList.toggle("is-active", channelStates[index]);
+      options.requestRender();
     });
     channels.appendChild(button);
   }
@@ -175,13 +267,17 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     state.currentShot = current.id;
     label.textContent = current.label[state.locale];
     overlay.classList.toggle("is-text-hidden", !state.showText);
-    channels.classList.toggle("is-visible", state.storyMode && current.interactive);
+    interaction.classList.toggle("is-visible", current.interactive);
     dots.querySelectorAll("button").forEach((button, index) => {
       button.classList.toggle("is-active", index === activeIndex);
     });
     if (current.interactive) {
-      channelStates.forEach((enabled, index) =>
-        options.setInteractiveChannel(index, enabled));
+      if (manualChannels) {
+        channelStates.forEach((enabled, index) =>
+          options.setInteractiveChannel(index, enabled));
+      } else {
+        applyPerformanceControls();
+      }
     } else {
       channelStates.fill(false);
       channelStates.forEach((_, index) => options.setInteractiveChannel(index, null));
@@ -199,6 +295,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     if (current.scene) options.applySceneState(structuredClone(current.scene));
     options.updateProjection();
     options.controls.update();
+    options.requestRender();
     updateUI();
   }
 
@@ -213,6 +310,15 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     const destinationScene = current.scene
       ? structuredClone(current.scene)
       : options.getSceneState();
+
+    if (current.interactive) {
+      state.performancePattern = destinationScene.yoke.settings.switchingPattern;
+      state.performanceSpeed = destinationScene.yoke.settings.switchingSpeedHz;
+      state.performanceDuty = destinationScene.yoke.settings.dutyCycle;
+      speedControl.value = String(state.performanceSpeed);
+      dutyControl.value = String(state.performanceDuty);
+      manualChannels = false;
+    }
     transition?.kill();
 
     if (!animate || matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -228,6 +334,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
         options.applySceneState(destinationScene);
         options.controls.enabled = !state.storyMode && !mobile();
         updateUI();
+        options.requestRender();
       },
     });
     transition.to(options.camera.position, {
@@ -237,7 +344,10 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       onUpdate: () => options.controls.target.copy(targetProxy),
     }, 0).to(options.camera, {
       zoom: current.camera.zoom * framing(current).zoomMultiplier,
-      onUpdate: options.updateProjection,
+      onUpdate: () => {
+        options.updateProjection();
+        options.requestRender();
+      },
     }, 0);
     options.setOrthographicHeight(current.camera.orthographicHeight);
     options.applySceneState(destinationScene);
@@ -253,7 +363,8 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     state.storyMode = enabled;
     document.documentElement.classList.toggle("presentation-story-mode", enabled);
     document.body.classList.toggle("presentation-story-mode", enabled);
-    overlay.classList.toggle("is-visible", enabled);
+    overlay.classList.add("is-visible");
+    overlay.classList.toggle("is-editor", !enabled);
     options.controls.enabled = !enabled && !mobile();
     options.controls.enableZoom = !mobile() && !enabled;
     options.canvas.style.touchAction = enabled || mobile() ? "none" : "auto";
@@ -274,6 +385,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     current.scene = structuredClone(options.getSceneState());
     saveDraft();
     state.status = `Full shot saved: ${current.id}`;
+    options.requestRender();
     console.info("[PowerBox] Full shot state captured", current);
   }
 
@@ -296,6 +408,33 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     updateUI();
   }
 
+  function configureAudio(audioConfig: PresentationShotConfig["audio"]): void {
+    if (!audioConfig?.url) {
+      state.audioStatus = "Add a 5–10 sec loop in config";
+      return;
+    }
+
+    audio = new Audio(`${import.meta.env.BASE_URL}${audioConfig.url}`);
+    audio.loop = audioConfig.loop;
+    audio.volume = audioConfig.volume;
+    audio.preload = "auto";
+    state.audioVolume = audioConfig.volume;
+
+    const start = async (): Promise<void> => {
+      if (!audio || !state.audioEnabled) return;
+
+      try {
+        await audio.play();
+        state.audioStatus = "Loop playing";
+      } catch {
+        state.audioStatus = "Tap once to start audio";
+      }
+    };
+
+    if (audioConfig.autoplay) void start();
+    window.addEventListener("pointerdown", () => void start(), { once: true });
+  }
+
   async function load(): Promise<void> {
     const response = await fetch(CONFIG_URL, { cache: "no-store" });
     if (!response.ok) throw new Error(`Shot config request failed: ${response.status}`);
@@ -304,20 +443,22 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     committedConfig = structuredClone(value);
     config = structuredClone(value);
     state.locale = value.defaultLocale;
+    configureAudio(value.audio);
     const draft = isLocalEditor() ? localStorage.getItem(STORAGE_KEY) : null;
     if (draft) {
       const parsed = JSON.parse(draft) as unknown;
       if (isConfig(parsed)) config = parsed;
     }
+    migrateConfig(config);
     rebuildDots();
     state.status = "Seven independent shot states loaded";
   }
 
   function addGUI(gui: GUI): void {
-    const folder = gui.addFolder("Presentation Shots V2");
+    const folder = gui.addFolder("Shot editor · 7 views");
     const shotMap = Object.fromEntries((config?.shots ?? []).map((item, index) =>
       [`${index + 1} · ${item.label[state.locale]}`, item.id]));
-    folder.add(state, "currentShot", shotMap).name("Current shot").onChange((id: string) => {
+    folder.add(state, "currentShot", shotMap).name("Current shot").listen().onChange((id: string) => {
       const index = config?.shots.findIndex((item) => item.id === id) ?? 0;
       goTo(index);
     });
@@ -330,8 +471,8 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     folder.add(state, "transitionDuration", 0.2, 2, 0.05).name("Transition seconds");
     folder.add({ save: captureCurrent }, "save").name("Save full shot state");
     folder.add({ preview: () => goTo(activeIndex, false) }, "preview").name("Apply current shot");
-    folder.add({ previous: () => navigate(-1) }, "previous").name("Previous shot");
-    folder.add({ next: () => navigate(1) }, "next").name("Next shot");
+    folder.add({ previous: () => goTo(activeIndex - 1) }, "previous").name("Previous shot");
+    folder.add({ next: () => goTo(activeIndex + 1) }, "next").name("Next shot");
     folder.add({ download: () => config && downloadConfig(config) }, "download").name("Download shots JSON");
     folder.add({ reset: () => {
       if (!committedConfig) return;
@@ -345,6 +486,27 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       goTo(0, false);
     } }, "reset").name("Reset local draft");
     folder.add(state, "status").name("Status").listen().disable();
+
+    const audioFolder = folder.addFolder("Audio loop · prepared");
+    audioFolder
+      .add(state, "audioEnabled")
+      .name("Enabled")
+      .onChange((enabled: boolean) => {
+        if (!audio) return;
+        if (enabled) {
+          void audio.play();
+        } else {
+          audio.pause();
+        }
+      });
+    audioFolder
+      .add(state, "audioVolume", 0, 1, 0.01)
+      .name("Volume")
+      .onChange((volume: number) => {
+        if (audio) audio.volume = volume;
+      });
+    audioFolder.add(state, "audioStatus").name("Status").listen().disable();
+    audioFolder.close();
   }
 
   window.addEventListener("wheel", (event) => {
@@ -371,7 +533,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   }, { passive: true });
 
   window.addEventListener("resize", () => {
-    if (sceneReady) goTo(activeIndex, false);
+    if (sceneReady) setStoryMode(state.storyMode);
   });
 
   return {

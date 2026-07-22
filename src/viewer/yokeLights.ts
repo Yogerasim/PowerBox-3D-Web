@@ -76,12 +76,15 @@ export interface YokeLightSettings {
   indicatorColor: string;
 
   switching: boolean;
+  switchingPattern: SwitchingPattern;
   switchingSpeedHz: number;
   dutyCycle: number;
   randomness: number;
   phaseSpread: number;
   offLevel: number;
 }
+
+export type SwitchingPattern = "chase" | "random" | "single";
 
 export interface YokeLightRig {
   root: Group;
@@ -91,6 +94,12 @@ export interface YokeLightRig {
   getState: () => YokeLightState;
   applyState: (state: YokeLightState) => void;
   setInteractiveChannel: (index: number, enabled: boolean | null) => void;
+  setPerformanceControls: (
+    pattern: SwitchingPattern,
+    speedHz: number,
+    dutyCycle: number,
+  ) => void;
+  setAnimationPaused: (paused: boolean) => void;
 }
 
 export interface YokeLightState {
@@ -174,6 +183,26 @@ function hardSwitchSignal(
 ): number {
   if (!settings.switching) {
     return 1;
+  }
+
+  const step = Math.floor(
+    timeSeconds * Math.max(settings.switchingSpeedHz, 0.01),
+  );
+
+  if (settings.switchingPattern === "chase") {
+    return step % YOKE_AREA_LIGHTS.length === index
+      ? 1
+      : settings.offLevel;
+  }
+
+  if (settings.switchingPattern === "single") {
+    const activeIndex = Math.floor(
+      hash(step * 9.17 + 2.31) * YOKE_AREA_LIGHTS.length,
+    );
+
+    return activeIndex === index
+      ? 1
+      : settings.offLevel;
   }
 
   const phase =
@@ -578,6 +607,7 @@ export function createYokeLightRig(): YokeLightRig {
     indicatorColor: "#ff5a14",
 
     switching: false,
+    switchingPattern: "random",
     switchingSpeedHz: 2,
     dutyCycle: 0.5,
     randomness: 0,
@@ -596,6 +626,7 @@ export function createYokeLightRig(): YokeLightRig {
   const reservedRuntimeIndexes = new Set<number>();
   const interactiveChannels: Array<boolean | null> =
     Array.from({ length: runtimeLights.length }, () => null);
+  let animationPaused = false;
 
   for (const runtime of runtimeLights) {
     lightGroup.add(runtime.light);
@@ -802,8 +833,8 @@ export function createYokeLightRig(): YokeLightRig {
       .onChange(syncStaticSettings);
 
     shadowFolder
-      .add(settings, "shadowRadius", 0, 8, 0.1)
-      .name("Shadow softness")
+      .add(settings, "shadowRadius", 0, 16, 0.1)
+      .name("Shadow gradient / softness")
       .onChange(syncStaticSettings);
 
     shadowFolder
@@ -870,6 +901,14 @@ export function createYokeLightRig(): YokeLightRig {
       .name("Enabled");
 
     switchingFolder
+      .add(settings, "switchingPattern", {
+        "Circle / chase": "chase",
+        "Independent random": "random",
+        "One random light": "single",
+      })
+      .name("Pattern");
+
+    switchingFolder
       .add(
         settings,
         "switchingSpeedHz",
@@ -898,6 +937,8 @@ export function createYokeLightRig(): YokeLightRig {
     const individualFolder = folder.addFolder(
       "Individual lights",
     );
+
+    individualFolder.close();
 
     runtimeLights.forEach((runtime, index) => {
       const itemFolder = individualFolder.addFolder(
@@ -999,7 +1040,7 @@ export function createYokeLightRig(): YokeLightRig {
   }
 
   function update(timeSeconds: number): void {
-    if (!settings.enabled) {
+    if (!settings.enabled || animationPaused) {
       return;
     }
 
@@ -1090,6 +1131,17 @@ export function createYokeLightRig(): YokeLightRig {
       if (index >= 0 && index < interactiveChannels.length) {
         interactiveChannels[index] = enabled;
       }
+    },
+    setPerformanceControls: (pattern, speedHz, dutyCycle) => {
+      settings.switching = true;
+      settings.switchingPattern = pattern;
+      settings.switchingSpeedHz = MathUtils.clamp(speedHz, 0.05, 20);
+      settings.dutyCycle = MathUtils.clamp(dutyCycle, 0.05, 0.95);
+      settings.randomness = pattern === "random" ? 1 : 0;
+      interactiveChannels.fill(null);
+    },
+    setAnimationPaused: (paused) => {
+      animationPaused = paused;
     },
   };
 }
