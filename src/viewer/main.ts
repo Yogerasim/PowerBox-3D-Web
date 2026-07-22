@@ -12,7 +12,7 @@ import {
   Mesh,
   Object3D,
   OrthographicCamera,
-  PCFSoftShadowMap,
+  PCFShadowMap,
   PMREMGenerator,
   PointLight,
   Quaternion,
@@ -30,7 +30,10 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { createYokeLightRig } from "./yokeLights";
-import { createPresentationCameraSystem } from "./presentationCameras";
+import {
+  createPresentationCameraSystem,
+  type SceneState,
+} from "./presentationCameras";
 import { loadSceneLabPreset } from "./sceneLabPreset";
 import { Vector2 } from "three";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
@@ -142,7 +145,7 @@ renderer.outputColorSpace = SRGBColorSpace;
 renderer.toneMapping = ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1;
 renderer.shadowMap.enabled = false;
-renderer.shadowMap.type = PCFSoftShadowMap;
+renderer.shadowMap.type = PCFShadowMap;
 
 renderer.setPixelRatio(
   Math.min(window.devicePixelRatio, 2),
@@ -275,19 +278,6 @@ const gui = new GUI({
   title: "PowerBox Scene Lab",
   width: 330,
 });
-const presentationCameraSystem =
-  createPresentationCameraSystem({
-    camera,
-    controls,
-    canvas: renderer.domElement,
-    postSettings,
-    getOrthographicHeight: () => orthographicHeight,
-    setOrthographicHeight: (value) => {
-      orthographicHeight = value;
-    },
-    updateProjection: updateOrthographicProjection,
-  });
-
 interface LoadedGroup {
   entry: CollectionEntry;
   root: Group;
@@ -323,6 +313,53 @@ const settings = {
   shadows: false,
   showBlenderLights: false,
 };
+
+function getSceneState(): SceneState {
+  return {
+    exposure: settings.exposure,
+    environment: settings.environment,
+    shadows: settings.shadows,
+    postFX: structuredClone(postSettings),
+    yoke: yokeLightRig.getState(),
+  };
+}
+
+function applySceneState(state: SceneState): void {
+  settings.exposure = state.exposure;
+  settings.environment = state.environment;
+  settings.shadows = state.shadows;
+  Object.assign(postSettings, structuredClone(state.postFX));
+  renderer.toneMappingExposure = settings.exposure;
+  scene.environmentIntensity = settings.environment;
+  renderer.shadowMap.enabled = settings.shadows;
+  bloomPass.enabled = postSettings.bloom;
+  bloomPass.strength = postSettings.bloomStrength;
+  bloomPass.radius = postSettings.bloomRadius;
+  bloomPass.threshold = postSettings.bloomThreshold;
+  bokehPass.enabled = postSettings.depthOfField;
+  modelRoot.traverse((object) => {
+    if (object instanceof Mesh) {
+      object.castShadow = settings.shadows;
+      object.receiveShadow = settings.shadows;
+    }
+  });
+  yokeLightRig.applyState(state.yoke);
+  gui.controllersRecursive().forEach((controller) => controller.updateDisplay());
+}
+
+const presentationCameraSystem = createPresentationCameraSystem({
+  camera,
+  controls,
+  canvas: renderer.domElement,
+  getOrthographicHeight: () => orthographicHeight,
+  setOrthographicHeight: (value) => {
+    orthographicHeight = value;
+  },
+  updateProjection: updateOrthographicProjection,
+  getSceneState,
+  applySceneState,
+  setInteractiveChannel: yokeLightRig.setInteractiveChannel,
+});
 
 function setProgress(
   message: string,
@@ -1075,7 +1112,8 @@ async function initialize(): Promise<void> {
   presentationCameraSystem.addGUI(gui);
   await loadSceneLabPreset(gui);
   await loadDefaultGroups();
-  presentationCameraSystem.markSceneReady();}
+  presentationCameraSystem.markSceneReady();
+}
 
 function resize(): void {
   renderer.setPixelRatio(
@@ -1090,7 +1128,7 @@ function resize(): void {
   composer.setSize(window.innerWidth, window.innerHeight);
   bokehPass.setSize(window.innerWidth, window.innerHeight);
   updateOrthographicProjection();
-  presentationCameraSystem.refreshScroll();
+  presentationCameraSystem.refresh();
 }
 
 function render(): void {

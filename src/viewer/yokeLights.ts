@@ -21,7 +21,7 @@ type EmissiveMaterial =
   | MeshStandardMaterial
   | MeshPhysicalMaterial;
 
-interface PerLightSettings {
+export interface PerLightSettings {
   enabled: boolean;
   gain: number;
   phase: number;
@@ -38,7 +38,7 @@ interface PerLightSettings {
   penumbraOffset: number;
 }
 
-interface YokeLightSettings {
+export interface YokeLightSettings {
   enabled: boolean;
 
   energyWatts: number;
@@ -62,6 +62,10 @@ interface YokeLightSettings {
   decay: number;
 
   castShadows: boolean;
+  shadowIntensity: number;
+  shadowRadius: number;
+  shadowMapSize: number;
+  shadowFocus: number;
   shadowBias: number;
   shadowNormalBias: number;
 
@@ -84,6 +88,14 @@ export interface YokeLightRig {
   addGUI: (gui: GUI) => void;
   update: (timeSeconds: number) => void;
   registerLedLightRoot: (root: Object3D) => void;
+  getState: () => YokeLightState;
+  applyState: (state: YokeLightState) => void;
+  setInteractiveChannel: (index: number, enabled: boolean | null) => void;
+}
+
+export interface YokeLightState {
+  settings: YokeLightSettings;
+  lights: PerLightSettings[];
 }
 
 interface EmissiveBinding {
@@ -552,6 +564,10 @@ export function createYokeLightRig(): YokeLightRig {
     decay: 2,
 
     castShadows: false,
+    shadowIntensity: 0.55,
+    shadowRadius: 3,
+    shadowMapSize: 1024,
+    shadowFocus: 0.8,
     shadowBias: -0.0002,
     shadowNormalBias: 0.02,
 
@@ -578,6 +594,8 @@ export function createYokeLightRig(): YokeLightRig {
   const indicatorBindings: IndicatorBinding[] = [];
   const registeredRoots = new WeakSet<Object3D>();
   const reservedRuntimeIndexes = new Set<number>();
+  const interactiveChannels: Array<boolean | null> =
+    Array.from({ length: runtimeLights.length }, () => null);
 
   for (const runtime of runtimeLights) {
     lightGroup.add(runtime.light);
@@ -599,6 +617,18 @@ export function createYokeLightRig(): YokeLightRig {
       runtime.helper.visible = settings.showHelpers;
 
       updateBeamTransform(runtime, settings);
+      runtime.light.castShadow = settings.castShadows;
+      runtime.light.shadow.intensity = settings.shadowIntensity;
+      runtime.light.shadow.radius = settings.shadowRadius;
+      runtime.light.shadow.focus = settings.shadowFocus;
+      runtime.light.shadow.bias = settings.shadowBias;
+      runtime.light.shadow.normalBias = settings.shadowNormalBias;
+      const mapSize = Math.max(256, Math.round(settings.shadowMapSize));
+      if (runtime.light.shadow.mapSize.x !== mapSize) {
+        runtime.light.shadow.mapSize.set(mapSize, mapSize);
+        runtime.light.shadow.map?.dispose();
+        runtime.light.shadow.map = null;
+      }
     });
 
     indicatorBindings.forEach((binding) => {
@@ -764,6 +794,26 @@ export function createYokeLightRig(): YokeLightRig {
     shadowFolder
       .add(settings, "castShadows")
       .name("Cast shadows")
+      .onChange(syncStaticSettings);
+
+    shadowFolder
+      .add(settings, "shadowIntensity", 0, 1, 0.01)
+      .name("Shadow intensity")
+      .onChange(syncStaticSettings);
+
+    shadowFolder
+      .add(settings, "shadowRadius", 0, 8, 0.1)
+      .name("Shadow softness")
+      .onChange(syncStaticSettings);
+
+    shadowFolder
+      .add(settings, "shadowMapSize", [512, 1024, 2048])
+      .name("Shadow map")
+      .onChange(syncStaticSettings);
+
+    shadowFolder
+      .add(settings, "shadowFocus", 0.1, 1, 0.01)
+      .name("Shadow focus")
       .onChange(syncStaticSettings);
 
     shadowFolder
@@ -963,14 +1013,17 @@ export function createYokeLightRig(): YokeLightRig {
     runtimeLights.forEach((runtime, index) => {
       const enabled = runtime.settings.enabled;
 
-      const modulation = enabled
-        ? hardSwitchSignal(
-            timeSeconds,
-            index,
-            runtime,
-            settings,
-          )
-        : 0;
+      const interactive = interactiveChannels[index];
+      const modulation = !enabled
+        ? 0
+        : interactive !== null
+          ? Number(interactive)
+          : hardSwitchSignal(
+              timeSeconds,
+              index,
+              runtime,
+              settings,
+            );
 
       modulationByIndex[index] = modulation;
 
@@ -1019,5 +1072,24 @@ export function createYokeLightRig(): YokeLightRig {
     addGUI,
     update,
     registerLedLightRoot,
+    getState: () => ({
+      settings: structuredClone(settings),
+      lights: runtimeLights.map((runtime) =>
+        structuredClone(runtime.settings)),
+    }),
+    applyState: (state) => {
+      Object.assign(settings, structuredClone(state.settings));
+      state.lights.forEach((light, index) => {
+        if (runtimeLights[index]) {
+          Object.assign(runtimeLights[index].settings, structuredClone(light));
+        }
+      });
+      syncStaticSettings();
+    },
+    setInteractiveChannel: (index, enabled) => {
+      if (index >= 0 && index < interactiveChannels.length) {
+        interactiveChannels[index] = enabled;
+      }
+    },
   };
 }

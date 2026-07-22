@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "defaultLocale": "ru",
+  "shots": [
+    {
+      "id": "hero",
+      "label": { "ru": "Цифровой сигнал. Физический свет.", "en": "Digital signal. Physical light." },
+      "camera": { "position": [-9.851993, 18.851783, -11.883361], "target": [-0.522776, 0.230966, 0.454048], "zoom": 1.682219, "orthographicHeight": 8, "desktop": { "zoomMultiplier": 1, "targetOffset": [0, 0, 0] }, "mobile": { "zoomMultiplier": 0.62, "targetOffset": [0, 0.15, 0] } },
+      "scene": null,
+      "interactive": false
+    },
+    {
+      "id": "problem",
+      "label": { "ru": "Световая система без хаоса.", "en": "A lighting system without chaos." },
+      "camera": { "position": [5.851221, 2.16077, 4.149969], "target": [0.246426, 0.080332, 0.019528], "zoom": 22.218468, "orthographicHeight": 8, "desktop": { "zoomMultiplier": 1, "targetOffset": [0, 0, 0] }, "mobile": { "zoomMultiplier": 0.58, "targetOffset": [0, 0.1, 0] } },
+      "scene": null,
+      "interactive": false
+    },
+    {
+      "id": "channels",
+      "label": { "ru": "Восемь каналов. Полный контроль.", "en": "Eight channels. Full control." },
+      "camera": { "position": [0.087178, 7.005467, -0.631628], "target": [-0.09264, 0.201963, -0.632845], "zoom": 1.273661, "orthographicHeight": 8, "desktop": { "zoomMultiplier": 1, "targetOffset": [0, 0, 0] }, "mobile": { "zoomMultiplier": 0.66, "targetOffset": [0, 0, 0] } },
+      "scene": null,
+      "interactive": true
+    },
+    {
+      "id": "control",
+      "label": { "ru": "Управление из цифровой среды.", "en": "Control from the digital world." },
+      "camera": { "position": [-3.886194, 1.311785, -6.39403], "target": [-0.054796, 0.122752, -0.313809], "zoom": 10.761414, "orthographicHeight": 8, "desktop": { "zoomMultiplier": 1, "targetOffset": [0, 0, 0] }, "mobile": { "zoomMultiplier": 0.6, "targetOffset": [0, 0.1, 0] } },
+      "scene": null,
+      "interactive": false
+    },
+    {
+      "id": "reliability",
+      "label": { "ru": "Инженерия внутри.", "en": "Engineering inside." },
+      "camera": { "position": [3.374081, 2.426023, -1.259976], "target": [0.027502, 0.614684, 0.033066], "zoom": 2.463973, "orthographicHeight": 8, "desktop": { "zoomMultiplier": 1, "targetOffset": [0, 0, 0] }, "mobile": { "zoomMultiplier": 0.63, "targetOffset": [0, 0.12, 0] } },
+      "scene": null,
+      "interactive": false
+    },
+    {
+      "id": "installation",
+      "label": { "ru": "Свет становится пространством.", "en": "Light becomes space." },
+      "camera": { "position": [-5.002364, 3.098685, -9.578519], "target": [-0.527451, 0.339968, -0.410387], "zoom": 3.253723, "orthographicHeight": 8, "desktop": { "zoomMultiplier": 1, "targetOffset": [0, 0, 0] }, "mobile": { "zoomMultiplier": 0.6, "targetOffset": [0, 0.1, 0] } },
+      "scene": null,
+      "interactive": false
+    },
+    {
+      "id": "contact",
+      "label": { "ru": "Соберите свою систему.", "en": "Build your system." },
+      "camera": { "position": [-4.893034, 7.278887, -0.148014], "target": [0.044224, -0.043766, -0.195287], "zoom": 13.857165, "orthographicHeight": 8, "desktop": { "zoomMultiplier": 1, "targetOffset": [0, 0, 0] }, "mobile": { "zoomMultiplier": 0.58, "targetOffset": [0, 0.08, 0] } },
+      "scene": null,
+      "interactive": false
+    }
+  ]
+}

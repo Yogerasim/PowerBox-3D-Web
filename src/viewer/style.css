@@ -252,3 +252,112 @@ body.presentation-story-mode
   touch-action: pan-y !important;
 }
 
+/* Seven-shot director V2 */
+
+html.presentation-story-mode,
+body.presentation-story-mode {
+  width: 100%;
+  height: 100% !important;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.presentation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  pointer-events: none;
+}
+
+.presentation-overlay.is-visible {
+  display: block;
+}
+
+.presentation-shot-label {
+  position: absolute;
+  left: clamp(20px, 5vw, 72px);
+  bottom: clamp(68px, 9vh, 110px);
+  max-width: min(680px, calc(100vw - 40px));
+  font-size: clamp(30px, 5vw, 76px);
+  font-weight: 560;
+  line-height: .95;
+  letter-spacing: -.05em;
+  transition: opacity 180ms ease;
+}
+
+.presentation-overlay.is-text-hidden .presentation-shot-label {
+  opacity: 0;
+}
+
+.presentation-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  display: flex;
+  gap: 10px;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.presentation-dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  background: rgba(255,255,255,.28);
+  border: 0;
+  border-radius: 50%;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.presentation-dots button.is-active {
+  background: #ff6b2c;
+  transform: scale(1.45);
+}
+
+.presentation-channels {
+  position: absolute;
+  left: 50%;
+  bottom: 58px;
+  display: none;
+  grid-template-columns: repeat(8, minmax(42px, 1fr));
+  gap: 8px;
+  width: min(680px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.presentation-channels.is-visible { display: grid; }
+
+.presentation-channels button {
+  min-height: 44px;
+  color: rgba(255,255,255,.72);
+  background: rgba(8,8,8,.72);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+}
+
+.presentation-channels button.is-active {
+  color: #fff;
+  background: #ff6b2c;
+  border-color: #ff6b2c;
+}
+
+body.presentation-story-mode .viewer-header,
+body.presentation-story-mode .viewer-help,
+body.presentation-story-mode > .lil-gui {
+  display: none !important;
+}
+
+@media (max-width: 760px), (pointer: coarse) {
+  .presentation-shot-label { bottom: 84px; }
+  .presentation-channels {
+    grid-template-columns: repeat(4, 1fr);
+    bottom: 54px;
+  }
+  .presentation-dots { bottom: 18px; }
+  body.presentation-story-mode .viewer-stage canvas {
+    touch-action: none !important;
+  }
+}

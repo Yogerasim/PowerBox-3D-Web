@@ -2,33 +2,15 @@ import type GUI from "lil-gui";
 import { MathUtils, OrthographicCamera, Vector3 } from "three";
 import type { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { storySections } from "../website/sections";
+import type { YokeLightState } from "./yokeLights";
 
-gsap.registerPlugin(ScrollTrigger);
+export type Locale = "ru" | "en";
 
-export interface PresentationCameraShot {
-  id: string;
-  label: string;
-  position: [number, number, number];
-  target: [number, number, number];
-  zoom: number;
-  orthographicHeight: number;
-  dof: {
-    enabled: boolean;
-    autoFocus: boolean;
-    focusDistance: number;
-    aperture: number;
-    maxBlur: number;
-  };
-}
-
-export interface PresentationCameraConfig {
-  version: 1;
-  shots: PresentationCameraShot[];
-}
-
-interface PostSettings {
+export interface PostFXState {
+  bloom: boolean;
+  bloomStrength: number;
+  bloomRadius: number;
+  bloomThreshold: number;
   depthOfField: boolean;
   autoFocus: boolean;
   focusDistance: number;
@@ -36,14 +18,50 @@ interface PostSettings {
   maxBlur: number;
 }
 
+export interface SceneState {
+  exposure: number;
+  environment: number;
+  shadows: boolean;
+  postFX: PostFXState;
+  yoke: YokeLightState;
+}
+
+export interface ResponsiveFraming {
+  zoomMultiplier: number;
+  targetOffset: [number, number, number];
+}
+
+export interface PresentationShot {
+  id: string;
+  label: Record<Locale, string>;
+  camera: {
+    position: [number, number, number];
+    target: [number, number, number];
+    zoom: number;
+    orthographicHeight: number;
+    desktop: ResponsiveFraming;
+    mobile: ResponsiveFraming;
+  };
+  scene: SceneState | null;
+  interactive: boolean;
+}
+
+export interface PresentationShotConfig {
+  version: 2;
+  defaultLocale: Locale;
+  shots: PresentationShot[];
+}
+
 interface Options {
   camera: OrthographicCamera;
   controls: OrbitControls;
   canvas: HTMLCanvasElement;
-  postSettings: PostSettings;
   getOrthographicHeight: () => number;
   setOrthographicHeight: (value: number) => void;
   updateProjection: () => void;
+  getSceneState: () => SceneState;
+  applySceneState: (state: SceneState) => void;
+  setInteractiveChannel: (index: number, enabled: boolean | null) => void;
 }
 
 export interface PresentationCameraSystem {
@@ -51,397 +69,327 @@ export interface PresentationCameraSystem {
   addGUI: (gui: GUI) => void;
   markSceneReady: () => void;
   update: () => void;
-  refreshScroll: () => void;
+  refresh: () => void;
 }
 
-const CONFIG_URL = `${import.meta.env.BASE_URL}config/presentation-cameras.json`;
-const STORAGE_KEY = "powerbox.presentation-cameras.v1";
+const CONFIG_URL = `${import.meta.env.BASE_URL}config/presentation-shots.json`;
+const STORAGE_KEY = "powerbox.presentation-shots.v2";
+const MOBILE_QUERY = "(max-width: 760px), (pointer: coarse)";
 
 function isLocalEditor(): boolean {
   return location.hostname === "localhost" || location.hostname === "127.0.0.1";
 }
 
 function tuple(vector: Vector3): [number, number, number] {
-  return [
-    Number(vector.x.toFixed(6)),
-    Number(vector.y.toFixed(6)),
-    Number(vector.z.toFixed(6)),
-  ];
+  return [vector.x, vector.y, vector.z].map((value) =>
+    Number(value.toFixed(6))) as [number, number, number];
 }
 
-function fallbackConfig(): PresentationCameraConfig {
-  const positions: Array<[number, number, number]> = [
-    [6, 3.5, 8],
-    [4.8, 2.2, 5.2],
-    [0.2, 7, 0.2],
-    [-5, 2.4, 5],
-    [2.5, 1.4, 3],
-    [7, 4.5, -7],
-    [5, 2.7, 7],
-  ];
-
-  const targets: Array<[number, number, number]> = [
-    [0, 0.8, 0],
-    [0, 0.55, 0],
-    [0, 0.2, 0],
-    [0, 0.65, 0],
-    [0, 0.45, 0],
-    [0, 0.8, 0],
-    [0, 0.7, 0],
-  ];
-
-  const zooms = [1, 1.15, 0.9, 1.05, 1.35, 0.82, 1.08];
-
-  return {
-    version: 1,
-    shots: storySections.map((section, index) => ({
-      id: section.id,
-      label: section.title,
-      position: positions[index],
-      target: targets[index],
-      zoom: zooms[index],
-      orthographicHeight: 8,
-      dof: {
-        enabled: true,
-        autoFocus: true,
-        focusDistance: 23.94,
-        aperture: 0.02,
-        maxBlur: 0.016,
-      },
-    })),
-  };
+function isConfig(value: unknown): value is PresentationShotConfig {
+  const candidate = value as Partial<PresentationShotConfig>;
+  return typeof value === "object" && value !== null &&
+    candidate.version === 2 && Array.isArray(candidate.shots) &&
+    candidate.shots.length === 7;
 }
 
-function isConfig(value: unknown): value is PresentationCameraConfig {
-  if (typeof value !== "object" || value === null) return false;
-  const candidate = value as Partial<PresentationCameraConfig>;
-  return candidate.version === 1 &&
-    Array.isArray(candidate.shots) &&
-    candidate.shots.length === storySections.length;
-}
-
-function downloadConfig(config: PresentationCameraConfig): void {
+function downloadConfig(config: PresentationShotConfig): void {
   const blob = new Blob([JSON.stringify(config, null, 2)], {
     type: "application/json",
   });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "powerbox-presentation-cameras.json";
-  document.body.appendChild(link);
+  link.download = "powerbox-presentation-shots.json";
   link.click();
-  link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export function createPresentationCameraSystem(options: Options): PresentationCameraSystem {
-  let config = fallbackConfig();
-  let committedConfig = fallbackConfig();
-  let timeline: gsap.core.Timeline | null = null;
+  let config: PresentationShotConfig | null = null;
+  let committedConfig: PresentationShotConfig | null = null;
   let sceneReady = false;
+  let activeIndex = 0;
+  let transition: gsap.core.Timeline | null = null;
+  let wheelLocked = false;
+  let touchStartY = 0;
+  let touchStartX = 0;
+  const channelStates = Array.from({ length: 8 }, () => false);
 
   const state = {
-    currentShot: storySections[0].id,
-    storyPreview: false,
-    showText: true,
-    scrollSmoothing: 0.65,
-    status: "Loading cameras…",
+    currentShot: "hero",
+    storyMode: new URLSearchParams(location.search).get("story") === "1",
+    showText: false,
+    locale: "ru" as Locale,
+    transitionDuration: 0.85,
+    status: "Loading shots…",
   };
 
-  const readout = {
-    positionX: 0,
-    positionY: 0,
-    positionZ: 0,
-    targetX: 0,
-    targetY: 0,
-    targetZ: 0,
-    zoom: 1,
-  };
+  const overlay = document.createElement("div");
+  overlay.className = "presentation-overlay is-text-hidden";
+  overlay.innerHTML = `
+    <div class="presentation-shot-label" aria-live="polite"></div>
+    <div class="presentation-dots" aria-label="Presentation shots"></div>
+    <div class="presentation-channels" aria-label="PowerBox channels"></div>
+  `;
+  document.body.appendChild(overlay);
 
-  const storyRoot = document.createElement("main");
-  storyRoot.id = "presentation-story-preview";
-  storyRoot.className = "presentation-story-preview";
-  storyRoot.hidden = true;
-  storyRoot.innerHTML = storySections.map((section, index) => `
-    <section class="presentation-story-section" data-story-id="${section.id}">
-      <div class="presentation-story-copy">
-        <p class="presentation-story-index">${String(index + 1).padStart(2, "0")} / ${String(storySections.length).padStart(2, "0")}</p>
-        <p class="presentation-story-eyebrow">${section.eyebrow}</p>
-        <h2>${section.title}</h2>
-        <p class="presentation-story-body">${section.body}</p>
-      </div>
-    </section>
-  `).join("");
-  document.body.appendChild(storyRoot);
+  const label = overlay.querySelector<HTMLElement>(".presentation-shot-label")!;
+  const dots = overlay.querySelector<HTMLElement>(".presentation-dots")!;
+  const channels = overlay.querySelector<HTMLElement>(".presentation-channels")!;
 
-  function shotById(id: string): PresentationCameraShot {
-    return config.shots.find((shot) => shot.id === id) ?? config.shots[0];
+  for (let index = 0; index < 8; index += 1) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = `CH${index + 1}`;
+    button.addEventListener("click", () => {
+      channelStates[index] = !channelStates[index];
+      options.setInteractiveChannel(index, channelStates[index]);
+      button.classList.toggle("is-active", channelStates[index]);
+    });
+    channels.appendChild(button);
   }
 
-  function updateReadout(): void {
-    readout.positionX = options.camera.position.x;
-    readout.positionY = options.camera.position.y;
-    readout.positionZ = options.camera.position.z;
-    readout.targetX = options.controls.target.x;
-    readout.targetY = options.controls.target.y;
-    readout.targetZ = options.controls.target.z;
-    readout.zoom = options.camera.zoom;
+  function mobile(): boolean {
+    return matchMedia(MOBILE_QUERY).matches;
   }
 
-  function applyShot(shot: PresentationCameraShot): void {
-    killTimeline();
-    options.camera.position.fromArray(shot.position);
-    options.controls.target.fromArray(shot.target);
-    options.camera.zoom = shot.zoom;
-    options.setOrthographicHeight(shot.orthographicHeight);
-    options.postSettings.depthOfField = shot.dof.enabled;
-    options.postSettings.autoFocus = shot.dof.autoFocus;
-    options.postSettings.focusDistance = shot.dof.focusDistance;
-    options.postSettings.aperture = shot.dof.aperture;
-    options.postSettings.maxBlur = shot.dof.maxBlur;
+  function shot(): PresentationShot {
+    if (!config) throw new Error("Presentation shots are not loaded.");
+    return config.shots[activeIndex];
+  }
+
+  function framing(current: PresentationShot): ResponsiveFraming {
+    return mobile() ? current.camera.mobile : current.camera.desktop;
+  }
+
+  function cameraTarget(current: PresentationShot): Vector3 {
+    const currentFraming = framing(current);
+    return new Vector3(...current.camera.target).add(
+      new Vector3(...currentFraming.targetOffset),
+    );
+  }
+
+  function updateUI(): void {
+    if (!config) return;
+    const current = shot();
+    state.currentShot = current.id;
+    label.textContent = current.label[state.locale];
+    overlay.classList.toggle("is-text-hidden", !state.showText);
+    channels.classList.toggle("is-visible", state.storyMode && current.interactive);
+    dots.querySelectorAll("button").forEach((button, index) => {
+      button.classList.toggle("is-active", index === activeIndex);
+    });
+    if (current.interactive) {
+      channelStates.forEach((enabled, index) =>
+        options.setInteractiveChannel(index, enabled));
+    } else {
+      channelStates.fill(false);
+      channelStates.forEach((_, index) => options.setInteractiveChannel(index, null));
+      channels.querySelectorAll("button").forEach((button) =>
+        button.classList.remove("is-active"));
+    }
+  }
+
+  function applyImmediate(current: PresentationShot): void {
+    transition?.kill();
+    options.camera.position.fromArray(current.camera.position);
+    options.controls.target.copy(cameraTarget(current));
+    options.camera.zoom = current.camera.zoom * framing(current).zoomMultiplier;
+    options.setOrthographicHeight(current.camera.orthographicHeight);
+    if (current.scene) options.applySceneState(structuredClone(current.scene));
     options.updateProjection();
     options.controls.update();
-    updateReadout();
+    updateUI();
+  }
+
+  function goTo(index: number, animate = true): void {
+    if (!config || !sceneReady) return;
+    const next = MathUtils.clamp(index, 0, config.shots.length - 1);
+    if (next === activeIndex && animate) return;
+    activeIndex = next;
+    const current = shot();
+    const target = cameraTarget(current);
+    const targetProxy = options.controls.target.clone();
+    const destinationScene = current.scene
+      ? structuredClone(current.scene)
+      : options.getSceneState();
+    transition?.kill();
+
+    if (!animate || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      applyImmediate(current);
+      return;
+    }
+
+    const duration = state.transitionDuration;
+    transition = gsap.timeline({
+      defaults: { duration, ease: "power2.inOut", overwrite: true },
+      onStart: () => options.controls.enabled = false,
+      onComplete: () => {
+        options.applySceneState(destinationScene);
+        options.controls.enabled = !state.storyMode && !mobile();
+        updateUI();
+      },
+    });
+    transition.to(options.camera.position, {
+      x: current.camera.position[0], y: current.camera.position[1], z: current.camera.position[2],
+    }, 0).to(targetProxy, {
+      x: target.x, y: target.y, z: target.z,
+      onUpdate: () => options.controls.target.copy(targetProxy),
+    }, 0).to(options.camera, {
+      zoom: current.camera.zoom * framing(current).zoomMultiplier,
+      onUpdate: options.updateProjection,
+    }, 0);
+    options.setOrthographicHeight(current.camera.orthographicHeight);
+    options.applySceneState(destinationScene);
+    updateUI();
+  }
+
+  function navigate(delta: number): void {
+    if (!state.storyMode || transition?.isActive()) return;
+    goTo(activeIndex + delta);
+  }
+
+  function setStoryMode(enabled: boolean): void {
+    state.storyMode = enabled;
+    document.documentElement.classList.toggle("presentation-story-mode", enabled);
+    document.body.classList.toggle("presentation-story-mode", enabled);
+    overlay.classList.toggle("is-visible", enabled);
+    options.controls.enabled = !enabled && !mobile();
+    options.controls.enableZoom = !mobile() && !enabled;
+    options.canvas.style.touchAction = enabled || mobile() ? "none" : "auto";
+    if (enabled && sceneReady) goTo(activeIndex, false);
+  }
+
+  function captureCurrent(): void {
+    if (!config) return;
+    const current = shot();
+    const currentFraming = framing(current);
+    current.camera.position = tuple(options.camera.position);
+    const rawTarget = options.controls.target.clone().sub(
+      new Vector3(...currentFraming.targetOffset),
+    );
+    current.camera.target = tuple(rawTarget);
+    current.camera.zoom = Number((options.camera.zoom / currentFraming.zoomMultiplier).toFixed(6));
+    current.camera.orthographicHeight = Number(options.getOrthographicHeight().toFixed(6));
+    current.scene = structuredClone(options.getSceneState());
+    saveDraft();
+    state.status = `Full shot saved: ${current.id}`;
+    console.info("[PowerBox] Full shot state captured", current);
   }
 
   function saveDraft(): void {
-    if (isLocalEditor()) {
+    if (config && isLocalEditor()) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     }
   }
 
-  function captureCurrent(): void {
-    const shot = shotById(state.currentShot);
-    shot.position = tuple(options.camera.position);
-    shot.target = tuple(options.controls.target);
-    shot.zoom = Number(options.camera.zoom.toFixed(6));
-    shot.orthographicHeight = Number(options.getOrthographicHeight().toFixed(6));
-    shot.dof = {
-      enabled: options.postSettings.depthOfField,
-      autoFocus: options.postSettings.autoFocus,
-      focusDistance: Number(options.postSettings.focusDistance.toFixed(6)),
-      aperture: Number(options.postSettings.aperture.toFixed(6)),
-      maxBlur: Number(options.postSettings.maxBlur.toFixed(6)),
-    };
-    saveDraft();
-    state.status = `Saved locally: ${shot.id}`;
-    console.info("[PowerBox] Camera shot captured", shot);
-  }
-
-  function killTimeline(): void {
-    timeline?.scrollTrigger?.kill();
-    timeline?.kill();
-    timeline = null;
-  }
-
-  function buildTimeline(): void {
-    killTimeline();
-    if (!state.storyPreview || !sceneReady) return;
-
-    const shots = storySections.map((section) => shotById(section.id));
-    const first = shots[0];
-    applyShot(first);
-
-    const target = { x: first.target[0], y: first.target[1], z: first.target[2] };
-    const framing = { height: first.orthographicHeight };
-
-    timeline = gsap.timeline({
-      defaults: { ease: "none" },
-      scrollTrigger: {
-        trigger: storyRoot,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: state.scrollSmoothing,
-        snap: {
-          snapTo:
-            1 / Math.max(
-              shots.length - 1,
-              1,
-            ),
-          duration: {
-            min: 0.18,
-            max: 0.45,
-          },
-          delay: 0.04,
-          ease: "power1.inOut",
-        },
-        invalidateOnRefresh: true,
-        onUpdate: (trigger) => {
-          const index = MathUtils.clamp(
-            Math.round(trigger.progress * (shots.length - 1)),
-            0,
-            shots.length - 1,
-          );
-          options.postSettings.depthOfField = shots[index].dof.enabled;
-          options.postSettings.autoFocus = shots[index].dof.autoFocus;
-        },
-      },
+  function rebuildDots(): void {
+    if (!config) return;
+    dots.replaceChildren();
+    config.shots.forEach((current, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.ariaLabel = current.label[state.locale];
+      button.addEventListener("click", () => goTo(index));
+      dots.appendChild(button);
     });
-
-    shots.slice(1).forEach((shot, index) => {
-      timeline
-        ?.to(options.camera.position, {
-          x: shot.position[0],
-          y: shot.position[1],
-          z: shot.position[2],
-          duration: 1,
-        }, index)
-        .to(target, {
-          x: shot.target[0],
-          y: shot.target[1],
-          z: shot.target[2],
-          duration: 1,
-          onUpdate: () => options.controls.target.set(target.x, target.y, target.z),
-        }, index)
-        .to(options.camera, {
-          zoom: shot.zoom,
-          duration: 1,
-          onUpdate: options.updateProjection,
-        }, index)
-        .to(framing, {
-          height: shot.orthographicHeight,
-          duration: 1,
-          onUpdate: () => {
-            options.setOrthographicHeight(framing.height);
-            options.updateProjection();
-          },
-        }, index)
-        .to(options.postSettings, {
-          focusDistance: shot.dof.focusDistance,
-          aperture: shot.dof.aperture,
-          maxBlur: shot.dof.maxBlur,
-          duration: 1,
-        }, index);
-    });
-
-    requestAnimationFrame(() => ScrollTrigger.refresh());
-  }
-
-  function setStoryPreview(enabled: boolean): void {
-    state.storyPreview = enabled;
-    document.body.classList.toggle(
-    "presentation-story-mode",
-    enabled,
-  );
-
-  document.documentElement.classList.toggle(
-    "presentation-story-mode",
-    enabled,
-  );
-
-  storyRoot.style.pointerEvents =
-    enabled ? "auto" : "none";
-
-  options.canvas.style.pointerEvents =
-    enabled ? "none" : "auto";
-
-  options.canvas.style.touchAction =
-    enabled ? "pan-y" : "none";
-    storyRoot.hidden = !enabled;
-    options.controls.enabled = !enabled;
-    if (enabled) {
-      window.scrollTo(0, 0);
-      buildTimeline();
-    } else {
-      killTimeline();
-    }
-  }
-
-  function moveShot(direction: number): void {
-    const index = config.shots.findIndex((shot) => shot.id === state.currentShot);
-    const next = MathUtils.euclideanModulo(index + direction, config.shots.length);
-    state.currentShot = config.shots[next].id;
-    applyShot(config.shots[next]);
+    updateUI();
   }
 
   async function load(): Promise<void> {
-    try {
-      const response = await fetch(CONFIG_URL, { cache: "no-store" });
-      if (response.ok) {
-        const value = await response.json() as unknown;
-        if (isConfig(value)) {
-          committedConfig = structuredClone(value);
-          config = structuredClone(value);
-        }
-      }
-    } catch (error) {
-      console.warn("[PowerBox] Presentation camera config was not loaded", error);
+    const response = await fetch(CONFIG_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Shot config request failed: ${response.status}`);
+    const value = await response.json() as unknown;
+    if (!isConfig(value)) throw new Error("presentation-shots.json has an invalid format.");
+    committedConfig = structuredClone(value);
+    config = structuredClone(value);
+    state.locale = value.defaultLocale;
+    const draft = isLocalEditor() ? localStorage.getItem(STORAGE_KEY) : null;
+    if (draft) {
+      const parsed = JSON.parse(draft) as unknown;
+      if (isConfig(parsed)) config = parsed;
     }
-
-    if (isLocalEditor()) {
-      const draft = localStorage.getItem(STORAGE_KEY);
-      if (draft) {
-        try {
-          const value = JSON.parse(draft) as unknown;
-          if (isConfig(value)) {
-            config = value;
-            state.status = "Loaded local camera draft";
-          }
-        } catch {
-          localStorage.removeItem(STORAGE_KEY);
-        }
-      }
-    }
-
-    if (state.status === "Loading cameras…") {
-      state.status = "Committed cameras loaded";
-    }
-
-    state.storyPreview = new URLSearchParams(location.search).get("story") === "1";
+    rebuildDots();
+    state.status = "Seven independent shot states loaded";
   }
 
   function addGUI(gui: GUI): void {
-    const folder = gui.addFolder("Presentation Cameras");
-    const optionsMap = Object.fromEntries(config.shots.map((shot, index) => [
-      `${index + 1} · ${shot.label}`,
-      shot.id,
-    ]));
-
-    folder.add(state, "currentShot", optionsMap).name("Current shot");
-    folder.add({ capture: captureCurrent }, "capture").name("Capture current camera");
-    folder.add({ preview: () => applyShot(shotById(state.currentShot)) }, "preview").name("Go to current shot");
-    folder.add({ previous: () => moveShot(-1) }, "previous").name("Previous shot");
-    folder.add({ next: () => moveShot(1) }, "next").name("Next shot");
-    folder.add(state, "storyPreview").name("Story scroll preview").onChange(setStoryPreview);
-    folder.add(state, "showText").name("Show story text").onChange((visible: boolean) => {
-      storyRoot.classList.toggle("hide-story-text", !visible);
+    const folder = gui.addFolder("Presentation Shots V2");
+    const shotMap = Object.fromEntries((config?.shots ?? []).map((item, index) =>
+      [`${index + 1} · ${item.label[state.locale]}`, item.id]));
+    folder.add(state, "currentShot", shotMap).name("Current shot").onChange((id: string) => {
+      const index = config?.shots.findIndex((item) => item.id === id) ?? 0;
+      goTo(index);
     });
-    folder.add(state, "scrollSmoothing", 0, 2, 0.01).name("Scroll smoothing").onFinishChange(buildTimeline);
-    folder.add({ download: () => downloadConfig(config) }, "download").name("Download cameras JSON");
+    folder.add(state, "storyMode").name("Story mode").onChange(setStoryMode);
+    folder.add(state, "showText").name("Text overlay").onChange(updateUI);
+    folder.add(state, "locale", { Русский: "ru", English: "en" }).name("Language").onChange(() => {
+      rebuildDots();
+      updateUI();
+    });
+    folder.add(state, "transitionDuration", 0.2, 2, 0.05).name("Transition seconds");
+    folder.add({ save: captureCurrent }, "save").name("Save full shot state");
+    folder.add({ preview: () => goTo(activeIndex, false) }, "preview").name("Apply current shot");
+    folder.add({ previous: () => navigate(-1) }, "previous").name("Previous shot");
+    folder.add({ next: () => navigate(1) }, "next").name("Next shot");
+    folder.add({ download: () => config && downloadConfig(config) }, "download").name("Download shots JSON");
     folder.add({ reset: () => {
+      if (!committedConfig) return;
       config = structuredClone(committedConfig);
+      config.shots.forEach((current) => {
+        current.scene ??= structuredClone(options.getSceneState());
+      });
       localStorage.removeItem(STORAGE_KEY);
-      state.status = "Local draft cleared";
-      applyShot(shotById(state.currentShot));
-    } }, "reset").name("Reset local camera draft");
+      activeIndex = 0;
+      rebuildDots();
+      goTo(0, false);
+    } }, "reset").name("Reset local draft");
     folder.add(state, "status").name("Status").listen().disable();
-
-    const current = folder.addFolder("Current camera");
-    current.add(readout, "positionX").name("Position X").listen().disable();
-    current.add(readout, "positionY").name("Position Y").listen().disable();
-    current.add(readout, "positionZ").name("Position Z").listen().disable();
-    current.add(readout, "targetX").name("Target X").listen().disable();
-    current.add(readout, "targetY").name("Target Y").listen().disable();
-    current.add(readout, "targetZ").name("Target Z").listen().disable();
-    current.add(readout, "zoom").name("Zoom").listen().disable();
-    updateReadout();
   }
 
-  function markSceneReady(): void {
-    sceneReady = true;
-    options.canvas.classList.remove("is-loading");
-    if (state.storyPreview) setStoryPreview(true);
-  }
+  window.addEventListener("wheel", (event) => {
+    if (!state.storyMode || mobile() || wheelLocked || Math.abs(event.deltaY) < 8) return;
+    event.preventDefault();
+    wheelLocked = true;
+    navigate(event.deltaY > 0 ? 1 : -1);
+    window.setTimeout(() => wheelLocked = false, 650);
+  }, { passive: false });
+
+  window.addEventListener("touchstart", (event) => {
+    if (!state.storyMode || event.touches.length !== 1) return;
+    touchStartY = event.touches[0].clientY;
+    touchStartX = event.touches[0].clientX;
+  }, { passive: true });
+
+  window.addEventListener("touchend", (event) => {
+    if (!state.storyMode || event.changedTouches.length !== 1) return;
+    const deltaY = touchStartY - event.changedTouches[0].clientY;
+    const deltaX = touchStartX - event.changedTouches[0].clientX;
+    if (Math.abs(deltaY) > 48 && Math.abs(deltaY) > Math.abs(deltaX) * 1.15) {
+      navigate(deltaY > 0 ? 1 : -1);
+    }
+  }, { passive: true });
+
+  window.addEventListener("resize", () => {
+    if (sceneReady) goTo(activeIndex, false);
+  });
 
   return {
     load,
     addGUI,
-    markSceneReady,
-    update: () => {
-      if (!state.storyPreview) updateReadout();
+    markSceneReady: () => {
+      sceneReady = true;
+      // Scene Lab applies the authored GUI preset after the camera file is
+      // loaded. Camera-only legacy shots must inherit that final state here,
+      // rather than constructor defaults captured too early during startup.
+      config?.shots.forEach((current) => {
+        current.scene ??= structuredClone(options.getSceneState());
+      });
+      options.canvas.classList.remove("is-loading");
+      setStoryMode(state.storyMode);
+      goTo(activeIndex, false);
     },
-    refreshScroll: () => {
-      if (state.storyPreview) ScrollTrigger.refresh();
-    },
+    update: () => undefined,
+    refresh: () => sceneReady && goTo(activeIndex, false),
   };
 }
