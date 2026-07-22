@@ -170,7 +170,8 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   let wheelLocked = false;
   let touchStartY = 0;
   let touchStartX = 0;
-  const channelStates = Array.from({ length: 8 }, () => false);
+  const channelStates: Array<boolean | null> =
+    Array.from({ length: 8 }, () => null);
   let manualChannels = false;
   let audio: HTMLAudioElement | null = null;
 
@@ -220,6 +221,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
 
   function applyPerformanceControls(): void {
     manualChannels = false;
+    channelStates.fill(null);
     options.setPerformanceControls(
       state.performancePattern,
       state.performanceSpeed,
@@ -263,14 +265,11 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     button.type = "button";
     button.textContent = `CH${index + 1}`;
     button.addEventListener("click", () => {
-      if (!manualChannels) {
-        manualChannels = true;
-        channelStates.fill(false);
-      }
-      channelStates[index] = !channelStates[index];
+      manualChannels = true;
+      channelStates[index] = channelStates[index] === true ? false : true;
       channelStates.forEach((enabled, channelIndex) =>
         options.setInteractiveChannel(channelIndex, enabled));
-      button.classList.toggle("is-active", channelStates[index]);
+      button.classList.toggle("is-active", channelStates[index] === true);
       options.requestRender();
     });
     channels.appendChild(button);
@@ -338,7 +337,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
         applyPerformanceControls();
       }
     } else {
-      channelStates.fill(false);
+      channelStates.fill(null);
       channelStates.forEach((_, index) => options.setInteractiveChannel(index, null));
       channels.querySelectorAll("button").forEach((button) =>
         button.classList.remove("is-active"));
