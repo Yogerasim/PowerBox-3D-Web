@@ -34,6 +34,18 @@ export interface ResponsiveFraming {
   targetOffset: [number, number, number];
 }
 
+export type DeviceProfile = "desktop" | "mobile";
+
+export interface ShotProfile {
+  camera: {
+    position: [number, number, number];
+    target: [number, number, number];
+    zoom: number;
+    orthographicHeight: number;
+  };
+  scene: SceneState | null;
+}
+
 export interface PresentationShot {
   id: string;
   label: Record<Locale, string>;
@@ -46,6 +58,7 @@ export interface PresentationShot {
     mobile: ResponsiveFraming;
   };
   scene: SceneState | null;
+  mobileProfile?: ShotProfile;
   interactive: boolean;
 }
 
@@ -112,6 +125,27 @@ function migrateConfig(config: PresentationShotConfig): void {
     if (current.scene) {
       current.scene.yoke.settings.switchingPattern ??= "random";
     }
+
+    if (!current.mobileProfile) {
+      const mobileFraming = current.camera.mobile;
+      current.mobileProfile = {
+        camera: {
+          position: structuredClone(current.camera.position),
+          target: [
+            current.camera.target[0] + mobileFraming.targetOffset[0],
+            current.camera.target[1] + mobileFraming.targetOffset[1],
+            current.camera.target[2] + mobileFraming.targetOffset[2],
+          ],
+          zoom: current.camera.zoom * mobileFraming.zoomMultiplier,
+          orthographicHeight: current.camera.orthographicHeight,
+        },
+        scene: current.scene ? structuredClone(current.scene) : null,
+      };
+    }
+
+    if (current.mobileProfile.scene) {
+      current.mobileProfile.scene.yoke.settings.switchingPattern ??= "random";
+    }
   });
 }
 
@@ -145,6 +179,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     storyMode: new URLSearchParams(location.search).get("story") === "1",
     showText: false,
     locale: "ru" as Locale,
+    editingProfile: "desktop" as DeviceProfile,
     transitionDuration: 0.85,
     performancePattern: "random" as SwitchingPattern,
     performanceSpeed: 2,
@@ -251,14 +286,38 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   }
 
   function framing(current: PresentationShot): ResponsiveFraming {
-    return mobile() ? current.camera.mobile : current.camera.desktop;
+    return current.camera.desktop;
+  }
+
+  function selectedProfile(): DeviceProfile {
+    return state.storyMode
+      ? (mobile() ? "mobile" : "desktop")
+      : state.editingProfile;
+  }
+
+  function profile(current: PresentationShot): ShotProfile {
+    if (selectedProfile() === "mobile" && current.mobileProfile) {
+      return current.mobileProfile;
+    }
+
+    const desktopFraming = framing(current);
+    return {
+      camera: {
+        position: current.camera.position,
+        target: [
+          current.camera.target[0] + desktopFraming.targetOffset[0],
+          current.camera.target[1] + desktopFraming.targetOffset[1],
+          current.camera.target[2] + desktopFraming.targetOffset[2],
+        ],
+        zoom: current.camera.zoom * desktopFraming.zoomMultiplier,
+        orthographicHeight: current.camera.orthographicHeight,
+      },
+      scene: current.scene,
+    };
   }
 
   function cameraTarget(current: PresentationShot): Vector3 {
-    const currentFraming = framing(current);
-    return new Vector3(...current.camera.target).add(
-      new Vector3(...currentFraming.targetOffset),
-    );
+    return new Vector3(...profile(current).camera.target);
   }
 
   function updateUI(): void {
@@ -288,11 +347,14 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
 
   function applyImmediate(current: PresentationShot): void {
     transition?.kill();
-    options.camera.position.fromArray(current.camera.position);
+    const currentProfile = profile(current);
+    options.camera.position.fromArray(currentProfile.camera.position);
     options.controls.target.copy(cameraTarget(current));
-    options.camera.zoom = current.camera.zoom * framing(current).zoomMultiplier;
-    options.setOrthographicHeight(current.camera.orthographicHeight);
-    if (current.scene) options.applySceneState(structuredClone(current.scene));
+    options.camera.zoom = currentProfile.camera.zoom;
+    options.setOrthographicHeight(currentProfile.camera.orthographicHeight);
+    if (currentProfile.scene) {
+      options.applySceneState(structuredClone(currentProfile.scene));
+    }
     options.updateProjection();
     options.controls.update();
     options.requestRender();
@@ -305,10 +367,11 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     if (next === activeIndex && animate) return;
     activeIndex = next;
     const current = shot();
+    const currentProfile = profile(current);
     const target = cameraTarget(current);
     const targetProxy = options.controls.target.clone();
-    const destinationScene = current.scene
-      ? structuredClone(current.scene)
+    const destinationScene = currentProfile.scene
+      ? structuredClone(currentProfile.scene)
       : options.getSceneState();
 
     if (current.interactive) {
@@ -338,18 +401,20 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       },
     });
     transition.to(options.camera.position, {
-      x: current.camera.position[0], y: current.camera.position[1], z: current.camera.position[2],
+      x: currentProfile.camera.position[0],
+      y: currentProfile.camera.position[1],
+      z: currentProfile.camera.position[2],
     }, 0).to(targetProxy, {
       x: target.x, y: target.y, z: target.z,
       onUpdate: () => options.controls.target.copy(targetProxy),
     }, 0).to(options.camera, {
-      zoom: current.camera.zoom * framing(current).zoomMultiplier,
+      zoom: currentProfile.camera.zoom,
       onUpdate: () => {
         options.updateProjection();
         options.requestRender();
       },
     }, 0);
-    options.setOrthographicHeight(current.camera.orthographicHeight);
+    options.setOrthographicHeight(currentProfile.camera.orthographicHeight);
     options.applySceneState(destinationScene);
     updateUI();
   }
@@ -374,17 +439,31 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   function captureCurrent(): void {
     if (!config) return;
     const current = shot();
-    const currentFraming = framing(current);
-    current.camera.position = tuple(options.camera.position);
-    const rawTarget = options.controls.target.clone().sub(
-      new Vector3(...currentFraming.targetOffset),
-    );
-    current.camera.target = tuple(rawTarget);
-    current.camera.zoom = Number((options.camera.zoom / currentFraming.zoomMultiplier).toFixed(6));
-    current.camera.orthographicHeight = Number(options.getOrthographicHeight().toFixed(6));
-    current.scene = structuredClone(options.getSceneState());
+    const captured: ShotProfile = {
+      camera: {
+        position: tuple(options.camera.position),
+        target: tuple(options.controls.target),
+        zoom: Number(options.camera.zoom.toFixed(6)),
+        orthographicHeight: Number(options.getOrthographicHeight().toFixed(6)),
+      },
+      scene: structuredClone(options.getSceneState()),
+    };
+
+    if (state.editingProfile === "mobile") {
+      current.mobileProfile = captured;
+    } else {
+      current.camera.position = captured.camera.position;
+      current.camera.target = captured.camera.target;
+      current.camera.zoom = captured.camera.zoom;
+      current.camera.orthographicHeight = captured.camera.orthographicHeight;
+      current.camera.desktop = {
+        zoomMultiplier: 1,
+        targetOffset: [0, 0, 0],
+      };
+      current.scene = captured.scene;
+    }
     saveDraft();
-    state.status = `Full shot saved: ${current.id}`;
+    state.status = `Saved ${state.editingProfile}: ${current.id}`;
     options.requestRender();
     console.info("[PowerBox] Full shot state captured", current);
   }
@@ -462,6 +541,14 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       const index = config?.shots.findIndex((item) => item.id === id) ?? 0;
       goTo(index);
     });
+    folder
+      .add(state, "editingProfile", {
+        "Desktop profile": "desktop",
+        "Mobile profile": "mobile",
+      })
+      .name("Editing profile")
+      .listen()
+      .onChange(() => goTo(activeIndex, false));
     folder.add(state, "storyMode").name("Story mode").onChange(setStoryMode);
     folder.add(state, "showText").name("Text overlay").onChange(updateUI);
     folder.add(state, "locale", { Русский: "ru", English: "en" }).name("Language").onChange(() => {
@@ -477,8 +564,12 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     folder.add({ reset: () => {
       if (!committedConfig) return;
       config = structuredClone(committedConfig);
+      migrateConfig(config);
       config.shots.forEach((current) => {
         current.scene ??= structuredClone(options.getSceneState());
+        if (current.mobileProfile) {
+          current.mobileProfile.scene ??= structuredClone(current.scene);
+        }
       });
       localStorage.removeItem(STORAGE_KEY);
       activeIndex = 0;
@@ -546,7 +637,11 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       // rather than constructor defaults captured too early during startup.
       config?.shots.forEach((current) => {
         current.scene ??= structuredClone(options.getSceneState());
+        if (current.mobileProfile) {
+          current.mobileProfile.scene ??= structuredClone(current.scene);
+        }
       });
+      state.editingProfile = mobile() ? "mobile" : "desktop";
       options.canvas.classList.remove("is-loading");
       setStoryMode(state.storyMode);
       goTo(activeIndex, false);

@@ -100,6 +100,9 @@ export interface YokeLightRig {
     dutyCycle: number,
   ) => void;
   setAnimationPaused: (paused: boolean) => void;
+  setSwitchListener: (
+    listener: (channel: number, enabled: boolean) => void,
+  ) => void;
 }
 
 export interface YokeLightState {
@@ -627,6 +630,9 @@ export function createYokeLightRig(): YokeLightRig {
   const interactiveChannels: Array<boolean | null> =
     Array.from({ length: runtimeLights.length }, () => null);
   let animationPaused = false;
+  let switchListener: ((channel: number, enabled: boolean) => void) | null = null;
+  const previousSwitchStates: Array<boolean | null> =
+    Array.from({ length: runtimeLights.length }, () => null);
 
   for (const runtime of runtimeLights) {
     lightGroup.add(runtime.light);
@@ -1068,6 +1074,13 @@ export function createYokeLightRig(): YokeLightRig {
 
       modulationByIndex[index] = modulation;
 
+      const switchState = modulation > (settings.offLevel + 1) * 0.5;
+      const previousState = previousSwitchStates[index];
+      if (previousState !== null && previousState !== switchState) {
+        switchListener?.(index, switchState);
+      }
+      previousSwitchStates[index] = switchState;
+
       runtime.light.visible = enabled;
       runtime.light.color.copy(lightColor);
 
@@ -1142,6 +1155,9 @@ export function createYokeLightRig(): YokeLightRig {
     },
     setAnimationPaused: (paused) => {
       animationPaused = paused;
+    },
+    setSwitchListener: (listener) => {
+      switchListener = listener;
     },
   };
 }

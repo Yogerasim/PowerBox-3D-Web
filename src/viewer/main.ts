@@ -30,6 +30,7 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { createYokeLightRig } from "./yokeLights";
+import { createRelayClickAudio } from "./relayClickAudio";
 import {
   createPresentationCameraSystem,
   type SceneState,
@@ -263,6 +264,8 @@ lightRoot.name = "POWERBOX_BLENDER_LIGHTS";
 scene.add(modelRoot, lightRoot);
 
 const yokeLightRig = createYokeLightRig();
+const relayClickAudio = createRelayClickAudio();
+yokeLightRig.setSwitchListener(relayClickAudio.play);
 scene.add(yokeLightRig.root);
 
 const pmremGenerator = new PMREMGenerator(renderer);
@@ -950,6 +953,7 @@ function addViewerGUI(): void {
     });
 
   yokeLightRig.addGUI(gui);
+  relayClickAudio.addGUI(gui);
 
   const energyFolder = gui.addFolder("Performance guard");
 
