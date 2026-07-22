@@ -174,6 +174,11 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     Array.from({ length: 8 }, () => null);
   let manualChannels = false;
   let audio: HTMLAudioElement | null = null;
+  const driftBasePosition = new Vector3();
+  const driftBaseTarget = new Vector3();
+  const driftOffset = new Vector3();
+  const driftAxis = new Vector3(0, 1, 0);
+  let driftStartedAt = performance.now();
 
   const state = {
     currentShot: "hero",
@@ -185,6 +190,9 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     performancePattern: "random" as SwitchingPattern,
     performanceSpeed: 2,
     performanceDuty: 0.5,
+    cameraDrift: true,
+    driftAmount: 1,
+    driftCycle: 24,
     status: "Loading shots…",
     audioEnabled: true,
     audioVolume: 0.3,
@@ -319,6 +327,12 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     return new Vector3(...profile(current).camera.target);
   }
 
+  function resetCameraDrift(): void {
+    driftBasePosition.copy(options.camera.position);
+    driftBaseTarget.copy(options.controls.target);
+    driftStartedAt = performance.now();
+  }
+
   function updateUI(): void {
     if (!config) return;
     const current = shot();
@@ -356,6 +370,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     }
     options.updateProjection();
     options.controls.update();
+    resetCameraDrift();
     options.requestRender();
     updateUI();
   }
@@ -395,6 +410,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       onComplete: () => {
         options.applySceneState(destinationScene);
         options.controls.enabled = !state.storyMode && !mobile();
+        resetCameraDrift();
         updateUI();
         options.requestRender();
       },
@@ -432,7 +448,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     options.controls.enabled = !enabled && !mobile();
     options.controls.enableZoom = !mobile() && !enabled;
     options.canvas.style.touchAction = enabled || mobile() ? "none" : "auto";
-    if (enabled && sceneReady) goTo(activeIndex, false);
+    if (sceneReady) goTo(activeIndex, false);
   }
 
   function captureCurrent(): void {
@@ -555,6 +571,9 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       updateUI();
     });
     folder.add(state, "transitionDuration", 0.2, 2, 0.05).name("Transition seconds");
+    folder.add(state, "cameraDrift").name("Camera idle drift");
+    folder.add(state, "driftAmount", 0, 3, 0.05).name("Drift amount °");
+    folder.add(state, "driftCycle", 8, 60, 1).name("Drift cycle sec");
     folder.add({ save: captureCurrent }, "save").name("Save full shot state");
     folder.add({ preview: () => goTo(activeIndex, false) }, "preview").name("Apply current shot");
     folder.add({ previous: () => goTo(activeIndex - 1) }, "previous").name("Previous shot");
@@ -645,7 +664,28 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       setStoryMode(state.storyMode);
       goTo(activeIndex, false);
     },
-    update: () => undefined,
+    update: () => {
+      if (
+        !sceneReady ||
+        !state.storyMode ||
+        !state.cameraDrift ||
+        transition?.isActive()
+      ) {
+        return;
+      }
+
+      const elapsedSeconds = (performance.now() - driftStartedAt) * 0.001;
+      const phase = elapsedSeconds / Math.max(state.driftCycle, 1) * Math.PI * 2;
+      const angle = MathUtils.degToRad(state.driftAmount) * Math.sin(phase);
+
+      driftOffset
+        .copy(driftBasePosition)
+        .sub(driftBaseTarget)
+        .applyAxisAngle(driftAxis, angle);
+      options.camera.position.copy(driftBaseTarget).add(driftOffset);
+      options.controls.target.copy(driftBaseTarget);
+      options.camera.lookAt(driftBaseTarget);
+    },
     refresh: () => sceneReady && goTo(activeIndex, false),
   };
 }

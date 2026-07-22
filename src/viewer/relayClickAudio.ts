@@ -5,7 +5,7 @@ export interface RelayClickAudio {
   play: (channel: number, enabled: boolean) => void;
 }
 
-const STORAGE_KEY = "powerbox.relay-click-audio.v1";
+const STORAGE_KEY = "powerbox.relay-click-audio.v2";
 
 interface RelayClickSettings {
   enabled: boolean;
@@ -22,6 +22,21 @@ interface RelayClickSettings {
   pitchVariation: number;
 }
 
+const PROJECT_DEFAULTS: RelayClickSettings = {
+  enabled: true,
+  volume: 0.64,
+  onPitch: 700,
+  offPitch: 124,
+  pitchDrop: 1,
+  durationMs: 60,
+  toneMix: 0.91,
+  noiseMix: 0,
+  noiseFrequency: 6000,
+  noiseQ: 0.2,
+  stereoWidth: 1,
+  pitchVariation: 0.2,
+};
+
 export function createRelayClickAudio(): RelayClickAudio {
   let context: AudioContext | null = null;
   let noiseBuffer: AudioBuffer | null = null;
@@ -30,18 +45,7 @@ export function createRelayClickAudio(): RelayClickAudio {
     status: string;
     presetStatus: string;
   } = {
-    enabled: true,
-    volume: 0.24,
-    onPitch: 185,
-    offPitch: 125,
-    pitchDrop: 0.5,
-    durationMs: 34,
-    toneMix: 0.7,
-    noiseMix: 0.34,
-    noiseFrequency: 1900,
-    noiseQ: 1.4,
-    stereoWidth: 0.55,
-    pitchVariation: 0.035,
+    ...PROJECT_DEFAULTS,
     status: "Tap or click once to enable relay sound",
     presetStatus: "Using project defaults",
   };
