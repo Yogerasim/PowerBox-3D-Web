@@ -68,9 +68,9 @@
             "rotationX": -1.19999999999999,
             "rotationY": -1,
             "rotationZ": 1.20000000000002,
-            "distance": 9.5,
-            "coneAngleDegrees": 37.7,
-            "penumbra": 0.2,
+            "distance": 8.2,
+            "coneAngleDegrees": 69.5,
+            "penumbra": 0.19,
             "decay": 2,
             "castShadows": true,
             "shadowIntensity": 1,
@@ -84,12 +84,12 @@
             "indicatorGlow": 2,
             "indicatorColor": "#ff5a14",
             "switching": true,
+            "switchingPattern": "random",
             "switchingSpeedHz": 0.62,
             "dutyCycle": 0.5,
             "randomness": 0.97,
             "phaseSpread": 0.56,
-            "offLevel": 0.14,
-            "switchingPattern": "random"
+            "offLevel": 0.14
           },
           "lights": [
             {
@@ -199,7 +199,184 @@
           ]
         }
       },
-      "interactive": false
+      "interactive": false,
+      "mobileProfile": {
+        "camera": {
+          "position": [
+            -8.210514,
+            18.823157,
+            -13.167808
+          ],
+          "target": [
+            1.118703,
+            0.35234,
+            -0.830399
+          ],
+          "zoom": 1.04297578,
+          "orthographicHeight": 8
+        },
+        "scene": {
+          "exposure": 0.14,
+          "environment": 0.25,
+          "shadows": true,
+          "postFX": {
+            "bloom": true,
+            "bloomStrength": 0.81,
+            "bloomRadius": 1,
+            "bloomThreshold": 3,
+            "depthOfField": true,
+            "autoFocus": true,
+            "focusDistance": 23.94,
+            "aperture": 0.0031,
+            "maxBlur": 0.05
+          },
+          "yoke": {
+            "settings": {
+              "enabled": true,
+              "energyWatts": 15.4,
+              "webCalibration": 4.08,
+              "brightness": 0.57,
+              "color": "#ffffff",
+              "aimAtTarget": true,
+              "targetX": 0.0499999999999998,
+              "targetY": 0.3,
+              "targetZ": 0,
+              "targetDistance": 10,
+              "rotationX": -1.19999999999999,
+              "rotationY": -1,
+              "rotationZ": 1.20000000000002,
+              "distance": 9.5,
+              "coneAngleDegrees": 37.7,
+              "penumbra": 0.2,
+              "decay": 2,
+              "castShadows": true,
+              "shadowIntensity": 1,
+              "shadowRadius": 6,
+              "shadowMapSize": 1024,
+              "shadowFocus": 0.84,
+              "shadowBias": 0.01,
+              "shadowNormalBias": 0.061,
+              "showHelpers": false,
+              "panelGlow": 5.75,
+              "indicatorGlow": 2,
+              "indicatorColor": "#ff5a14",
+              "switching": true,
+              "switchingSpeedHz": 0.62,
+              "dutyCycle": 0.5,
+              "randomness": 0.97,
+              "phaseSpread": 0.56,
+              "offLevel": 0.14,
+              "switchingPattern": "random"
+            },
+            "lights": [
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.125,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.25,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.375,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.5,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.625,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.75,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.875,
+                "angleOffset": -0.14,
+                "penumbraOffset": 0
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "id": "problem",
@@ -398,7 +575,184 @@
           ]
         }
       },
-      "interactive": false
+      "interactive": false,
+      "mobileProfile": {
+        "camera": {
+          "position": [
+            5.851221,
+            2.16077,
+            4.149969
+          ],
+          "target": [
+            0.246426,
+            0.180332,
+            0.019528
+          ],
+          "zoom": 12.88671144,
+          "orthographicHeight": 8
+        },
+        "scene": {
+          "exposure": 0.17,
+          "environment": 0.23,
+          "shadows": true,
+          "postFX": {
+            "bloom": true,
+            "bloomStrength": 0.01,
+            "bloomRadius": 0.92,
+            "bloomThreshold": 1.05,
+            "depthOfField": true,
+            "autoFocus": false,
+            "focusDistance": 7.45,
+            "aperture": 0.0032,
+            "maxBlur": 0.016
+          },
+          "yoke": {
+            "settings": {
+              "enabled": true,
+              "energyWatts": 22.9,
+              "webCalibration": 1.91,
+              "brightness": 0.74,
+              "color": "#ffffff",
+              "aimAtTarget": true,
+              "targetX": 0,
+              "targetY": 0.24,
+              "targetZ": 0,
+              "targetDistance": 10,
+              "rotationX": 0,
+              "rotationY": -1,
+              "rotationZ": 1.20000000000002,
+              "distance": 11.2,
+              "coneAngleDegrees": 39.3,
+              "penumbra": 0.2,
+              "decay": 2,
+              "castShadows": true,
+              "shadowIntensity": 1,
+              "shadowRadius": 8,
+              "shadowMapSize": 1024,
+              "shadowFocus": 0.62,
+              "shadowBias": 0.01,
+              "shadowNormalBias": 0.074,
+              "showHelpers": false,
+              "panelGlow": 3,
+              "indicatorGlow": 0.08,
+              "indicatorColor": "#ff5a14",
+              "switching": true,
+              "switchingSpeedHz": 0.62,
+              "dutyCycle": 0.5,
+              "randomness": 1,
+              "phaseSpread": 0.56,
+              "offLevel": 0.14,
+              "switchingPattern": "random"
+            },
+            "lights": [
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.125,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.25,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.375,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.5,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.625,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.75,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.875,
+                "angleOffset": -0.14,
+                "penumbraOffset": 0
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "id": "channels",
@@ -437,14 +791,14 @@
         }
       },
       "scene": {
-        "exposure": 0.24,
-        "environment": 0.81,
+        "exposure": 0.58,
+        "environment": 0.15,
         "shadows": true,
         "postFX": {
           "bloom": true,
-          "bloomStrength": 0.01,
-          "bloomRadius": 0.92,
-          "bloomThreshold": 1.05,
+          "bloomStrength": 3,
+          "bloomRadius": 0.62,
+          "bloomThreshold": 3,
           "depthOfField": true,
           "autoFocus": false,
           "focusDistance": 6.95,
@@ -455,7 +809,7 @@
           "settings": {
             "enabled": true,
             "energyWatts": 22.9,
-            "webCalibration": 1.24,
+            "webCalibration": 1.08,
             "brightness": 0.57,
             "color": "#ffffff",
             "aimAtTarget": true,
@@ -467,7 +821,7 @@
             "rotationY": -1,
             "rotationZ": 1.20000000000002,
             "distance": 11.2,
-            "coneAngleDegrees": 39.3,
+            "coneAngleDegrees": 70.2,
             "penumbra": 0.2,
             "decay": 2,
             "castShadows": true,
@@ -478,16 +832,16 @@
             "shadowBias": 0.01,
             "shadowNormalBias": 0.062,
             "showHelpers": false,
-            "panelGlow": 3,
-            "indicatorGlow": 0.12,
+            "panelGlow": 3.08,
+            "indicatorGlow": 2,
             "indicatorColor": "#ff5a14",
             "switching": true,
-            "switchingSpeedHz": 0.62,
-            "dutyCycle": 0.5,
-            "randomness": 1,
+            "switchingPattern": "chase",
+            "switchingSpeedHz": 6.55,
+            "dutyCycle": 0.95,
+            "randomness": 0,
             "phaseSpread": 0.56,
-            "offLevel": 0.14,
-            "switchingPattern": "random"
+            "offLevel": 0.14
           },
           "lights": [
             {
@@ -597,7 +951,184 @@
           ]
         }
       },
-      "interactive": true
+      "interactive": true,
+      "mobileProfile": {
+        "camera": {
+          "position": [
+            4.388889,
+            5.06817,
+            -2.051603
+          ],
+          "target": [
+            -0.155355,
+            0.320292,
+            -0.283129
+          ],
+          "zoom": 1.0405612800000001,
+          "orthographicHeight": 8
+        },
+        "scene": {
+          "exposure": 0.24,
+          "environment": 0.81,
+          "shadows": true,
+          "postFX": {
+            "bloom": true,
+            "bloomStrength": 0.01,
+            "bloomRadius": 0.92,
+            "bloomThreshold": 1.05,
+            "depthOfField": true,
+            "autoFocus": false,
+            "focusDistance": 6.95,
+            "aperture": 0.0026,
+            "maxBlur": 0.016
+          },
+          "yoke": {
+            "settings": {
+              "enabled": true,
+              "energyWatts": 22.9,
+              "webCalibration": 1.24,
+              "brightness": 0.57,
+              "color": "#ffffff",
+              "aimAtTarget": true,
+              "targetX": 0,
+              "targetY": 0.3,
+              "targetZ": 0,
+              "targetDistance": 10,
+              "rotationX": 0,
+              "rotationY": -1,
+              "rotationZ": 1.20000000000002,
+              "distance": 11.2,
+              "coneAngleDegrees": 39.3,
+              "penumbra": 0.2,
+              "decay": 2,
+              "castShadows": true,
+              "shadowIntensity": 0.55,
+              "shadowRadius": 3,
+              "shadowMapSize": 1024,
+              "shadowFocus": 0.8,
+              "shadowBias": 0.01,
+              "shadowNormalBias": 0.062,
+              "showHelpers": false,
+              "panelGlow": 3,
+              "indicatorGlow": 0.12,
+              "indicatorColor": "#ff5a14",
+              "switching": true,
+              "switchingSpeedHz": 0.62,
+              "dutyCycle": 0.5,
+              "randomness": 1,
+              "phaseSpread": 0.56,
+              "offLevel": 0.14,
+              "switchingPattern": "random"
+            },
+            "lights": [
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.125,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.25,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.375,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.5,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.625,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.75,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.875,
+                "angleOffset": -0.14,
+                "penumbraOffset": 0
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "id": "control",
@@ -796,7 +1327,184 @@
           ]
         }
       },
-      "interactive": false
+      "interactive": false,
+      "mobileProfile": {
+        "camera": {
+          "position": [
+            -3.022094,
+            2.750539,
+            -6.43136
+          ],
+          "target": [
+            -0.144881,
+            0.42703500000000005,
+            -0.19351
+          ],
+          "zoom": 1.8901704,
+          "orthographicHeight": 8
+        },
+        "scene": {
+          "exposure": 0.52,
+          "environment": 0,
+          "shadows": true,
+          "postFX": {
+            "bloom": true,
+            "bloomStrength": 0.91,
+            "bloomRadius": 0.94,
+            "bloomThreshold": 3,
+            "depthOfField": true,
+            "autoFocus": false,
+            "focusDistance": 7.45,
+            "aperture": 0.0029,
+            "maxBlur": 0.0125
+          },
+          "yoke": {
+            "settings": {
+              "enabled": true,
+              "energyWatts": 43,
+              "webCalibration": 0.4,
+              "brightness": 0.4,
+              "color": "#ffffff",
+              "aimAtTarget": true,
+              "targetX": 0,
+              "targetY": 0.3,
+              "targetZ": 0,
+              "targetDistance": 10,
+              "rotationX": 0.100000000000023,
+              "rotationY": -1.89999999999998,
+              "rotationZ": 1.20000000000002,
+              "distance": 11.2,
+              "coneAngleDegrees": 39.3,
+              "penumbra": 0.2,
+              "decay": 2,
+              "castShadows": true,
+              "shadowIntensity": 0.79,
+              "shadowRadius": 6.2,
+              "shadowMapSize": 1024,
+              "shadowFocus": 1,
+              "shadowBias": 0.01,
+              "shadowNormalBias": 0.051,
+              "showHelpers": false,
+              "panelGlow": 3.08,
+              "indicatorGlow": 1.96,
+              "indicatorColor": "#ff5a14",
+              "switching": true,
+              "switchingSpeedHz": 0.6,
+              "dutyCycle": 0.38,
+              "randomness": 0.85,
+              "phaseSpread": 0.59,
+              "offLevel": 0.1,
+              "switchingPattern": "random"
+            },
+            "lights": [
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.125,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.25,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.375,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.5,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.625,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.75,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.875,
+                "angleOffset": -0.14,
+                "penumbraOffset": 0
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "id": "reliability",
@@ -995,7 +1703,184 @@
           ]
         }
       },
-      "interactive": false
+      "interactive": false,
+      "mobileProfile": {
+        "camera": {
+          "position": [
+            3.410973,
+            2.130271,
+            -1.578792
+          ],
+          "target": [
+            0.064394,
+            0.438932,
+            -0.28575
+          ],
+          "zoom": 1.4380852499999999,
+          "orthographicHeight": 8
+        },
+        "scene": {
+          "exposure": 0.21,
+          "environment": 0,
+          "shadows": true,
+          "postFX": {
+            "bloom": true,
+            "bloomStrength": 3,
+            "bloomRadius": 1,
+            "bloomThreshold": 1.44,
+            "depthOfField": true,
+            "autoFocus": false,
+            "focusDistance": 4.2,
+            "aperture": 0.0027,
+            "maxBlur": 0.016
+          },
+          "yoke": {
+            "settings": {
+              "enabled": true,
+              "energyWatts": 22.9,
+              "webCalibration": 1.24,
+              "brightness": 0.57,
+              "color": "#ffffff",
+              "aimAtTarget": true,
+              "targetX": 0,
+              "targetY": 0.3,
+              "targetZ": 0,
+              "targetDistance": 10,
+              "rotationX": 0,
+              "rotationY": -1,
+              "rotationZ": 1.20000000000002,
+              "distance": 11.2,
+              "coneAngleDegrees": 39.3,
+              "penumbra": 0.2,
+              "decay": 2,
+              "castShadows": true,
+              "shadowIntensity": 0.55,
+              "shadowRadius": 3,
+              "shadowMapSize": 1024,
+              "shadowFocus": 0.8,
+              "shadowBias": 0.01,
+              "shadowNormalBias": 0.062,
+              "showHelpers": false,
+              "panelGlow": 1.24,
+              "indicatorGlow": 2,
+              "indicatorColor": "#ff5a14",
+              "switching": true,
+              "switchingSpeedHz": 0.62,
+              "dutyCycle": 0.5,
+              "randomness": 1,
+              "phaseSpread": 0.56,
+              "offLevel": 0.14,
+              "switchingPattern": "random"
+            },
+            "lights": [
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.125,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.25,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.375,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.5,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.625,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.75,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.875,
+                "angleOffset": -0.14,
+                "penumbraOffset": 0
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "id": "installation",
@@ -1194,7 +2079,184 @@
           ]
         }
       },
-      "interactive": false
+      "interactive": false,
+      "mobileProfile": {
+        "camera": {
+          "position": [
+            -5.002364,
+            3.098685,
+            -9.578519
+          ],
+          "target": [
+            -0.527451,
+            0.439968,
+            -0.410387
+          ],
+          "zoom": 1.9522338,
+          "orthographicHeight": 8
+        },
+        "scene": {
+          "exposure": 0.21,
+          "environment": 0,
+          "shadows": true,
+          "postFX": {
+            "bloom": true,
+            "bloomStrength": 0.67,
+            "bloomRadius": 1,
+            "bloomThreshold": 3,
+            "depthOfField": true,
+            "autoFocus": false,
+            "focusDistance": 11.19,
+            "aperture": 0.0064,
+            "maxBlur": 0.016
+          },
+          "yoke": {
+            "settings": {
+              "enabled": true,
+              "energyWatts": 22.9,
+              "webCalibration": 1.24,
+              "brightness": 0.57,
+              "color": "#ffffff",
+              "aimAtTarget": true,
+              "targetX": 0,
+              "targetY": 0.3,
+              "targetZ": 0,
+              "targetDistance": 10,
+              "rotationX": 0,
+              "rotationY": -1,
+              "rotationZ": 1.20000000000002,
+              "distance": 11.2,
+              "coneAngleDegrees": 39.3,
+              "penumbra": 0.2,
+              "decay": 2,
+              "castShadows": true,
+              "shadowIntensity": 0.55,
+              "shadowRadius": 3,
+              "shadowMapSize": 1024,
+              "shadowFocus": 0.8,
+              "shadowBias": 0.01,
+              "shadowNormalBias": 0.062,
+              "showHelpers": false,
+              "panelGlow": 3,
+              "indicatorGlow": 0.12,
+              "indicatorColor": "#ff5a14",
+              "switching": true,
+              "switchingSpeedHz": 0.62,
+              "dutyCycle": 0.5,
+              "randomness": 1,
+              "phaseSpread": 0.56,
+              "offLevel": 0.14,
+              "switchingPattern": "random"
+            },
+            "lights": [
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.125,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.25,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.375,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.5,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.625,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.75,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.875,
+                "angleOffset": -0.14,
+                "penumbraOffset": 0
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "id": "contact",
@@ -1393,7 +2455,184 @@
           ]
         }
       },
-      "interactive": false
+      "interactive": false,
+      "mobileProfile": {
+        "camera": {
+          "position": [
+            -4.858385,
+            7.301476,
+            -0.028318
+          ],
+          "target": [
+            0.078873,
+            0.058823,
+            -0.075591
+          ],
+          "zoom": 6.89792898,
+          "orthographicHeight": 8
+        },
+        "scene": {
+          "exposure": 0.21,
+          "environment": 0,
+          "shadows": true,
+          "postFX": {
+            "bloom": true,
+            "bloomStrength": 0.01,
+            "bloomRadius": 0.92,
+            "bloomThreshold": 1.05,
+            "depthOfField": true,
+            "autoFocus": false,
+            "focusDistance": 8.7,
+            "aperture": 0.02,
+            "maxBlur": 0.016
+          },
+          "yoke": {
+            "settings": {
+              "enabled": true,
+              "energyWatts": 22.9,
+              "webCalibration": 1.24,
+              "brightness": 0.57,
+              "color": "#ffffff",
+              "aimAtTarget": true,
+              "targetX": 0,
+              "targetY": 0.3,
+              "targetZ": 0,
+              "targetDistance": 10,
+              "rotationX": 0,
+              "rotationY": -1,
+              "rotationZ": 1.20000000000002,
+              "distance": 11.2,
+              "coneAngleDegrees": 39.3,
+              "penumbra": 0.2,
+              "decay": 2,
+              "castShadows": true,
+              "shadowIntensity": 0.55,
+              "shadowRadius": 3,
+              "shadowMapSize": 1024,
+              "shadowFocus": 0.8,
+              "shadowBias": 0.01,
+              "shadowNormalBias": 0.062,
+              "showHelpers": false,
+              "panelGlow": 3,
+              "indicatorGlow": 0.12,
+              "indicatorColor": "#ff5a14",
+              "switching": true,
+              "switchingSpeedHz": 0.62,
+              "dutyCycle": 0.5,
+              "randomness": 1,
+              "phaseSpread": 0.56,
+              "offLevel": 0.14,
+              "switchingPattern": "random"
+            },
+            "lights": [
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.125,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.25,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.375,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.5,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.625,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.75,
+                "angleOffset": 0,
+                "penumbraOffset": 0
+              },
+              {
+                "enabled": true,
+                "gain": 1,
+                "phase": 0,
+                "positionX": 0,
+                "positionY": 0,
+                "positionZ": 0,
+                "rotationX": 0,
+                "rotationY": 0,
+                "rotationZ": 0.875,
+                "angleOffset": -0.14,
+                "penumbraOffset": 0
+              }
+            ]
+          }
+        }
+      }
     }
   ],
   "audio": {

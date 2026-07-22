@@ -89,6 +89,8 @@ interface Options {
     speedHz: number,
     dutyCycle: number,
   ) => void;
+  getSceneRotationY: () => number;
+  setSceneRotationY: (value: number) => void;
   requestRender: () => void;
 }
 
@@ -102,7 +104,14 @@ export interface PresentationCameraSystem {
 
 const CONFIG_URL = `${import.meta.env.BASE_URL}config/presentation-shots.json`;
 const STORAGE_KEY = "powerbox.presentation-shots.v2";
+const MOTION_STORAGE_KEY = "powerbox.scene-rotation.v3";
 const MOBILE_QUERY = "(max-width: 760px), (pointer: coarse)";
+
+interface SceneRotationSettings {
+  enabled: boolean;
+  rangeDegrees: number;
+  speedDegreesPerSecond: number;
+}
 
 function isLocalEditor(): boolean {
   return location.hostname === "localhost" || location.hostname === "127.0.0.1";
@@ -174,11 +183,8 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     Array.from({ length: 8 }, () => null);
   let manualChannels = false;
   let audio: HTMLAudioElement | null = null;
-  const driftBasePosition = new Vector3();
-  const driftBaseTarget = new Vector3();
-  const driftOffset = new Vector3();
-  const driftAxis = new Vector3(0, 1, 0);
-  let driftStartedAt = performance.now();
+  let sceneRotationBase = 0;
+  let sceneRotationStartedAt = performance.now();
 
   const state = {
     currentShot: "hero",
@@ -190,14 +196,62 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     performancePattern: "random" as SwitchingPattern,
     performanceSpeed: 2,
     performanceDuty: 0.5,
-    cameraDrift: true,
-    driftAmount: 1,
-    driftCycle: 24,
+    sceneRotation: true,
+    rotationRange: 360,
+    rotationSpeed: 1.8,
+    motionStatus: "Using project rotation defaults",
     status: "Loading shots…",
     audioEnabled: true,
     audioVolume: 0.3,
     audioStatus: "No loop configured",
   };
+
+  function sceneRotationSnapshot(): SceneRotationSettings {
+    return {
+      enabled: state.sceneRotation,
+      rangeDegrees: state.rotationRange,
+      speedDegreesPerSecond: state.rotationSpeed,
+    };
+  }
+
+  function restoreSceneRotation(): void {
+    try {
+      const saved = localStorage.getItem(MOTION_STORAGE_KEY);
+      if (!saved) return;
+      const motion = JSON.parse(saved) as Partial<SceneRotationSettings>;
+      state.sceneRotation = motion.enabled ?? state.sceneRotation;
+      state.rotationRange = motion.rangeDegrees ?? state.rotationRange;
+      state.rotationSpeed =
+        motion.speedDegreesPerSecond ?? state.rotationSpeed;
+      state.motionStatus = "Saved scene rotation restored";
+    } catch (error) {
+      console.warn("[PowerBox] Scene rotation could not be restored", error);
+      state.motionStatus = "Could not restore scene rotation";
+    }
+  }
+
+  function saveSceneRotation(): void {
+    localStorage.setItem(
+      MOTION_STORAGE_KEY,
+      JSON.stringify(sceneRotationSnapshot()),
+    );
+    state.motionStatus = "Scene rotation saved in this browser";
+    console.info("[PowerBox] Scene rotation saved", sceneRotationSnapshot());
+  }
+
+  function downloadSceneRotation(): void {
+    const blob = new Blob([JSON.stringify(sceneRotationSnapshot(), null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "powerbox-scene-rotation.json";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  restoreSceneRotation();
 
   const overlay = document.createElement("div");
   overlay.className = "presentation-overlay is-text-hidden";
@@ -327,10 +381,17 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     return new Vector3(...profile(current).camera.target);
   }
 
-  function resetCameraDrift(): void {
-    driftBasePosition.copy(options.camera.position);
-    driftBaseTarget.copy(options.controls.target);
-    driftStartedAt = performance.now();
+  function resetSceneRotation(preserveCurrent = false): void {
+    if (!preserveCurrent) {
+      options.setSceneRotationY(0);
+    }
+    sceneRotationBase = options.getSceneRotationY();
+    sceneRotationStartedAt = performance.now();
+    options.requestRender();
+  }
+
+  function updateSceneRotationSettings(): void {
+    resetSceneRotation(state.sceneRotation);
   }
 
   function updateUI(): void {
@@ -370,7 +431,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     }
     options.updateProjection();
     options.controls.update();
-    resetCameraDrift();
     options.requestRender();
     updateUI();
   }
@@ -410,7 +470,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       onComplete: () => {
         options.applySceneState(destinationScene);
         options.controls.enabled = !state.storyMode && !mobile();
-        resetCameraDrift();
         updateUI();
         options.requestRender();
       },
@@ -448,6 +507,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     options.controls.enabled = !enabled && !mobile();
     options.controls.enableZoom = !mobile() && !enabled;
     options.canvas.style.touchAction = enabled || mobile() ? "none" : "auto";
+    resetSceneRotation(state.sceneRotation);
     if (sceneReady) goTo(activeIndex, false);
   }
 
@@ -571,9 +631,30 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       updateUI();
     });
     folder.add(state, "transitionDuration", 0.2, 2, 0.05).name("Transition seconds");
-    folder.add(state, "cameraDrift").name("Camera idle drift");
-    folder.add(state, "driftAmount", 0, 3, 0.05).name("Drift amount °");
-    folder.add(state, "driftCycle", 8, 60, 1).name("Drift cycle sec");
+    const motionFolder = folder.addFolder("Scene rotation");
+    motionFolder
+      .add(state, "sceneRotation")
+      .name("Enabled")
+      .onChange(updateSceneRotationSettings);
+    motionFolder
+      .add(state, "rotationRange", 1, 360, 1)
+      .name("Rotation range °")
+      .onChange(updateSceneRotationSettings);
+    motionFolder
+      .add(state, "rotationSpeed", 0.01, 10, 0.01)
+      .name("Speed °/sec")
+      .onChange(updateSceneRotationSettings);
+    motionFolder
+      .add({ save: saveSceneRotation }, "save")
+      .name("Save scene rotation");
+    motionFolder
+      .add({ download: downloadSceneRotation }, "download")
+      .name("Download rotation JSON");
+    motionFolder
+      .add(state, "motionStatus")
+      .name("Settings")
+      .listen()
+      .disable();
     folder.add({ save: captureCurrent }, "save").name("Save full shot state");
     folder.add({ preview: () => goTo(activeIndex, false) }, "preview").name("Apply current shot");
     folder.add({ previous: () => goTo(activeIndex - 1) }, "previous").name("Previous shot");
@@ -667,24 +748,27 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     update: () => {
       if (
         !sceneReady ||
-        !state.storyMode ||
-        !state.cameraDrift ||
+        !state.sceneRotation ||
         transition?.isActive()
       ) {
         return;
       }
 
-      const elapsedSeconds = (performance.now() - driftStartedAt) * 0.001;
-      const phase = elapsedSeconds / Math.max(state.driftCycle, 1) * Math.PI * 2;
-      const angle = MathUtils.degToRad(state.driftAmount) * Math.sin(phase);
+      const elapsedSeconds =
+        (performance.now() - sceneRotationStartedAt) * 0.001;
+      const angularSpeed = MathUtils.degToRad(state.rotationSpeed);
+      let angle = sceneRotationBase;
 
-      driftOffset
-        .copy(driftBasePosition)
-        .sub(driftBaseTarget)
-        .applyAxisAngle(driftAxis, angle);
-      options.camera.position.copy(driftBaseTarget).add(driftOffset);
-      options.controls.target.copy(driftBaseTarget);
-      options.camera.lookAt(driftBaseTarget);
+      if (state.rotationRange >= 359.5) {
+        angle += elapsedSeconds * angularSpeed;
+      } else {
+        const amplitude = MathUtils.degToRad(state.rotationRange * 0.5);
+        const phase = elapsedSeconds * angularSpeed /
+          Math.max(amplitude, 0.0001);
+        angle += amplitude * Math.sin(phase);
+      }
+
+      options.setSceneRotationY(angle);
     },
     refresh: () => sceneReady && goTo(activeIndex, false),
   };

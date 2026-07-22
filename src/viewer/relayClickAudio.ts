@@ -40,6 +40,7 @@ const PROJECT_DEFAULTS: RelayClickSettings = {
 export function createRelayClickAudio(): RelayClickAudio {
   let context: AudioContext | null = null;
   let noiseBuffer: AudioBuffer | null = null;
+  let confirmationPlayed = false;
 
   const state: RelayClickSettings & {
     status: string;
@@ -49,6 +50,16 @@ export function createRelayClickAudio(): RelayClickAudio {
     status: "Tap or click once to enable relay sound",
     presetStatus: "Using project defaults",
   };
+
+  const startOverlay = document.createElement("button");
+  startOverlay.type = "button";
+  startOverlay.className = "relay-audio-start";
+  startOverlay.innerHTML = `
+    <span>Запустить со звуком</span>
+    <small>Start with sound</small>
+  `;
+  startOverlay.setAttribute("aria-label", "Запустить сцену со звуком");
+  document.body.appendChild(startOverlay);
 
   function settingsSnapshot(): RelayClickSettings {
     const {
@@ -110,18 +121,28 @@ export function createRelayClickAudio(): RelayClickAudio {
       await context.resume();
     }
 
-    state.status = "Relay clicks ready";
+    state.status = context.state === "running"
+      ? "Relay clicks ready"
+      : "Scroll, tap or press a key to enable relay sound";
   }
 
   const removeUnlockListeners = (): void => {
     document.removeEventListener("pointerdown", unlockFromGesture, true);
     document.removeEventListener("touchstart", unlockFromGesture, true);
+    window.removeEventListener("wheel", unlockFromGesture, true);
     window.removeEventListener("keydown", unlockFromGesture, true);
   };
 
   const unlockFromGesture = (): void => {
     void unlock().then(() => {
-      if (context?.state === "running") removeUnlockListeners();
+      if (context?.state === "running") {
+        removeUnlockListeners();
+        startOverlay.remove();
+        if (!confirmationPlayed) {
+          confirmationPlayed = true;
+          play(0, true);
+        }
+      }
     });
   };
 
@@ -132,6 +153,10 @@ export function createRelayClickAudio(): RelayClickAudio {
     passive: true,
   });
   document.addEventListener("touchstart", unlockFromGesture, {
+    capture: true,
+    passive: true,
+  });
+  window.addEventListener("wheel", unlockFromGesture, {
     capture: true,
     passive: true,
   });

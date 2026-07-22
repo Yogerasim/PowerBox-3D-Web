@@ -261,12 +261,15 @@ modelRoot.name = "POWERBOX_GROUPS";
 const lightRoot = new Group();
 lightRoot.name = "POWERBOX_BLENDER_LIGHTS";
 
-scene.add(modelRoot, lightRoot);
+const presentationRoot = new Group();
+presentationRoot.name = "POWERBOX_PRESENTATION_ROOT";
+scene.add(presentationRoot);
+presentationRoot.add(modelRoot, lightRoot);
 
 const yokeLightRig = createYokeLightRig();
 const relayClickAudio = createRelayClickAudio();
 yokeLightRig.setSwitchListener(relayClickAudio.play);
-scene.add(yokeLightRig.root);
+presentationRoot.add(yokeLightRig.root);
 
 const pmremGenerator = new PMREMGenerator(renderer);
 const roomEnvironment = new RoomEnvironment();
@@ -413,6 +416,11 @@ const presentationCameraSystem = createPresentationCameraSystem({
   applySceneState,
   setInteractiveChannel: yokeLightRig.setInteractiveChannel,
   setPerformanceControls: yokeLightRig.setPerformanceControls,
+  getSceneRotationY: () => presentationRoot.rotation.y,
+  setSceneRotationY: (value) => {
+    presentationRoot.rotation.y = value;
+    renderer.domElement.dataset.sceneRotationY = value.toFixed(6);
+  },
   requestRender,
 });
 
