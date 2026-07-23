@@ -9,6 +9,7 @@ import {
   DirectionalLight,
   Group,
   Matrix4,
+  MathUtils,
   Mesh,
   Object3D,
   OrthographicCamera,
@@ -80,6 +81,8 @@ app.innerHTML = `
     class="viewer-stage stage"
   ></div>
 
+  <div id="viewer-vignette" class="viewer-vignette" aria-hidden="true"></div>
+
   <header class="viewer-header header">
     <div>
       <p class="viewer-eyebrow">PowerBox Scene Lab</p>
@@ -124,6 +127,9 @@ function requireElement<T extends Element>(
 
 const stage =
   requireElement<HTMLDivElement>("#viewer-stage");
+
+const vignette =
+  requireElement<HTMLDivElement>("#viewer-vignette");
 
 const stats =
   requireElement<HTMLDivElement>("#viewer-stats");
@@ -250,7 +256,26 @@ const postSettings = {
   focusDistance: camera.position.distanceTo(controls.target),
   aperture: 0.003,
   maxBlur: 0.012,
+  vignette: false,
+  vignetteIntensity: 0.72,
+  vignetteSize: 48,
+  vignetteSoftness: 28,
 };
+
+function syncVignette(): void {
+  const inner = MathUtils.clamp(postSettings.vignetteSize, 0, 90);
+  const middle = MathUtils.clamp(
+    inner + postSettings.vignetteSoftness * 0.5,
+    inner,
+    98,
+  );
+  vignette.classList.toggle("is-visible", postSettings.vignette);
+  vignette.style.opacity = String(postSettings.vignetteIntensity);
+  vignette.style.setProperty("--vignette-inner", `${inner}%`);
+  vignette.style.setProperty("--vignette-middle", `${middle}%`);
+}
+
+syncVignette();
 
 bloomPass.enabled = postSettings.bloom;
 bokehPass.enabled = postSettings.depthOfField;
@@ -392,6 +417,7 @@ function applySceneState(state: SceneState): void {
   bloomPass.radius = postSettings.bloomRadius;
   bloomPass.threshold = postSettings.bloomThreshold;
   bokehPass.enabled = postSettings.depthOfField;
+  syncVignette();
   modelRoot.traverse((object) => {
     if (object instanceof Mesh) {
       object.castShadow = settings.shadows;
@@ -1042,6 +1068,28 @@ function addViewerGUI(): void {
   dofFolder
     .add(postSettings, "maxBlur", 0, 0.05, 0.0005)
     .name("Max blur");
+
+  const vignetteFolder = postFolder.addFolder("Vignette");
+
+  vignetteFolder
+    .add(postSettings, "vignette")
+    .name("Enabled")
+    .onChange(syncVignette);
+
+  vignetteFolder
+    .add(postSettings, "vignetteIntensity", 0, 1, 0.01)
+    .name("Intensity")
+    .onChange(syncVignette);
+
+  vignetteFolder
+    .add(postSettings, "vignetteSize", 0, 90, 1)
+    .name("Clear center %")
+    .onChange(syncVignette);
+
+  vignetteFolder
+    .add(postSettings, "vignetteSoftness", 1, 70, 1)
+    .name("Softness")
+    .onChange(syncVignette);
 
   const cameraActions = {
     useBlenderCamera: () => {

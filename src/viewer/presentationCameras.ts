@@ -19,6 +19,10 @@ export interface PostFXState {
   focusDistance: number;
   aperture: number;
   maxBlur: number;
+  vignette: boolean;
+  vignetteIntensity: number;
+  vignetteSize: number;
+  vignetteSoftness: number;
 }
 
 export interface SceneState {
@@ -142,9 +146,17 @@ function isConfig(value: unknown): value is PresentationShotConfig {
 }
 
 function migrateConfig(config: PresentationShotConfig): void {
+  const migratePostFX = (postFX: PostFXState): void => {
+    postFX.vignette ??= false;
+    postFX.vignetteIntensity ??= 0.72;
+    postFX.vignetteSize ??= 48;
+    postFX.vignetteSoftness ??= 28;
+  };
+
   config.shots.forEach((current) => {
     if (current.scene) {
       current.scene.yoke.settings.switchingPattern ??= "random";
+      migratePostFX(current.scene.postFX);
     }
 
     if (!current.mobileProfile) {
@@ -166,6 +178,7 @@ function migrateConfig(config: PresentationShotConfig): void {
 
     if (current.mobileProfile.scene) {
       current.mobileProfile.scene.yoke.settings.switchingPattern ??= "random";
+      migratePostFX(current.mobileProfile.scene.postFX);
     }
   });
 }

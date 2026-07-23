@@ -11,6 +11,24 @@ html, body, #viewer-app, .viewer-stage { width: 100%; height: 100%; margin: 0; }
 body { overflow: hidden; }
 .viewer-stage { position: fixed; inset: 0; }
 .viewer-stage canvas { display: block; width: 100%; height: 100%; }
+.viewer-vignette {
+  --vignette-inner: 48%;
+  --vignette-middle: 62%;
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  visibility: hidden;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0 var(--vignette-inner),
+    rgba(0, 0, 0, .36) var(--vignette-middle),
+    #000 100%
+  );
+  opacity: 0;
+  transition: opacity .35s ease, visibility .35s;
+}
+.viewer-vignette.is-visible { visibility: visible; }
 
 .viewer-header {
   position: fixed;
@@ -369,7 +387,7 @@ body.presentation-story-mode {
 
 .scene-hero h1 { position: absolute; top: 4.2%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
 .scene-hero h2 { position: absolute; top: 36%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-.scene-hero .scene-description { position: absolute; right: 4.5%; bottom: 4.8%; width: min(39vw, 500px); background-image: linear-gradient(90deg, #555 0%, #aaa 28%, #fff 62%, #777 100%); }
+.scene-hero .scene-description { position: absolute; right: 4.5%; bottom: 4.8%; width: min(39vw, 500px); text-align: right; background-image: linear-gradient(90deg, #555 0%, #aaa 28%, #fff 62%, #777 100%); }
 .scene-scroll-cue { position: absolute; left: 2%; bottom: 4%; display: grid; gap: 16px; }
 .scene-scroll-cue span { position: relative; width: 2px; height: 48vh; max-height: 310px; background: #fff; }
 .scene-scroll-cue span::after { content: ""; position: absolute; bottom: 0; left: -5px; width: 9px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg); }
@@ -410,7 +428,7 @@ body.presentation-story-mode {
 .scene-contact a:hover { color: #1710ff; transform: translateX(5px); }
 
 .scene-channels { pointer-events: none; }
-.scene-channels h1 { position: absolute; top: 4%; left: 50%; transform: translateX(-50%); font-size: clamp(23px, 2vw, 34px); font-weight: 320; text-shadow: 0 0 14px rgba(255,255,255,.9); }
+.scene-channels h1 { position: absolute; top: 4%; left: 50%; transform: translateX(-50%); font-size: clamp(24px, 2.4vw, 38px); font-weight: 620; line-height: 1; letter-spacing: -.055em; text-shadow: none; }
 .live-patterns { position: absolute; left: 2.7%; top: 29%; display: grid; gap: 20px; width: 238px; pointer-events: auto; }
 .live-patterns button { min-height: 43px; font: inherit; font-size: 17px; border-color: rgba(255,255,255,.18); border-width: 4px; }
 .live-patterns button.is-active { color: #090909; background: #fff; border-color: #fff; }

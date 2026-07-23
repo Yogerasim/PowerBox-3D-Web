@@ -51,7 +51,11 @@
           "autoFocus": false,
           "focusDistance": 7.45,
           "aperture": 0.0029,
-          "maxBlur": 0.0125
+          "maxBlur": 0.0125,
+          "vignette": false,
+          "vignetteIntensity": 0.72,
+          "vignetteSize": 48,
+          "vignetteSoftness": 28
         },
         "yoke": {
           "settings": {
@@ -228,7 +232,11 @@
             "autoFocus": false,
             "focusDistance": 7.45,
             "aperture": 0.0029,
-            "maxBlur": 0.0125
+            "maxBlur": 0.0125,
+            "vignette": false,
+            "vignetteIntensity": 0.72,
+            "vignetteSize": 48,
+            "vignetteSoftness": 28
           },
           "yoke": {
             "settings": {
@@ -427,7 +435,11 @@
           "autoFocus": false,
           "focusDistance": 7.45,
           "aperture": 0.0032,
-          "maxBlur": 0.016
+          "maxBlur": 0.016,
+          "vignette": false,
+          "vignetteIntensity": 0.72,
+          "vignetteSize": 48,
+          "vignetteSoftness": 28
         },
         "yoke": {
           "settings": {
@@ -604,7 +616,11 @@
             "autoFocus": false,
             "focusDistance": 7.45,
             "aperture": 0.0032,
-            "maxBlur": 0.016
+            "maxBlur": 0.016,
+            "vignette": false,
+            "vignetteIntensity": 0.72,
+            "vignetteSize": 48,
+            "vignetteSoftness": 28
           },
           "yoke": {
             "settings": {
@@ -762,14 +778,14 @@
       },
       "camera": {
         "position": [
-          4.388889,
-          5.06817,
-          -2.051603
+          3.425092,
+          5.043612,
+          -3.491324
         ],
         "target": [
-          -0.155355,
-          0.320292,
-          -0.283129
+          -0.002489,
+          0.339165,
+          0.035694
         ],
         "zoom": 1.576608,
         "orthographicHeight": 8,
@@ -803,7 +819,11 @@
           "autoFocus": false,
           "focusDistance": 6.95,
           "aperture": 0.0026,
-          "maxBlur": 0.016
+          "maxBlur": 0.016,
+          "vignette": true,
+          "vignetteIntensity": 0.72,
+          "vignetteSize": 48,
+          "vignetteSoftness": 28
         },
         "yoke": {
           "settings": {
@@ -980,7 +1000,11 @@
             "autoFocus": false,
             "focusDistance": 6.95,
             "aperture": 0.0026,
-            "maxBlur": 0.016
+            "maxBlur": 0.016,
+            "vignette": true,
+            "vignetteIntensity": 0.72,
+            "vignetteSize": 48,
+            "vignetteSoftness": 28
           },
           "yoke": {
             "settings": {
@@ -1179,7 +1203,11 @@
           "autoFocus": true,
           "focusDistance": 23.94,
           "aperture": 0.0031,
-          "maxBlur": 0.05
+          "maxBlur": 0.05,
+          "vignette": false,
+          "vignetteIntensity": 0.72,
+          "vignetteSize": 48,
+          "vignetteSoftness": 28
         },
         "yoke": {
           "settings": {
@@ -1356,7 +1384,11 @@
             "autoFocus": true,
             "focusDistance": 23.94,
             "aperture": 0.0031,
-            "maxBlur": 0.05
+            "maxBlur": 0.05,
+            "vignette": false,
+            "vignetteIntensity": 0.72,
+            "vignetteSize": 48,
+            "vignetteSoftness": 28
           },
           "yoke": {
             "settings": {
@@ -1555,7 +1587,11 @@
           "autoFocus": false,
           "focusDistance": 4.2,
           "aperture": 0.0027,
-          "maxBlur": 0.016
+          "maxBlur": 0.016,
+          "vignette": false,
+          "vignetteIntensity": 0.72,
+          "vignetteSize": 48,
+          "vignetteSoftness": 28
         },
         "yoke": {
           "settings": {
@@ -1732,7 +1768,11 @@
             "autoFocus": false,
             "focusDistance": 4.2,
             "aperture": 0.0027,
-            "maxBlur": 0.016
+            "maxBlur": 0.016,
+            "vignette": false,
+            "vignetteIntensity": 0.72,
+            "vignetteSize": 48,
+            "vignetteSoftness": 28
           },
           "yoke": {
             "settings": {
@@ -1931,7 +1971,11 @@
           "autoFocus": false,
           "focusDistance": 8.7,
           "aperture": 0.02,
-          "maxBlur": 0.016
+          "maxBlur": 0.016,
+          "vignette": false,
+          "vignetteIntensity": 0.72,
+          "vignetteSize": 48,
+          "vignetteSoftness": 28
         },
         "yoke": {
           "settings": {
@@ -2108,7 +2152,11 @@
             "autoFocus": false,
             "focusDistance": 8.7,
             "aperture": 0.02,
-            "maxBlur": 0.016
+            "maxBlur": 0.016,
+            "vignette": false,
+            "vignetteIntensity": 0.72,
+            "vignetteSize": 48,
+            "vignetteSoftness": 28
           },
           "yoke": {
             "settings": {
