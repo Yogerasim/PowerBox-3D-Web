@@ -88,6 +88,9 @@ interface Options {
     pattern: SwitchingPattern,
     speedHz: number,
     dutyCycle: number,
+    randomness: number,
+    phaseSpread: number,
+    offLevel: number,
   ) => void;
   getSceneRotationY: () => number;
   setSceneRotationY: (value: number) => void;
@@ -107,10 +110,10 @@ const STORAGE_KEY = "powerbox.presentation-shots.v2";
 const MOTION_STORAGE_KEY = "powerbox.scene-rotation.v3";
 const MOBILE_QUERY = "(max-width: 760px), (pointer: coarse)";
 const SHOT_IDS = [
-  "control",
+  "hero",
   "problem",
   "channels",
-  "hero",
+  "control",
   "reliability",
   "contact",
 ] as const;
@@ -190,7 +193,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   let touchStartX = 0;
   const channelStates: Array<boolean | null> =
     Array.from({ length: 8 }, () => null);
-  let manualChannels = false;
   let audio: HTMLAudioElement | null = null;
   let sceneRotationBase = 0;
   let sceneRotationStartedAt = performance.now();
@@ -198,13 +200,16 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   const state = {
     currentShot: SHOT_IDS[0] as string,
     storyMode: new URLSearchParams(location.search).get("story") === "1",
-    showText: false,
-    locale: "ru" as Locale,
+    showText: true,
+    locale: "en" as Locale,
     editingProfile: "desktop" as DeviceProfile,
     transitionDuration: 0.85,
     performancePattern: "random" as SwitchingPattern,
     performanceSpeed: 2,
     performanceDuty: 0.5,
+    performanceRandomness: 1,
+    performancePhaseSpread: 0,
+    performanceOffLevel: 0.35,
     sceneRotation: true,
     rotationRange: 360,
     rotationSpeed: 1.8,
@@ -265,47 +270,140 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   const overlay = document.createElement("div");
   overlay.className = "presentation-overlay is-text-hidden";
   overlay.innerHTML = `
-    <div class="presentation-shot-label" aria-live="polite"></div>
-    <div class="presentation-dots" aria-label="Presentation shots"></div>
-    <div class="presentation-interaction" aria-label="PowerBox interactive lighting">
-      <div class="presentation-patterns" aria-label="Lighting patterns"></div>
-      <label>Speed <input data-light-control="speed" type="range" min="0.05" max="12" step="0.05" value="2"></label>
-      <label>On time <input data-light-control="duty" type="range" min="0.05" max="0.95" step="0.01" value="0.5"></label>
-      <div class="presentation-channels" aria-label="PowerBox channels"></div>
+    <button class="presentation-language" type="button" aria-label="Switch language">RU / EN</button>
+    <div class="presentation-scenes">
+      <section class="presentation-scene scene-hero" data-shot="hero">
+        <h1>POWERBOX LIGHT INSTALL</h1>
+        <h2><span data-copy="heroLeadA">Digital signal.</span> <strong data-copy="heroLeadB">Physical light.</strong></h2>
+        <div class="scene-scroll-cue"><span></span><p data-copy="scroll">Scroll to explore</p></div>
+        <p class="scene-description" data-copy="heroBody">An eight-channel controller that connects music, digital control and physical lights into one living system.</p>
+      </section>
+      <section class="presentation-scene scene-problem" data-shot="problem">
+        <header><h1>CLEARER SYSTEM</h1><h2><strong data-copy="problemLeadA">Light</strong> <span data-copy="problemLeadB">without chaos.</span></h2></header>
+        <p class="scene-description" data-copy="problemBody">Eight power channels and real-time control are brought together in one device — without scattered relays, extension cords or improvised connections.</p>
+        <p class="scene-footer" data-copy="problemFooter">One enclosure. One system. Complete control.</p>
+      </section>
+      <section class="presentation-scene scene-channels" data-shot="channels">
+        <h1>LIVE CONTROL</h1>
+        <div class="live-patterns" aria-label="Lighting patterns"></div>
+        <div class="live-channels" aria-label="PowerBox channels"></div>
+        <div class="live-sliders">
+          <label data-control-label="speed"><span>Speed Hz <output>2.00</output></span><input data-light-control="speed" type="range" min="0.05" max="20" step="0.01" value="2"></label>
+          <label data-control-label="duty"><span>On duration <output>0.50</output></span><input data-light-control="duty" type="range" min="0.05" max="0.95" step="0.01" value="0.5"></label>
+          <label data-control-label="phase"><span>Phase spread <output>0.00</output></span><input data-light-control="phase" type="range" min="0" max="1" step="0.01" value="0"></label>
+          <label data-control-label="randomness"><span>Random timing <output>1.00</output></span><input data-light-control="randomness" type="range" min="0" max="1" step="0.01" value="1"></label>
+          <label data-control-label="off"><span>Off level <output>0.35</output></span><input data-light-control="off" type="range" min="0" max="1" step="0.01" value="0.35"></label>
+        </div>
+      </section>
+      <section class="presentation-scene scene-control" data-shot="control">
+        <h1>MULTIPLE INPUTS</h1>
+        <div class="scene-control-copy"><h2><strong data-copy="controlLeadA">One signal.</strong><br><strong data-copy="controlLeadB">Eight physical</strong> <span data-copy="controlLeadC">events.</span></h2><p data-copy="controlBody">PowerBox receives commands from TouchDesigner, Web UI, MIDI and UDP, turning digital data into an immediate lighting response.</p></div>
+        <p class="scene-footer">TOUCHDESIGNER · MIDI · UDP · WEB CONTROL</p>
+      </section>
+      <section class="presentation-scene scene-reliability" data-shot="reliability">
+        <header><h1>ENGINEERED INSIDE</h1><h2><strong data-copy="insideLeadA">Engineered from</strong> <span data-copy="insideLeadB">the inside out.</span></h2></header>
+        <p class="scene-description" data-copy="insideBody">Each channel operates independently. Power distribution, control electronics and protection components are organised within one clear architecture.</p>
+        <p class="scene-footer" data-copy="insideFooter">8 independent channels · 220 V · local control</p>
+      </section>
+      <section class="presentation-scene scene-contact" data-shot="contact">
+        <h1>START A PROJECT</h1>
+        <h2><span data-copy="contactLeadA">Build your own</span> <strong data-copy="contactLeadB">lighting system.</strong></h2>
+        <p class="scene-description" data-copy="contactBody">PowerBox can be adapted to your space, lighting fixtures and preferred control workflow.</p>
+        <nav><a href="https://t.me/philip_gerasim" target="_blank" rel="noreferrer" data-copy="discuss">Discuss a project</a><a href="https://github.com/Yogerasim/PowerBox" target="_blank" rel="noreferrer"><span data-copy="specs">View specifications</span></a></nav>
+      </section>
     </div>
+    <div class="presentation-dots" aria-label="Presentation shots"></div>
   `;
   document.body.appendChild(overlay);
 
-  const label = overlay.querySelector<HTMLElement>(".presentation-shot-label")!;
   const dots = overlay.querySelector<HTMLElement>(".presentation-dots")!;
-  const channels = overlay.querySelector<HTMLElement>(".presentation-channels")!;
-  const interaction = overlay.querySelector<HTMLElement>(".presentation-interaction")!;
-  const patterns = overlay.querySelector<HTMLElement>(".presentation-patterns")!;
-  const speedControl = overlay.querySelector<HTMLInputElement>("[data-light-control='speed']")!;
-  const dutyControl = overlay.querySelector<HTMLInputElement>("[data-light-control='duty']")!;
+  const scenes = Array.from(overlay.querySelectorAll<HTMLElement>(".presentation-scene"));
+  const channels = overlay.querySelector<HTMLElement>(".live-channels")!;
+  const patterns = overlay.querySelector<HTMLElement>(".live-patterns")!;
+  const languageButton = overlay.querySelector<HTMLButtonElement>(".presentation-language")!;
+  const controls = {
+    speed: overlay.querySelector<HTMLInputElement>("[data-light-control='speed']")!,
+    duty: overlay.querySelector<HTMLInputElement>("[data-light-control='duty']")!,
+    phase: overlay.querySelector<HTMLInputElement>("[data-light-control='phase']")!,
+    randomness: overlay.querySelector<HTMLInputElement>("[data-light-control='randomness']")!,
+    off: overlay.querySelector<HTMLInputElement>("[data-light-control='off']")!,
+  };
+
+  const copy: Record<Locale, Record<string, string>> = {
+    en: {
+      heroLeadA: "Digital signal.", heroLeadB: "Physical light.", scroll: "Scroll to explore",
+      heroBody: "An eight-channel controller that connects music, digital control and physical lights into one living system.",
+      problemLeadA: "Light", problemLeadB: "without chaos.",
+      problemBody: "Eight power channels and real-time control are brought together in one device — without scattered relays, extension cords or improvised connections.",
+      problemFooter: "One enclosure. One system. Complete control.",
+      controlLeadA: "One signal.", controlLeadB: "Eight physical", controlLeadC: "events.",
+      controlBody: "PowerBox receives commands from TouchDesigner, Web UI, MIDI and UDP, turning digital data into an immediate lighting response.",
+      insideLeadA: "Engineered from", insideLeadB: "the inside out.",
+      insideBody: "Each channel operates independently. Power distribution, control electronics and protection components are organised within one clear architecture.",
+      insideFooter: "8 independent channels · 220 V · local control",
+      contactLeadA: "Build your own", contactLeadB: "lighting system.",
+      contactBody: "PowerBox can be adapted to your space, lighting fixtures and preferred control workflow.",
+      discuss: "Discuss a project", specs: "View specifications",
+    },
+    ru: {
+      heroLeadA: "Цифровой сигнал.", heroLeadB: "Физический свет.", scroll: "Листайте, чтобы исследовать",
+      heroBody: "Восьмиканальный контроллер, который соединяет музыку, цифровое управление и реальные светильники в одну живую систему.",
+      problemLeadA: "Свет", problemLeadB: "без хаоса.",
+      problemBody: "Восемь каналов питания и управление в реальном времени собраны в одном устройстве — без россыпи реле, удлинителей и случайных соединений.",
+      problemFooter: "Один корпус. Одна система. Полный контроль.",
+      controlLeadA: "Один сигнал.", controlLeadB: "Восемь физических", controlLeadC: "событий.",
+      controlBody: "PowerBox принимает команды из TouchDesigner, Web UI, MIDI и по UDP, превращая цифровые данные в мгновенную реакцию света.",
+      insideLeadA: "Продумано", insideLeadB: "изнутри.",
+      insideBody: "Каждый канал работает независимо. Силовая часть, управляющая электроника и защитные элементы организованы в одной понятной архитектуре.",
+      insideFooter: "8 независимых каналов · 220 В · локальное управление",
+      contactLeadA: "Соберите свою", contactLeadB: "световую систему.",
+      contactBody: "PowerBox можно адаптировать под вашу сцену, светильники и выбранный способ управления.",
+      discuss: "Обсудить проект", specs: "Характеристики",
+    },
+  };
 
   const patternLabels: Array<[SwitchingPattern, string]> = [
-    ["chase", "Circle"],
     ["random", "Random"],
+    ["chase", "Circle"],
     ["single", "Crackle"],
   ];
 
+  function updateCopy(): void {
+    overlay.querySelectorAll<HTMLElement>("[data-copy]").forEach((element) => {
+      const key = element.dataset.copy!;
+      element.textContent = copy[state.locale][key] ?? element.textContent;
+    });
+    languageButton.textContent = state.locale === "en" ? "RU" : "EN";
+    document.documentElement.lang = state.locale;
+  }
+
+  function syncControlDisplay(control: HTMLInputElement): void {
+    const output = control.closest("label")?.querySelector("output");
+    if (output) output.textContent = Number(control.value).toFixed(2);
+    const min = Number(control.min);
+    const max = Number(control.max);
+    const percentage = ((Number(control.value) - min) / (max - min)) * 100;
+    control.style.setProperty("--range-progress", `${percentage}%`);
+  }
+
+  function applyChannelStates(): void {
+    channelStates.forEach((enabled, index) =>
+      options.setInteractiveChannel(index, enabled));
+  }
+
   function applyPerformanceControls(): void {
-    manualChannels = false;
-    channelStates.fill(null);
     options.setPerformanceControls(
       state.performancePattern,
       state.performanceSpeed,
       state.performanceDuty,
+      state.performanceRandomness,
+      state.performancePhaseSpread,
+      state.performanceOffLevel,
     );
+    applyChannelStates();
     patterns.querySelectorAll<HTMLButtonElement>("button").forEach((button) => {
-      button.classList.toggle(
-        "is-active",
-        button.dataset.pattern === state.performancePattern,
-      );
+      button.classList.toggle("is-active", button.dataset.pattern === state.performancePattern);
     });
-    channels.querySelectorAll("button").forEach((button) =>
-      button.classList.remove("is-active"));
     options.requestRender();
   }
 
@@ -316,35 +414,51 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     button.dataset.pattern = pattern;
     button.addEventListener("click", () => {
       state.performancePattern = pattern;
+      state.performanceRandomness = pattern === "random" ? 1 : 0;
+      controls.randomness.value = String(state.performanceRandomness);
+      syncControlDisplay(controls.randomness);
       applyPerformanceControls();
     });
     patterns.appendChild(button);
   });
 
-  speedControl.addEventListener("input", () => {
-    state.performanceSpeed = Number(speedControl.value);
-    applyPerformanceControls();
-  });
-
-  dutyControl.addEventListener("input", () => {
-    state.performanceDuty = Number(dutyControl.value);
-    applyPerformanceControls();
+  const sliderBindings: Array<[HTMLInputElement, keyof typeof state]> = [
+    [controls.speed, "performanceSpeed"],
+    [controls.duty, "performanceDuty"],
+    [controls.phase, "performancePhaseSpread"],
+    [controls.randomness, "performanceRandomness"],
+    [controls.off, "performanceOffLevel"],
+  ];
+  sliderBindings.forEach(([control, key]) => {
+    syncControlDisplay(control);
+    control.addEventListener("input", () => {
+      (state[key] as number) = Number(control.value);
+      syncControlDisplay(control);
+      applyPerformanceControls();
+    });
   });
 
   for (let index = 0; index < 8; index += 1) {
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = `CH${index + 1}`;
+    button.classList.add("is-active");
     button.addEventListener("click", () => {
-      manualChannels = true;
-      channelStates[index] = channelStates[index] === true ? false : true;
-      channelStates.forEach((enabled, channelIndex) =>
-        options.setInteractiveChannel(channelIndex, enabled));
-      button.classList.toggle("is-active", channelStates[index] === true);
+      channelStates[index] = channelStates[index] === false ? null : false;
+      options.setInteractiveChannel(index, channelStates[index]);
+      button.classList.toggle("is-active", channelStates[index] !== false);
+      button.setAttribute("aria-pressed", String(channelStates[index] !== false));
       options.requestRender();
     });
+    button.setAttribute("aria-pressed", "true");
     channels.appendChild(button);
   }
+
+  languageButton.addEventListener("click", () => {
+    state.locale = state.locale === "en" ? "ru" : "en";
+    updateCopy();
+    rebuildDots();
+  });
 
   function mobile(): boolean {
     return matchMedia(MOBILE_QUERY).matches;
@@ -407,25 +521,24 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     if (!config) return;
     const current = shot();
     state.currentShot = current.id;
-    label.textContent = current.label[state.locale];
     overlay.classList.toggle("is-text-hidden", !state.showText);
-    interaction.classList.toggle("is-visible", current.interactive);
+    scenes.forEach((scene) => {
+      scene.classList.toggle("is-active", scene.dataset.shot === current.id);
+    });
     dots.querySelectorAll("button").forEach((button, index) => {
       button.classList.toggle("is-active", index === activeIndex);
     });
     if (current.interactive) {
-      if (manualChannels) {
-        channelStates.forEach((enabled, index) =>
-          options.setInteractiveChannel(index, enabled));
-      } else {
-        applyPerformanceControls();
-      }
+      applyPerformanceControls();
     } else {
       channelStates.fill(null);
       channelStates.forEach((_, index) => options.setInteractiveChannel(index, null));
-      channels.querySelectorAll("button").forEach((button) =>
-        button.classList.remove("is-active"));
+      channels.querySelectorAll("button").forEach((button) => {
+        button.classList.add("is-active");
+        button.setAttribute("aria-pressed", "true");
+      });
     }
+    updateCopy();
   }
 
   function applyImmediate(current: PresentationShot): void {
@@ -461,9 +574,15 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       state.performancePattern = destinationScene.yoke.settings.switchingPattern;
       state.performanceSpeed = destinationScene.yoke.settings.switchingSpeedHz;
       state.performanceDuty = destinationScene.yoke.settings.dutyCycle;
-      speedControl.value = String(state.performanceSpeed);
-      dutyControl.value = String(state.performanceDuty);
-      manualChannels = false;
+      state.performanceRandomness = destinationScene.yoke.settings.randomness;
+      state.performancePhaseSpread = destinationScene.yoke.settings.phaseSpread;
+      state.performanceOffLevel = destinationScene.yoke.settings.offLevel;
+      controls.speed.value = String(state.performanceSpeed);
+      controls.duty.value = String(state.performanceDuty);
+      controls.randomness.value = String(state.performanceRandomness);
+      controls.phase.value = String(state.performancePhaseSpread);
+      controls.off.value = String(state.performanceOffLevel);
+      Object.values(controls).forEach(syncControlDisplay);
     }
     transition?.kill();
 

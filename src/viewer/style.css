@@ -283,7 +283,7 @@ body.presentation-story-mode
   touch-action: pan-y !important;
 }
 
-/* Seven-shot director V2 */
+/* Six-scene story composition */
 
 html.presentation-story-mode,
 body.presentation-story-mode {
@@ -305,30 +305,126 @@ body.presentation-story-mode {
   display: block;
 }
 
-.presentation-overlay.is-editor .presentation-dots {
-  bottom: 18px;
-}
-
-.presentation-shot-label {
-  position: absolute;
-  left: clamp(20px, 5vw, 72px);
-  bottom: clamp(68px, 9vh, 110px);
-  max-width: min(680px, calc(100vw - 40px));
-  font-size: clamp(30px, 5vw, 76px);
-  font-weight: 560;
-  line-height: .95;
-  letter-spacing: -.05em;
-  transition: opacity 180ms ease;
-}
-
-.presentation-overlay.is-text-hidden .presentation-shot-label {
+.presentation-scenes,
+.presentation-scene { position: absolute; inset: 0; }
+.presentation-scene {
+  visibility: hidden;
   opacity: 0;
+  color: #fff;
+  transition: opacity .4s ease, visibility .4s;
 }
+.presentation-scene.is-active { visibility: visible; opacity: 1; }
+.presentation-overlay.is-text-hidden .presentation-scenes { opacity: 0; }
+.presentation-overlay.is-editor .presentation-scenes,
+.presentation-overlay.is-editor .presentation-language { display: none; }
+.presentation-scene h1,
+.presentation-scene h2,
+.presentation-scene p { margin: 0; }
+.presentation-scene h1 {
+  font-size: clamp(36px, 4vw, 66px);
+  font-weight: 760;
+  line-height: .9;
+  letter-spacing: -.065em;
+}
+.presentation-scene h2 {
+  font-size: clamp(24px, 2.4vw, 38px);
+  font-weight: 620;
+  line-height: 1;
+  letter-spacing: -.055em;
+}
+.presentation-scene strong { color: #1710ff; font-weight: inherit; }
+.presentation-scene .scene-description,
+.presentation-scene .scene-footer {
+  font-size: clamp(16px, 1.45vw, 23px);
+  font-weight: 580;
+  line-height: 1.14;
+  letter-spacing: -.04em;
+}
+.presentation-scene.is-active h1 { animation: story-enter-down .72s cubic-bezier(.2,.8,.2,1) both; }
+.presentation-scene.is-active h2 { animation: story-enter-fade .72s .1s ease both; }
+.presentation-scene.is-active .scene-description { animation: story-enter-side .72s .2s cubic-bezier(.2,.8,.2,1) both; }
+.presentation-scene.is-active .scene-footer,
+.presentation-scene.is-active nav { animation: story-enter-up .72s .32s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes story-enter-down { from { opacity: 0; transform: translateY(-28px); } }
+@keyframes story-enter-up { from { opacity: 0; transform: translateY(28px); } }
+@keyframes story-enter-side { from { opacity: 0; transform: translateX(36px); } }
+@keyframes story-enter-fade { from { opacity: 0; filter: blur(12px); } }
+
+.presentation-language {
+  position: absolute;
+  z-index: 5;
+  right: 24px;
+  bottom: 22px;
+  padding: 8px 12px;
+  color: rgba(255,255,255,.72);
+  background: rgba(0,0,0,.28);
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+}
+
+.scene-hero h1 { position: absolute; top: 4.2%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+.scene-hero h2 { position: absolute; top: 36%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+.scene-hero .scene-description { position: absolute; right: 4.5%; bottom: 4.8%; width: min(39vw, 500px); color: rgba(255,255,255,.45); }
+.scene-scroll-cue { position: absolute; left: 2%; bottom: 4%; display: grid; gap: 16px; }
+.scene-scroll-cue span { position: relative; width: 2px; height: 48vh; max-height: 310px; background: #fff; }
+.scene-scroll-cue span::after { content: ""; position: absolute; bottom: 0; left: -5px; width: 9px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg); }
+.scene-scroll-cue p { font-size: 17px; font-weight: 620; }
+
+.scene-problem header,
+.scene-reliability header { position: absolute; top: 4%; right: 3%; text-align: right; }
+.scene-problem .scene-description { position: absolute; top: 36%; right: 3%; width: min(42vw, 540px); text-align: right; }
+.scene-problem .scene-footer { position: absolute; right: 3%; bottom: 3%; }
+
+.scene-control h1 { position: absolute; top: 4%; left: 3%; }
+.scene-control-copy { position: absolute; left: 3%; bottom: 4%; width: min(31vw, 390px); }
+.scene-control-copy h2 { margin-bottom: 32px; }
+.scene-control-copy p { font-size: clamp(15px, 1.35vw, 21px); font-weight: 600; line-height: 1.14; letter-spacing: -.04em; }
+.scene-control .scene-footer { position: absolute; right: 3%; bottom: 3%; color: #1710ff; }
+
+.scene-reliability .scene-description { position: absolute; right: 3%; bottom: 4%; width: min(35vw, 450px); text-align: right; }
+.scene-reliability .scene-footer { position: absolute; left: 3%; bottom: 4%; }
+
+.scene-contact h1 { position: absolute; top: 4%; left: 2.2%; }
+.scene-contact h2 { position: absolute; top: 12%; left: 2.2%; }
+.scene-contact .scene-description { position: absolute; top: 31%; left: 2.2%; width: min(34vw, 430px); }
+.scene-contact nav { position: absolute; top: 49%; left: 2.2%; display: grid; gap: 22px; width: 240px; pointer-events: auto; }
+.scene-contact a,
+.live-patterns button,
+.live-channels button {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  color: #fff;
+  background: rgba(0,0,0,.2);
+  border: 4px solid rgba(255,255,255,.85);
+  border-radius: 999px;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  transition: color .2s, background .2s, border-color .2s, transform .2s;
+}
+.scene-contact a:hover { color: #1710ff; transform: translateX(5px); }
+
+.scene-channels { pointer-events: none; }
+.scene-channels h1 { position: absolute; top: 4%; left: 50%; transform: translateX(-50%); font-size: clamp(23px, 2vw, 34px); font-weight: 320; text-shadow: 0 0 14px rgba(255,255,255,.9); }
+.live-patterns { position: absolute; left: 2.7%; top: 29%; display: grid; gap: 20px; width: 238px; pointer-events: auto; }
+.live-patterns button { min-height: 43px; font: inherit; font-size: 17px; border-color: rgba(255,255,255,.18); border-width: 4px; }
+.live-patterns button.is-active { color: #090909; background: #fff; border-color: #fff; }
+.live-channels { position: absolute; left: 2.7%; top: 58%; display: grid; grid-template-columns: repeat(4, 52px); gap: 8px 10px; pointer-events: auto; }
+.live-channels button { min-height: 52px; padding: 0; font: inherit; font-size: 17px; border-radius: 10px; border-color: rgba(255,255,255,.18); }
+.live-channels button.is-active { color: #090909; background: #fff; border-color: #fff; }
+.live-sliders { position: absolute; top: 29%; right: 2.7%; display: grid; gap: 18px; width: 220px; pointer-events: auto; }
+.live-sliders label { position: relative; height: 44px; }
+.live-sliders label > span { position: absolute; z-index: 2; inset: 0; display: grid; place-items: center; font-size: 16px; pointer-events: none; }
+.live-sliders input { appearance: none; width: 100%; height: 44px; margin: 0; background: linear-gradient(90deg, rgba(255,255,255,.65) 0 var(--range-progress), transparent var(--range-progress)); border: 4px solid rgba(255,255,255,.85); border-radius: 999px; }
+.live-sliders input::-webkit-slider-thumb { appearance: none; width: 30px; height: 30px; background: #fff; border-radius: 50%; box-shadow: 0 0 12px rgba(255,255,255,.9); }
+.live-sliders input::-moz-range-thumb { width: 30px; height: 30px; border: 0; background: #fff; border-radius: 50%; box-shadow: 0 0 12px rgba(255,255,255,.9); }
 
 .presentation-dots {
   position: absolute;
   left: 50%;
-  bottom: 24px;
+  bottom: 16px;
   display: flex;
   gap: 10px;
   transform: translateX(-50%);
@@ -346,63 +442,8 @@ body.presentation-story-mode {
 }
 
 .presentation-dots button.is-active {
-  background: #ff6b2c;
+  background: #1710ff;
   transform: scale(1.45);
-}
-
-.presentation-interaction {
-  position: absolute;
-  left: 50%;
-  bottom: 58px;
-  display: none;
-  gap: 8px;
-  width: min(680px, calc(100vw - 32px));
-  padding: 12px;
-  transform: translateX(-50%);
-  pointer-events: auto;
-  background: rgba(8,8,8,.72);
-  border: 1px solid rgba(255,255,255,.14);
-  border-radius: 14px;
-  backdrop-filter: blur(16px);
-}
-
-.presentation-interaction.is-visible { display: grid; }
-
-.presentation-patterns,
-.presentation-channels {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.presentation-channels {
-  grid-template-columns: repeat(8, minmax(42px, 1fr));
-}
-
-.presentation-interaction label {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  align-items: center;
-  gap: 10px;
-  color: rgba(255,255,255,.72);
-  font-size: 12px;
-}
-
-.presentation-interaction input { width: 100%; }
-
-.presentation-interaction button {
-  min-height: 44px;
-  color: rgba(255,255,255,.72);
-  background: rgba(8,8,8,.72);
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 10px;
-  backdrop-filter: blur(12px);
-}
-
-.presentation-interaction button.is-active {
-  color: #fff;
-  background: #ff6b2c;
-  border-color: #ff6b2c;
 }
 
 body.presentation-story-mode .viewer-header,
@@ -412,11 +453,38 @@ body.presentation-story-mode > .lil-gui {
 }
 
 @media (max-width: 760px), (pointer: coarse) {
-  .presentation-shot-label { bottom: 84px; }
-  .presentation-interaction {
-    bottom: 54px;
-  }
-  .presentation-channels { grid-template-columns: repeat(4, 1fr); }
+  .presentation-scene h1 { font-size: clamp(28px, 9vw, 46px); }
+  .presentation-scene h2 { font-size: clamp(21px, 6vw, 30px); }
+  .presentation-scene .scene-description, .presentation-scene .scene-footer { font-size: 15px; }
+  .scene-hero h1 { top: 6%; max-width: 92%; white-space: normal; text-align: center; }
+  .scene-hero h2 { top: 24%; white-space: normal; width: 90%; text-align: center; }
+  .scene-hero .scene-description { right: 6%; bottom: 9%; width: 76%; }
+  .scene-scroll-cue { left: 6%; bottom: 8%; }
+  .scene-scroll-cue span { height: 28vh; }
+  .scene-scroll-cue p { display: none; }
+  .scene-problem header, .scene-reliability header { top: 7%; right: 5%; max-width: 90%; }
+  .scene-problem .scene-description { top: 27%; right: 5%; width: 78%; }
+  .scene-problem .scene-footer { right: 5%; bottom: 8%; max-width: 80%; text-align: right; }
+  .scene-control h1 { top: 7%; left: 5%; }
+  .scene-control-copy { left: 5%; bottom: 10%; width: 76%; }
+  .scene-control-copy h2 { margin-bottom: 18px; }
+  .scene-control .scene-footer { right: 5%; bottom: 4%; font-size: 11px; }
+  .scene-reliability .scene-description { right: 5%; bottom: 12%; width: 76%; }
+  .scene-reliability .scene-footer { left: 5%; bottom: 5%; }
+  .scene-contact h1 { top: 7%; left: 5%; }
+  .scene-contact h2 { top: 15%; left: 5%; width: 90%; }
+  .scene-contact .scene-description { top: 28%; left: 5%; width: 78%; }
+  .scene-contact nav { top: auto; left: 5%; bottom: 11%; width: 230px; }
+  .scene-channels h1 { top: 5%; }
+  .live-patterns { left: 5%; top: 19%; width: 42%; gap: 10px; }
+  .live-patterns button { min-height: 38px; font-size: 14px; }
+  .live-channels { left: 5%; top: 43%; grid-template-columns: repeat(4, 42px); gap: 7px; }
+  .live-channels button { min-height: 42px; font-size: 13px; }
+  .live-sliders { top: auto; right: 5%; bottom: 10%; width: 55%; gap: 8px; }
+  .live-sliders label, .live-sliders input { height: 36px; }
+  .live-sliders label > span { font-size: 12px; }
+  .live-sliders input::-webkit-slider-thumb { width: 24px; height: 24px; }
+  .presentation-language { right: 12px; bottom: 12px; }
   .presentation-dots { bottom: 18px; }
   body.presentation-story-mode .viewer-stage canvas {
     touch-action: none !important;

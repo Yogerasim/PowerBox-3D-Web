@@ -98,6 +98,9 @@ export interface YokeLightRig {
     pattern: SwitchingPattern,
     speedHz: number,
     dutyCycle: number,
+    randomness: number,
+    phaseSpread: number,
+    offLevel: number,
   ) => void;
   setAnimationPaused: (paused: boolean) => void;
   setSwitchListener: (
@@ -1145,13 +1148,21 @@ export function createYokeLightRig(): YokeLightRig {
         interactiveChannels[index] = enabled;
       }
     },
-    setPerformanceControls: (pattern, speedHz, dutyCycle) => {
+    setPerformanceControls: (
+      pattern,
+      speedHz,
+      dutyCycle,
+      randomness,
+      phaseSpread,
+      offLevel,
+    ) => {
       settings.switching = true;
       settings.switchingPattern = pattern;
       settings.switchingSpeedHz = MathUtils.clamp(speedHz, 0.05, 20);
       settings.dutyCycle = MathUtils.clamp(dutyCycle, 0.05, 0.95);
-      settings.randomness = pattern === "random" ? 1 : 0;
-      interactiveChannels.fill(null);
+      settings.randomness = MathUtils.clamp(randomness, 0, 1);
+      settings.phaseSpread = MathUtils.clamp(phaseSpread, 0, 1);
+      settings.offLevel = MathUtils.clamp(offLevel, 0, 1);
     },
     setAnimationPaused: (paused) => {
       animationPaused = paused;
