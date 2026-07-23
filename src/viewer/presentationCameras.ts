@@ -106,6 +106,14 @@ const CONFIG_URL = `${import.meta.env.BASE_URL}config/presentation-shots.json`;
 const STORAGE_KEY = "powerbox.presentation-shots.v2";
 const MOTION_STORAGE_KEY = "powerbox.scene-rotation.v3";
 const MOBILE_QUERY = "(max-width: 760px), (pointer: coarse)";
+const SHOT_IDS = [
+  "control",
+  "problem",
+  "channels",
+  "hero",
+  "reliability",
+  "contact",
+] as const;
 
 interface SceneRotationSettings {
   enabled: boolean;
@@ -126,7 +134,8 @@ function isConfig(value: unknown): value is PresentationShotConfig {
   const candidate = value as Partial<PresentationShotConfig>;
   return typeof value === "object" && value !== null &&
     candidate.version === 2 && Array.isArray(candidate.shots) &&
-    candidate.shots.length === 7;
+    candidate.shots.length === SHOT_IDS.length &&
+    candidate.shots.every((shot, index) => shot.id === SHOT_IDS[index]);
 }
 
 function migrateConfig(config: PresentationShotConfig): void {
@@ -187,7 +196,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   let sceneRotationStartedAt = performance.now();
 
   const state = {
-    currentShot: "hero",
+    currentShot: SHOT_IDS[0] as string,
     storyMode: new URLSearchParams(location.search).get("story") === "1",
     showText: false,
     locale: "ru" as Locale,
@@ -605,11 +614,11 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     }
     migrateConfig(config);
     rebuildDots();
-    state.status = "Seven independent shot states loaded";
+    state.status = `${SHOT_IDS.length} independent shot states loaded`;
   }
 
   function addGUI(gui: GUI): void {
-    const folder = gui.addFolder("Shot editor · 7 views");
+    const folder = gui.addFolder(`Shot editor · ${SHOT_IDS.length} views`);
     const shotMap = Object.fromEntries((config?.shots ?? []).map((item, index) =>
       [`${index + 1} · ${item.label[state.locale]}`, item.id]));
     folder.add(state, "currentShot", shotMap).name("Current shot").listen().onChange((id: string) => {

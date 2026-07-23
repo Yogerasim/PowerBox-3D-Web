@@ -7,10 +7,10 @@ export interface StorySection {
 
 export const storySections: StorySection[] = [
   {
-    id: "hero",
-    eyebrow: "PowerBox",
-    title: "Цифровой сигнал. Физический свет.",
-    body: "Восьмиканальный контроллер для световых и медиаинсталляций.",
+    id: "control",
+    eyebrow: "Multiple inputs",
+    title: "Один сигнал. Восемь физических событий.",
+    body: "TouchDesigner, MIDI, UDP и Web UI превращают цифровые команды в мгновенную реакцию света.",
   },
   {
     id: "problem",
@@ -25,22 +25,16 @@ export const storySections: StorySection[] = [
     body: "Включайте приборы независимо или управляйте ими как одной системой.",
   },
   {
-    id: "control",
-    eyebrow: "Control",
-    title: "TouchDesigner, UDP, Web UI и MIDI.",
-    body: "Соединяйте цифровые команды с реальными световыми объектами.",
+    id: "hero",
+    eyebrow: "PowerBox Light Install",
+    title: "Цифровой сигнал. Физический свет.",
+    body: "Восьмиканальный контроллер, который соединяет музыку, цифровое управление и реальные светильники в одну живую систему.",
   },
   {
     id: "reliability",
     eyebrow: "Engineering",
     title: "Продуманная структура внутри.",
     body: "Силовая часть, логика управления и восемь каналов собраны в одном устройстве.",
-  },
-  {
-    id: "installation",
-    eyebrow: "Installation",
-    title: "Свет становится участником пространства.",
-    body: "Для выставок, перформансов, медиасцен и экспериментальных инсталляций.",
   },
   {
     id: "contact",

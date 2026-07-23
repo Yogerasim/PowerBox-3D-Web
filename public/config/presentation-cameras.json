@@ -2,26 +2,26 @@
   "version": 1,
   "shots": [
     {
-      "id": "hero",
-      "label": "Цифровой сигнал. Физический свет.",
+      "id": "control",
+      "label": "TouchDesigner, UDP, Web UI и MIDI.",
       "position": [
-        -9.851993,
-        18.851783,
-        -11.883361
+        -3.886194,
+        1.311785,
+        -6.39403
       ],
       "target": [
-        -0.522776,
-        0.230966,
-        0.454048
+        -0.054796,
+        0.122752,
+        -0.313809
       ],
-      "zoom": 1.682219,
+      "zoom": 10.761414,
       "orthographicHeight": 8,
       "dof": {
         "enabled": true,
         "autoFocus": true,
-        "focusDistance": 7.95,
-        "aperture": 0.0119,
-        "maxBlur": 0.0005
+        "focusDistance": 23.94,
+        "aperture": 0.02,
+        "maxBlur": 0.016
       }
     },
     {
@@ -71,26 +71,26 @@
       }
     },
     {
-      "id": "control",
-      "label": "TouchDesigner, UDP, Web UI и MIDI.",
+      "id": "hero",
+      "label": "Цифровой сигнал. Физический свет.",
       "position": [
-        -3.886194,
-        1.311785,
-        -6.39403
+        -9.851993,
+        18.851783,
+        -11.883361
       ],
       "target": [
-        -0.054796,
-        0.122752,
-        -0.313809
+        -0.522776,
+        0.230966,
+        0.454048
       ],
-      "zoom": 10.761414,
+      "zoom": 1.682219,
       "orthographicHeight": 8,
       "dof": {
         "enabled": true,
         "autoFocus": true,
-        "focusDistance": 23.94,
-        "aperture": 0.02,
-        "maxBlur": 0.016
+        "focusDistance": 7.95,
+        "aperture": 0.0119,
+        "maxBlur": 0.0005
       }
     },
     {
@@ -107,29 +107,6 @@
         0.033066
       ],
       "zoom": 2.463973,
-      "orthographicHeight": 8,
-      "dof": {
-        "enabled": true,
-        "autoFocus": true,
-        "focusDistance": 23.94,
-        "aperture": 0.02,
-        "maxBlur": 0.016
-      }
-    },
-    {
-      "id": "installation",
-      "label": "Свет становится участником пространства.",
-      "position": [
-        -5.002364,
-        3.098685,
-        -9.578519
-      ],
-      "target": [
-        -0.527451,
-        0.339968,
-        -0.410387
-      ],
-      "zoom": 3.253723,
       "orthographicHeight": 8,
       "dof": {
         "enabled": true,
