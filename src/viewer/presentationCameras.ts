@@ -285,40 +285,40 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   overlay.innerHTML = `
     <div class="presentation-scenes">
       <section class="presentation-scene scene-hero" data-shot="hero">
-        <h1>POWERBOX LIGHT INSTALL</h1>
+        <h1 data-copy="heroTitle">POWERBOX LIGHT INSTALL</h1>
         <h2><span data-copy="heroLeadA">Digital signal.</span> <strong data-copy="heroLeadB">Physical light.</strong></h2>
         <div class="scene-scroll-cue"><span></span><p data-copy="scroll">Scroll to explore</p></div>
         <p class="scene-description" data-copy="heroBody">An eight-channel controller that connects music, digital control and physical lights into one living system.</p>
       </section>
       <section class="presentation-scene scene-problem" data-shot="problem">
-        <header><h1>CLEARER SYSTEM</h1><h2><strong data-copy="problemLeadA">Light</strong> <span data-copy="problemLeadB">without chaos.</span></h2></header>
+        <header><h1 data-copy="problemTitle">CLEARER SYSTEM</h1><h2><strong data-copy="problemLeadA">Light</strong> <span data-copy="problemLeadB">without chaos.</span></h2></header>
         <p class="scene-description" data-copy="problemBody">Eight power channels and real-time control are brought together in one device — without scattered relays, extension cords or improvised connections.</p>
         <p class="scene-footer" data-copy="problemFooter">One enclosure. One system. Complete control.</p>
       </section>
       <section class="presentation-scene scene-channels" data-shot="channels">
-        <h1>LIVE CONTROL</h1>
+        <h1 data-copy="channelsTitle">LIVE CONTROL</h1>
         <div class="live-patterns" aria-label="Lighting patterns"></div>
         <div class="live-channels" aria-label="PowerBox channels"></div>
         <div class="live-sliders">
-          <label data-control-label="speed"><span>Speed Hz <output>2.00</output></span><input data-light-control="speed" type="range" min="0.05" max="20" step="0.01" value="2"></label>
-          <label data-control-label="duty"><span>On duration <output>0.50</output></span><input data-light-control="duty" type="range" min="0.05" max="0.95" step="0.01" value="0.5"></label>
-          <label data-control-label="phase"><span>Phase spread <output>0.00</output></span><input data-light-control="phase" type="range" min="0" max="1" step="0.01" value="0"></label>
-          <label data-control-label="randomness"><span>Random timing <output>1.00</output></span><input data-light-control="randomness" type="range" min="0" max="1" step="0.01" value="1"></label>
-          <label data-control-label="off"><span>Off level <output>0.35</output></span><input data-light-control="off" type="range" min="0" max="1" step="0.01" value="0.35"></label>
+          <label data-control-label="speed"><span><b data-copy="speedLabel">Speed Hz</b> <output>2.00</output></span><input data-light-control="speed" type="range" min="0.05" max="20" step="0.01" value="2"></label>
+          <label data-control-label="duty"><span><b data-copy="dutyLabel">On duration</b> <output>0.50</output></span><input data-light-control="duty" type="range" min="0.05" max="0.95" step="0.01" value="0.5"></label>
+          <label data-control-label="phase"><span><b data-copy="phaseLabel">Phase spread</b> <output>0.00</output></span><input data-light-control="phase" type="range" min="0" max="1" step="0.01" value="0"></label>
+          <label data-control-label="randomness"><span><b data-copy="randomLabel">Random timing</b> <output>1.00</output></span><input data-light-control="randomness" type="range" min="0" max="1" step="0.01" value="1"></label>
+          <label data-control-label="off"><span><b data-copy="offLabel">Off level</b> <output>0.35</output></span><input data-light-control="off" type="range" min="0" max="1" step="0.01" value="0.35"></label>
         </div>
       </section>
       <section class="presentation-scene scene-control" data-shot="control">
-        <h1>MULTIPLE INPUTS</h1>
+        <h1 data-copy="controlTitle">MULTIPLE INPUTS</h1>
         <div class="scene-control-copy"><h2><strong data-copy="controlLeadA">One signal.</strong><br><strong data-copy="controlLeadB">Eight physical</strong> <span data-copy="controlLeadC">events.</span></h2><p data-copy="controlBody">PowerBox receives commands from TouchDesigner, Web UI, MIDI and UDP, turning digital data into an immediate lighting response.</p></div>
         <p class="scene-footer">TOUCHDESIGNER · MIDI · UDP · WEB CONTROL</p>
       </section>
       <section class="presentation-scene scene-reliability" data-shot="reliability">
-        <header><h1>ENGINEERED INSIDE</h1><h2><strong data-copy="insideLeadA">Engineered from</strong> <span data-copy="insideLeadB">the inside out.</span></h2></header>
+        <header><h1 data-copy="insideTitle">ENGINEERED INSIDE</h1><h2><strong data-copy="insideLeadA">Engineered from</strong> <span data-copy="insideLeadB">the inside out.</span></h2></header>
         <p class="scene-description" data-copy="insideBody">Each channel operates independently. Power distribution, control electronics and protection components are organised within one clear architecture.</p>
         <p class="scene-footer" data-copy="insideFooter">8 independent channels · 220 V · local control</p>
       </section>
       <section class="presentation-scene scene-contact" data-shot="contact">
-        <h1>START A PROJECT</h1>
+        <h1 data-copy="contactTitle">START A PROJECT</h1>
         <h2><span data-copy="contactLeadA">Build your own</span> <strong data-copy="contactLeadB">lighting system.</strong></h2>
         <p class="scene-description" data-copy="contactBody">PowerBox can be adapted to your space, lighting fixtures and preferred control workflow.</p>
         <nav><a href="https://t.me/philip_gerasim" target="_blank" rel="noreferrer" data-copy="discuss">Discuss a project</a><a href="https://github.com/Yogerasim/PowerBox" target="_blank" rel="noreferrer"><span data-copy="specs">View specifications</span></a></nav>
@@ -342,47 +342,69 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
 
   const copy: Record<Locale, Record<string, string>> = {
     en: {
+      heroTitle: "POWERBOX LIGHT INSTALL",
       heroLeadA: "Digital signal.", heroLeadB: "Physical light.", scroll: "Scroll to explore",
       heroBody: "An eight-channel controller that connects music, digital control and physical lights into one living system.",
       problemLeadA: "Light", problemLeadB: "without chaos.",
       problemBody: "Eight power channels and real-time control are brought together in one device — without scattered relays, extension cords or improvised connections.",
       problemFooter: "One enclosure. One system. Complete control.",
+      problemTitle: "CLEARER SYSTEM",
+      channelsTitle: "LIVE CONTROL",
+      randomPattern: "Random", circlePattern: "Circle", cracklePattern: "Crackle",
+      speedLabel: "Speed Hz", dutyLabel: "On duration", phaseLabel: "Phase spread",
+      randomLabel: "Random timing", offLabel: "Off level",
+      controlTitle: "MULTIPLE INPUTS",
       controlLeadA: "One signal.", controlLeadB: "Eight physical", controlLeadC: "events.",
       controlBody: "PowerBox receives commands from TouchDesigner, Web UI, MIDI and UDP, turning digital data into an immediate lighting response.",
       insideLeadA: "Engineered from", insideLeadB: "the inside out.",
       insideBody: "Each channel operates independently. Power distribution, control electronics and protection components are organised within one clear architecture.",
       insideFooter: "8 independent channels · 220 V · local control",
+      insideTitle: "ENGINEERED INSIDE",
       contactLeadA: "Build your own", contactLeadB: "lighting system.",
       contactBody: "PowerBox can be adapted to your space, lighting fixtures and preferred control workflow.",
       discuss: "Discuss a project", specs: "View specifications",
+      contactTitle: "START A PROJECT",
     },
     ru: {
+      heroTitle: "POWERBOX · СВЕТОВАЯ ИНСТАЛЛЯЦИЯ",
       heroLeadA: "Цифровой сигнал.", heroLeadB: "Физический свет.", scroll: "Листайте, чтобы исследовать",
       heroBody: "Восьмиканальный контроллер, который соединяет музыку, цифровое управление и реальные светильники в одну живую систему.",
       problemLeadA: "Свет", problemLeadB: "без хаоса.",
       problemBody: "Восемь каналов питания и управление в реальном времени собраны в одном устройстве — без россыпи реле, удлинителей и случайных соединений.",
       problemFooter: "Один корпус. Одна система. Полный контроль.",
+      problemTitle: "ПОНЯТНАЯ СИСТЕМА",
+      channelsTitle: "УПРАВЛЕНИЕ СВЕТОМ",
+      randomPattern: "Случайно", circlePattern: "По кругу", cracklePattern: "Импульс",
+      speedLabel: "Скорость, Гц", dutyLabel: "Длительность", phaseLabel: "Разброс фаз",
+      randomLabel: "Случайный ритм", offLabel: "Уровень паузы",
+      controlTitle: "СПОСОБЫ УПРАВЛЕНИЯ",
       controlLeadA: "Один сигнал.", controlLeadB: "Восемь физических", controlLeadC: "событий.",
       controlBody: "PowerBox принимает команды из TouchDesigner, Web UI, MIDI и по UDP, превращая цифровые данные в мгновенную реакцию света.",
       insideLeadA: "Продумано", insideLeadB: "изнутри.",
       insideBody: "Каждый канал работает независимо. Силовая часть, управляющая электроника и защитные элементы организованы в одной понятной архитектуре.",
       insideFooter: "8 независимых каналов · 220 В · локальное управление",
+      insideTitle: "ПРОДУМАНО ИЗНУТРИ",
       contactLeadA: "Соберите свою", contactLeadB: "световую систему.",
       contactBody: "PowerBox можно адаптировать под вашу сцену, светильники и выбранный способ управления.",
       discuss: "Обсудить проект", specs: "Характеристики",
+      contactTitle: "НАЧАТЬ ПРОЕКТ",
     },
   };
 
   const patternLabels: Array<[SwitchingPattern, string]> = [
-    ["random", "Random"],
-    ["chase", "Circle"],
-    ["single", "Crackle"],
+    ["random", "randomPattern"],
+    ["chase", "circlePattern"],
+    ["single", "cracklePattern"],
   ];
 
   function updateCopy(): void {
     overlay.querySelectorAll<HTMLElement>("[data-copy]").forEach((element) => {
       const key = element.dataset.copy!;
       element.textContent = copy[state.locale][key] ?? element.textContent;
+    });
+    patterns.querySelectorAll<HTMLButtonElement>("button").forEach((button) => {
+      const key = button.dataset.copy!;
+      button.textContent = copy[state.locale][key] ?? button.textContent;
     });
     document.documentElement.lang = state.locale;
   }
@@ -417,10 +439,11 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     options.requestRender();
   }
 
-  patternLabels.forEach(([pattern, title]) => {
+  patternLabels.forEach(([pattern, copyKey]) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = title;
+    button.textContent = copy[state.locale][copyKey];
+    button.dataset.copy = copyKey;
     button.dataset.pattern = pattern;
     button.addEventListener("click", () => {
       state.performancePattern = pattern;

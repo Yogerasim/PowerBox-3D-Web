@@ -66,6 +66,13 @@ const prototypeBaseURL =
   `${baseURL}assets/models/prototypes/`;
 
 const app = document.querySelector<HTMLDivElement>("#viewer-app");
+const pageLocale = new URLSearchParams(location.search).get("lang") === "ru"
+  ? "ru"
+  : "en";
+document.documentElement.lang = pageLocale;
+const preparingSceneLabel = pageLocale === "ru"
+  ? "Подготовка сцены…"
+  : "Preparing scene…";
 
 if (!app) {
   throw new Error("Element #viewer-app was not found.");
@@ -106,7 +113,7 @@ app.innerHTML = `
     class="viewer-progress status"
   >
     <span id="viewer-progress-text">
-      Preparing scene…
+      ${preparingSceneLabel}
     </span>
   </div>
 `;

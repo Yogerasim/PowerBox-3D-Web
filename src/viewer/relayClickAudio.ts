@@ -52,13 +52,16 @@ export function createRelayClickAudio(): RelayClickAudio {
   };
 
   const startOverlay = document.createElement("button");
+  const locale = new URLSearchParams(location.search).get("lang") === "ru"
+    ? "ru"
+    : "en";
+  const startLabel = locale === "ru"
+    ? "Запустить со звуком"
+    : "Start with sound";
   startOverlay.type = "button";
   startOverlay.className = "relay-audio-start";
-  startOverlay.innerHTML = `
-    <span>Запустить со звуком</span>
-    <small>Start with sound</small>
-  `;
-  startOverlay.setAttribute("aria-label", "Запустить сцену со звуком");
+  startOverlay.innerHTML = `<span>${startLabel}</span>`;
+  startOverlay.setAttribute("aria-label", startLabel);
   document.body.appendChild(startOverlay);
 
   function settingsSnapshot(): RelayClickSettings {
