@@ -313,7 +313,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
         <p class="scene-footer">TOUCHDESIGNER · MIDI · UDP · WEB CONTROL</p>
       </section>
       <section class="presentation-scene scene-reliability" data-shot="reliability">
-        <header><h1 data-copy="insideTitle">ENGINEERED INSIDE</h1><h2><strong data-copy="insideLeadA">Engineered from</strong> <span data-copy="insideLeadB">the inside out.</span></h2></header>
+        <header><h1 data-copy="insideTitle">ENGINEERED INSIDE</h1></header>
         <p class="scene-description" data-copy="insideBody">Each channel operates independently. Power distribution, control electronics and protection components are organised within one clear architecture.</p>
         <p class="scene-footer" data-copy="insideFooter">8 independent channels · 220 V · local control</p>
       </section>
@@ -356,7 +356,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       controlTitle: "MULTIPLE INPUTS",
       controlLeadA: "One signal.", controlLeadB: "Eight physical", controlLeadC: "events.",
       controlBody: "PowerBox receives commands from TouchDesigner, Web UI, MIDI and UDP, turning digital data into an immediate lighting response.",
-      insideLeadA: "Engineered from", insideLeadB: "the inside out.",
       insideBody: "Each channel operates independently. Power distribution, control electronics and protection components are organised within one clear architecture.",
       insideFooter: "8 independent channels · 220 V · local control",
       insideTitle: "ENGINEERED INSIDE",
@@ -380,7 +379,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       controlTitle: "СПОСОБЫ УПРАВЛЕНИЯ",
       controlLeadA: "Один сигнал.", controlLeadB: "Восемь физических", controlLeadC: "событий.",
       controlBody: "PowerBox принимает команды из TouchDesigner, Web UI, MIDI и по UDP, превращая цифровые данные в мгновенную реакцию света.",
-      insideLeadA: "Продумано", insideLeadB: "изнутри.",
       insideBody: "Каждый канал работает независимо. Силовая часть, управляющая электроника и защитные элементы организованы в одной понятной архитектуре.",
       insideFooter: "8 независимых каналов · 220 В · локальное управление",
       insideTitle: "ПРОДУМАНО ИЗНУТРИ",

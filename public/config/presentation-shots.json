@@ -821,9 +821,9 @@
           "aperture": 0.0026,
           "maxBlur": 0.016,
           "vignette": true,
-          "vignetteIntensity": 0.72,
-          "vignetteSize": 48,
-          "vignetteSoftness": 28
+          "vignetteIntensity": 1,
+          "vignetteSize": 15,
+          "vignetteSoftness": 70
         },
         "yoke": {
           "settings": {
@@ -1002,9 +1002,9 @@
             "aperture": 0.0026,
             "maxBlur": 0.016,
             "vignette": true,
-            "vignetteIntensity": 0.72,
-            "vignetteSize": 48,
-            "vignetteSoftness": 28
+            "vignetteIntensity": 1,
+            "vignetteSize": 15,
+            "vignetteSoftness": 70
           },
           "yoke": {
             "settings": {
