@@ -315,8 +315,7 @@ body.presentation-story-mode {
 }
 .presentation-scene.is-active { visibility: visible; opacity: 1; }
 .presentation-overlay.is-text-hidden .presentation-scenes { opacity: 0; }
-.presentation-overlay.is-editor .presentation-scenes,
-.presentation-overlay.is-editor .presentation-language { display: none; }
+.presentation-overlay.is-editor .presentation-scenes { display: none; }
 .presentation-scene h1,
 .presentation-scene h2,
 .presentation-scene p { margin: 0; }
@@ -332,7 +331,25 @@ body.presentation-story-mode {
   line-height: 1;
   letter-spacing: -.055em;
 }
-.presentation-scene strong { color: #1710ff; font-weight: inherit; }
+.presentation-scene h1,
+.presentation-scene h2 > span,
+.presentation-scene .scene-description,
+.presentation-scene .scene-footer,
+.scene-control-copy p {
+  color: transparent;
+  background-image: linear-gradient(105deg, #fff 0%, #fff 38%, #777 70%, #f7f7f7 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.presentation-scene strong {
+  color: transparent;
+  font-weight: inherit;
+  background-image: linear-gradient(110deg, #0700d9 0%, #2117ff 48%, #786fff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .presentation-scene .scene-description,
 .presentation-scene .scene-footer {
   font-size: clamp(16px, 1.45vw, 23px);
@@ -350,23 +367,9 @@ body.presentation-story-mode {
 @keyframes story-enter-side { from { opacity: 0; transform: translateX(36px); } }
 @keyframes story-enter-fade { from { opacity: 0; filter: blur(12px); } }
 
-.presentation-language {
-  position: absolute;
-  z-index: 5;
-  right: 24px;
-  bottom: 22px;
-  padding: 8px 12px;
-  color: rgba(255,255,255,.72);
-  background: rgba(0,0,0,.28);
-  border: 1px solid rgba(255,255,255,.28);
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-  pointer-events: auto;
-}
-
 .scene-hero h1 { position: absolute; top: 4.2%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
 .scene-hero h2 { position: absolute; top: 36%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-.scene-hero .scene-description { position: absolute; right: 4.5%; bottom: 4.8%; width: min(39vw, 500px); color: rgba(255,255,255,.45); }
+.scene-hero .scene-description { position: absolute; right: 4.5%; bottom: 4.8%; width: min(39vw, 500px); background-image: linear-gradient(90deg, #555 0%, #aaa 28%, #fff 62%, #777 100%); }
 .scene-scroll-cue { position: absolute; left: 2%; bottom: 4%; display: grid; gap: 16px; }
 .scene-scroll-cue span { position: relative; width: 2px; height: 48vh; max-height: 310px; background: #fff; }
 .scene-scroll-cue span::after { content: ""; position: absolute; bottom: 0; left: -5px; width: 9px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg); }
@@ -375,16 +378,16 @@ body.presentation-story-mode {
 .scene-problem header,
 .scene-reliability header { position: absolute; top: 4%; right: 3%; text-align: right; }
 .scene-problem .scene-description { position: absolute; top: 36%; right: 3%; width: min(42vw, 540px); text-align: right; }
-.scene-problem .scene-footer { position: absolute; right: 3%; bottom: 3%; }
+.scene-problem .scene-footer { position: absolute; right: 3%; bottom: 3%; background-image: linear-gradient(90deg, #fff 0%, #aaa 55%, #fff 100%); }
 
 .scene-control h1 { position: absolute; top: 4%; left: 3%; }
 .scene-control-copy { position: absolute; left: 3%; bottom: 4%; width: min(31vw, 390px); }
 .scene-control-copy h2 { margin-bottom: 32px; }
-.scene-control-copy p { font-size: clamp(15px, 1.35vw, 21px); font-weight: 600; line-height: 1.14; letter-spacing: -.04em; }
-.scene-control .scene-footer { position: absolute; right: 3%; bottom: 3%; color: #1710ff; }
+.scene-control-copy p { font-size: clamp(15px, 1.35vw, 21px); font-weight: 600; line-height: 1.14; letter-spacing: -.04em; background-image: linear-gradient(95deg, #fff 0%, #fff 45%, #777 78%, #fff 100%); }
+.scene-control .scene-footer { position: absolute; right: 3%; bottom: 3%; background-image: linear-gradient(90deg, #0900d9, #554aff); }
 
 .scene-reliability .scene-description { position: absolute; right: 3%; bottom: 4%; width: min(35vw, 450px); text-align: right; }
-.scene-reliability .scene-footer { position: absolute; left: 3%; bottom: 4%; }
+.scene-reliability .scene-footer { position: absolute; left: 3%; bottom: 4%; background-image: linear-gradient(90deg, #fff 0%, #fff 52%, #777 80%, #fff 100%); }
 
 .scene-contact h1 { position: absolute; top: 4%; left: 2.2%; }
 .scene-contact h2 { position: absolute; top: 12%; left: 2.2%; }
@@ -484,7 +487,6 @@ body.presentation-story-mode > .lil-gui {
   .live-sliders label, .live-sliders input { height: 36px; }
   .live-sliders label > span { font-size: 12px; }
   .live-sliders input::-webkit-slider-thumb { width: 24px; height: 24px; }
-  .presentation-language { right: 12px; bottom: 12px; }
   .presentation-dots { bottom: 18px; }
   body.presentation-story-mode .viewer-stage canvas {
     touch-action: none !important;

@@ -3,23 +3,23 @@
   "defaultLocale": "en",
   "shots": [
     {
-      "id": "hero",
+      "id": "control",
       "label": {
-        "ru": "Цифровой сигнал. Физический свет.",
-        "en": "Digital signal. Physical light."
+        "ru": "Управление из цифровой среды.",
+        "en": "Control from the digital world."
       },
       "camera": {
         "position": [
-          -8.210514,
-          18.823157,
-          -13.167808
+          -3.022094,
+          2.750539,
+          -6.43136
         ],
         "target": [
-          1.118703,
-          0.20234,
-          -0.830399
+          -0.144881,
+          0.327035,
+          -0.19351
         ],
-        "zoom": 1.682219,
+        "zoom": 3.150284,
         "orthographicHeight": 8,
         "desktop": {
           "zoomMultiplier": 1,
@@ -30,66 +30,66 @@
           ]
         },
         "mobile": {
-          "zoomMultiplier": 0.62,
+          "zoomMultiplier": 0.6,
           "targetOffset": [
             0,
-            0.15,
+            0.1,
             0
           ]
         }
       },
       "scene": {
-        "exposure": 0.14,
-        "environment": 0.25,
+        "exposure": 0.52,
+        "environment": 0,
         "shadows": true,
         "postFX": {
           "bloom": true,
-          "bloomStrength": 0.81,
-          "bloomRadius": 1,
+          "bloomStrength": 0.91,
+          "bloomRadius": 0.94,
           "bloomThreshold": 3,
           "depthOfField": true,
-          "autoFocus": true,
-          "focusDistance": 23.94,
-          "aperture": 0.0031,
-          "maxBlur": 0.05
+          "autoFocus": false,
+          "focusDistance": 7.45,
+          "aperture": 0.0029,
+          "maxBlur": 0.0125
         },
         "yoke": {
           "settings": {
             "enabled": true,
-            "energyWatts": 15.4,
-            "webCalibration": 4.08,
-            "brightness": 0.57,
+            "energyWatts": 43,
+            "webCalibration": 0.4,
+            "brightness": 0.4,
             "color": "#ffffff",
             "aimAtTarget": true,
-            "targetX": 0.0499999999999998,
+            "targetX": 0,
             "targetY": 0.3,
             "targetZ": 0,
             "targetDistance": 10,
-            "rotationX": -1.19999999999999,
-            "rotationY": -1,
+            "rotationX": 0.100000000000023,
+            "rotationY": -1.89999999999998,
             "rotationZ": 1.20000000000002,
-            "distance": 8.2,
-            "coneAngleDegrees": 69.5,
-            "penumbra": 0.19,
+            "distance": 11.2,
+            "coneAngleDegrees": 39.3,
+            "penumbra": 0.2,
             "decay": 2,
             "castShadows": true,
-            "shadowIntensity": 1,
-            "shadowRadius": 6,
+            "shadowIntensity": 0.79,
+            "shadowRadius": 6.2,
             "shadowMapSize": 1024,
-            "shadowFocus": 0.84,
+            "shadowFocus": 1,
             "shadowBias": 0.01,
-            "shadowNormalBias": 0.061,
+            "shadowNormalBias": 0.051,
             "showHelpers": false,
-            "panelGlow": 5.75,
-            "indicatorGlow": 2,
+            "panelGlow": 3.08,
+            "indicatorGlow": 1.96,
             "indicatorColor": "#ff5a14",
             "switching": true,
-            "switchingPattern": "random",
-            "switchingSpeedHz": 0.62,
-            "dutyCycle": 0.5,
-            "randomness": 0.97,
-            "phaseSpread": 0.56,
-            "offLevel": 0.14
+            "switchingSpeedHz": 0.6,
+            "dutyCycle": 0.38,
+            "randomness": 0.85,
+            "phaseSpread": 0.59,
+            "offLevel": 0.1,
+            "switchingPattern": "random"
           },
           "lights": [
             {
@@ -203,69 +203,69 @@
       "mobileProfile": {
         "camera": {
           "position": [
-            -8.210514,
-            18.823157,
-            -13.167808
+            -3.022094,
+            2.750539,
+            -6.43136
           ],
           "target": [
-            1.118703,
-            0.35234,
-            -0.830399
+            -0.144881,
+            0.42703500000000005,
+            -0.19351
           ],
-          "zoom": 1.04297578,
+          "zoom": 1.8901704,
           "orthographicHeight": 8
         },
         "scene": {
-          "exposure": 0.14,
-          "environment": 0.25,
+          "exposure": 0.52,
+          "environment": 0,
           "shadows": true,
           "postFX": {
             "bloom": true,
-            "bloomStrength": 0.81,
-            "bloomRadius": 1,
+            "bloomStrength": 0.91,
+            "bloomRadius": 0.94,
             "bloomThreshold": 3,
             "depthOfField": true,
-            "autoFocus": true,
-            "focusDistance": 23.94,
-            "aperture": 0.0031,
-            "maxBlur": 0.05
+            "autoFocus": false,
+            "focusDistance": 7.45,
+            "aperture": 0.0029,
+            "maxBlur": 0.0125
           },
           "yoke": {
             "settings": {
               "enabled": true,
-              "energyWatts": 15.4,
-              "webCalibration": 4.08,
-              "brightness": 0.57,
+              "energyWatts": 43,
+              "webCalibration": 0.4,
+              "brightness": 0.4,
               "color": "#ffffff",
               "aimAtTarget": true,
-              "targetX": 0.0499999999999998,
+              "targetX": 0,
               "targetY": 0.3,
               "targetZ": 0,
               "targetDistance": 10,
-              "rotationX": -1.19999999999999,
-              "rotationY": -1,
+              "rotationX": 0.100000000000023,
+              "rotationY": -1.89999999999998,
               "rotationZ": 1.20000000000002,
-              "distance": 9.5,
-              "coneAngleDegrees": 37.7,
+              "distance": 11.2,
+              "coneAngleDegrees": 39.3,
               "penumbra": 0.2,
               "decay": 2,
               "castShadows": true,
-              "shadowIntensity": 1,
-              "shadowRadius": 6,
+              "shadowIntensity": 0.79,
+              "shadowRadius": 6.2,
               "shadowMapSize": 1024,
-              "shadowFocus": 0.84,
+              "shadowFocus": 1,
               "shadowBias": 0.01,
-              "shadowNormalBias": 0.061,
+              "shadowNormalBias": 0.051,
               "showHelpers": false,
-              "panelGlow": 5.75,
-              "indicatorGlow": 2,
+              "panelGlow": 3.08,
+              "indicatorGlow": 1.96,
               "indicatorColor": "#ff5a14",
               "switching": true,
-              "switchingSpeedHz": 0.62,
-              "dutyCycle": 0.5,
-              "randomness": 0.97,
-              "phaseSpread": 0.56,
-              "offLevel": 0.14,
+              "switchingSpeedHz": 0.6,
+              "dutyCycle": 0.38,
+              "randomness": 0.85,
+              "phaseSpread": 0.59,
+              "offLevel": 0.1,
               "switchingPattern": "random"
             },
             "lights": [
@@ -1131,23 +1131,23 @@
       }
     },
     {
-      "id": "control",
+      "id": "hero",
       "label": {
-        "ru": "Управление из цифровой среды.",
-        "en": "Control from the digital world."
+        "ru": "Цифровой сигнал. Физический свет.",
+        "en": "Digital signal. Physical light."
       },
       "camera": {
         "position": [
-          -3.022094,
-          2.750539,
-          -6.43136
+          -8.210514,
+          18.823157,
+          -13.167808
         ],
         "target": [
-          -0.144881,
-          0.327035,
-          -0.19351
+          1.118703,
+          0.20234,
+          -0.830399
         ],
-        "zoom": 3.150284,
+        "zoom": 1.682219,
         "orthographicHeight": 8,
         "desktop": {
           "zoomMultiplier": 1,
@@ -1158,66 +1158,66 @@
           ]
         },
         "mobile": {
-          "zoomMultiplier": 0.6,
+          "zoomMultiplier": 0.62,
           "targetOffset": [
             0,
-            0.1,
+            0.15,
             0
           ]
         }
       },
       "scene": {
-        "exposure": 0.52,
-        "environment": 0,
+        "exposure": 0.14,
+        "environment": 0.25,
         "shadows": true,
         "postFX": {
           "bloom": true,
-          "bloomStrength": 0.91,
-          "bloomRadius": 0.94,
+          "bloomStrength": 0.81,
+          "bloomRadius": 1,
           "bloomThreshold": 3,
           "depthOfField": true,
-          "autoFocus": false,
-          "focusDistance": 7.45,
-          "aperture": 0.0029,
-          "maxBlur": 0.0125
+          "autoFocus": true,
+          "focusDistance": 23.94,
+          "aperture": 0.0031,
+          "maxBlur": 0.05
         },
         "yoke": {
           "settings": {
             "enabled": true,
-            "energyWatts": 43,
-            "webCalibration": 0.4,
-            "brightness": 0.4,
+            "energyWatts": 15.4,
+            "webCalibration": 4.08,
+            "brightness": 0.57,
             "color": "#ffffff",
             "aimAtTarget": true,
-            "targetX": 0,
+            "targetX": 0.0499999999999998,
             "targetY": 0.3,
             "targetZ": 0,
             "targetDistance": 10,
-            "rotationX": 0.100000000000023,
-            "rotationY": -1.89999999999998,
+            "rotationX": -1.19999999999999,
+            "rotationY": -1,
             "rotationZ": 1.20000000000002,
-            "distance": 11.2,
-            "coneAngleDegrees": 39.3,
-            "penumbra": 0.2,
+            "distance": 8.2,
+            "coneAngleDegrees": 69.5,
+            "penumbra": 0.19,
             "decay": 2,
             "castShadows": true,
-            "shadowIntensity": 0.79,
-            "shadowRadius": 6.2,
+            "shadowIntensity": 1,
+            "shadowRadius": 6,
             "shadowMapSize": 1024,
-            "shadowFocus": 1,
+            "shadowFocus": 0.84,
             "shadowBias": 0.01,
-            "shadowNormalBias": 0.051,
+            "shadowNormalBias": 0.061,
             "showHelpers": false,
-            "panelGlow": 3.08,
-            "indicatorGlow": 1.96,
+            "panelGlow": 5.75,
+            "indicatorGlow": 2,
             "indicatorColor": "#ff5a14",
             "switching": true,
-            "switchingSpeedHz": 0.6,
-            "dutyCycle": 0.38,
-            "randomness": 0.85,
-            "phaseSpread": 0.59,
-            "offLevel": 0.1,
-            "switchingPattern": "random"
+            "switchingPattern": "random",
+            "switchingSpeedHz": 0.62,
+            "dutyCycle": 0.5,
+            "randomness": 0.97,
+            "phaseSpread": 0.56,
+            "offLevel": 0.14
           },
           "lights": [
             {
@@ -1331,69 +1331,69 @@
       "mobileProfile": {
         "camera": {
           "position": [
-            -3.022094,
-            2.750539,
-            -6.43136
+            -8.210514,
+            18.823157,
+            -13.167808
           ],
           "target": [
-            -0.144881,
-            0.42703500000000005,
-            -0.19351
+            1.118703,
+            0.35234,
+            -0.830399
           ],
-          "zoom": 1.8901704,
+          "zoom": 1.04297578,
           "orthographicHeight": 8
         },
         "scene": {
-          "exposure": 0.52,
-          "environment": 0,
+          "exposure": 0.14,
+          "environment": 0.25,
           "shadows": true,
           "postFX": {
             "bloom": true,
-            "bloomStrength": 0.91,
-            "bloomRadius": 0.94,
+            "bloomStrength": 0.81,
+            "bloomRadius": 1,
             "bloomThreshold": 3,
             "depthOfField": true,
-            "autoFocus": false,
-            "focusDistance": 7.45,
-            "aperture": 0.0029,
-            "maxBlur": 0.0125
+            "autoFocus": true,
+            "focusDistance": 23.94,
+            "aperture": 0.0031,
+            "maxBlur": 0.05
           },
           "yoke": {
             "settings": {
               "enabled": true,
-              "energyWatts": 43,
-              "webCalibration": 0.4,
-              "brightness": 0.4,
+              "energyWatts": 15.4,
+              "webCalibration": 4.08,
+              "brightness": 0.57,
               "color": "#ffffff",
               "aimAtTarget": true,
-              "targetX": 0,
+              "targetX": 0.0499999999999998,
               "targetY": 0.3,
               "targetZ": 0,
               "targetDistance": 10,
-              "rotationX": 0.100000000000023,
-              "rotationY": -1.89999999999998,
+              "rotationX": -1.19999999999999,
+              "rotationY": -1,
               "rotationZ": 1.20000000000002,
-              "distance": 11.2,
-              "coneAngleDegrees": 39.3,
+              "distance": 9.5,
+              "coneAngleDegrees": 37.7,
               "penumbra": 0.2,
               "decay": 2,
               "castShadows": true,
-              "shadowIntensity": 0.79,
-              "shadowRadius": 6.2,
+              "shadowIntensity": 1,
+              "shadowRadius": 6,
               "shadowMapSize": 1024,
-              "shadowFocus": 1,
+              "shadowFocus": 0.84,
               "shadowBias": 0.01,
-              "shadowNormalBias": 0.051,
+              "shadowNormalBias": 0.061,
               "showHelpers": false,
-              "panelGlow": 3.08,
-              "indicatorGlow": 1.96,
+              "panelGlow": 5.75,
+              "indicatorGlow": 2,
               "indicatorColor": "#ff5a14",
               "switching": true,
-              "switchingSpeedHz": 0.6,
-              "dutyCycle": 0.38,
-              "randomness": 0.85,
-              "phaseSpread": 0.59,
-              "offLevel": 0.1,
+              "switchingSpeedHz": 0.62,
+              "dutyCycle": 0.5,
+              "randomness": 0.97,
+              "phaseSpread": 0.56,
+              "offLevel": 0.14,
               "switchingPattern": "random"
             },
             "lights": [

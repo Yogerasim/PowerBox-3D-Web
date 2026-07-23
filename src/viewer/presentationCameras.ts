@@ -110,10 +110,10 @@ const STORAGE_KEY = "powerbox.presentation-shots.v2";
 const MOTION_STORAGE_KEY = "powerbox.scene-rotation.v3";
 const MOBILE_QUERY = "(max-width: 760px), (pointer: coarse)";
 const SHOT_IDS = [
-  "hero",
+  "control",
   "problem",
   "channels",
-  "control",
+  "hero",
   "reliability",
   "contact",
 ] as const;
@@ -270,7 +270,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   const overlay = document.createElement("div");
   overlay.className = "presentation-overlay is-text-hidden";
   overlay.innerHTML = `
-    <button class="presentation-language" type="button" aria-label="Switch language">RU / EN</button>
     <div class="presentation-scenes">
       <section class="presentation-scene scene-hero" data-shot="hero">
         <h1>POWERBOX LIGHT INSTALL</h1>
@@ -320,7 +319,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   const scenes = Array.from(overlay.querySelectorAll<HTMLElement>(".presentation-scene"));
   const channels = overlay.querySelector<HTMLElement>(".live-channels")!;
   const patterns = overlay.querySelector<HTMLElement>(".live-patterns")!;
-  const languageButton = overlay.querySelector<HTMLButtonElement>(".presentation-language")!;
   const controls = {
     speed: overlay.querySelector<HTMLInputElement>("[data-light-control='speed']")!,
     duty: overlay.querySelector<HTMLInputElement>("[data-light-control='duty']")!,
@@ -373,7 +371,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       const key = element.dataset.copy!;
       element.textContent = copy[state.locale][key] ?? element.textContent;
     });
-    languageButton.textContent = state.locale === "en" ? "RU" : "EN";
     document.documentElement.lang = state.locale;
   }
 
@@ -454,12 +451,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     channels.appendChild(button);
   }
 
-  languageButton.addEventListener("click", () => {
-    state.locale = state.locale === "en" ? "ru" : "en";
-    updateCopy();
-    rebuildDots();
-  });
-
   function mobile(): boolean {
     return matchMedia(MOBILE_QUERY).matches;
   }
@@ -522,8 +513,8 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     const current = shot();
     state.currentShot = current.id;
     overlay.classList.toggle("is-text-hidden", !state.showText);
-    scenes.forEach((scene) => {
-      scene.classList.toggle("is-active", scene.dataset.shot === current.id);
+    scenes.forEach((scene, index) => {
+      scene.classList.toggle("is-active", index === activeIndex);
     });
     dots.querySelectorAll("button").forEach((button, index) => {
       button.classList.toggle("is-active", index === activeIndex);
@@ -724,7 +715,10 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     if (!isConfig(value)) throw new Error("presentation-shots.json has an invalid format.");
     committedConfig = structuredClone(value);
     config = structuredClone(value);
-    state.locale = value.defaultLocale;
+    const requestedLocale = new URLSearchParams(location.search).get("lang");
+    state.locale = requestedLocale === "ru" || requestedLocale === "en"
+      ? requestedLocale
+      : value.defaultLocale;
     configureAudio(value.audio);
     const draft = isLocalEditor() ? localStorage.getItem(STORAGE_KEY) : null;
     if (draft) {
