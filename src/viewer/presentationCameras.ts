@@ -332,10 +332,6 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       </section>
     </div>
     <div class="presentation-dots" aria-label="Presentation shots"></div>
-    <div class="presentation-gesture-hint" aria-hidden="true">
-      <span class="gesture-desktop">Drag to rotate · Right drag to pan · Pinch or ⌘/Ctrl + wheel to zoom · Scroll to change shot</span>
-      <span class="gesture-mobile">Drag to rotate · Pinch to zoom · Two fingers to pan · Swipe vertically to change shot</span>
-    </div>
   `;
   document.body.appendChild(overlay);
 
