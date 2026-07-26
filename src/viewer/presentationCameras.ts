@@ -220,7 +220,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   const state = {
     currentShot: SHOT_IDS[0] as string,
     storyMode: new URLSearchParams(location.search).get("story") === "1",
-    showText: false,
+    showText: true,
     locale: "en" as Locale,
     editingProfile: "desktop" as DeviceProfile,
     transitionDuration: 0.85,
@@ -288,7 +288,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   restoreSceneRotation();
 
   const overlay = document.createElement("div");
-  overlay.className = "presentation-overlay is-text-hidden";
+  overlay.className = "presentation-overlay";
   overlay.innerHTML = `
     <div class="presentation-scenes">
       <section class="presentation-scene scene-hero" data-shot="hero">

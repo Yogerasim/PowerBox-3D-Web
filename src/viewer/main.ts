@@ -1236,9 +1236,8 @@ async function initialize(): Promise<void> {
 
   manifest = await response.json() as Manifest;
 
-  scene.background = new Color().fromArray(
-    manifest.scene.worldColor,
-  );
+  // Keep the backdrop fully black without changing the environment lighting.
+  scene.background = new Color(0x000000);
 
   settings.exposure = Math.max(
     0.1,
