@@ -1,5 +1,11 @@
 import type GUI from "lil-gui";
-import { MathUtils, OrthographicCamera, Vector3 } from "three";
+import {
+  MathUtils,
+  MOUSE,
+  OrthographicCamera,
+  TOUCH,
+  Vector3,
+} from "three";
 import type { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { gsap } from "gsap";
 import type {
@@ -202,6 +208,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   let activeIndex = 0;
   let transition: gsap.core.Timeline | null = null;
   let wheelLocked = false;
+  let gestureHadMultipleTouches = false;
   let touchStartY = 0;
   let touchStartX = 0;
   const channelStates: Array<boolean | null> =
@@ -213,7 +220,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   const state = {
     currentShot: SHOT_IDS[0] as string,
     storyMode: new URLSearchParams(location.search).get("story") === "1",
-    showText: true,
+    showText: false,
     locale: "en" as Locale,
     editingProfile: "desktop" as DeviceProfile,
     transitionDuration: 0.85,
@@ -325,6 +332,10 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       </section>
     </div>
     <div class="presentation-dots" aria-label="Presentation shots"></div>
+    <div class="presentation-gesture-hint" aria-hidden="true">
+      <span class="gesture-desktop">Drag to rotate · Right drag to pan · Pinch or ⌘/Ctrl + wheel to zoom · Scroll to change shot</span>
+      <span class="gesture-mobile">Drag to rotate · Pinch to zoom · Two fingers to pan · Swipe vertically to change shot</span>
+    </div>
   `;
   document.body.appendChild(overlay);
 
@@ -568,6 +579,7 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
 
   function applyImmediate(current: PresentationShot): void {
     transition?.kill();
+    resetControlsInertia();
     const currentProfile = profile(current);
     options.camera.position.fromArray(currentProfile.camera.position);
     options.controls.target.copy(cameraTarget(current));
@@ -582,10 +594,35 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     updateUI();
   }
 
+  function resetControlsInertia(): void {
+    const damping = options.controls.enableDamping;
+    options.controls.enableDamping = false;
+    options.controls.update();
+    options.controls.enableDamping = damping;
+  }
+
+  function setControlsForTransition(transitioning: boolean): void {
+    if (transitioning) {
+      options.controls.enabled = false;
+      resetControlsInertia();
+      return;
+    }
+
+    options.controls.enabled = sceneReady;
+    options.controls.enableRotate = true;
+    options.controls.enablePan = true;
+    options.controls.enableZoom = true;
+    options.controls.mouseButtons.LEFT = MOUSE.ROTATE;
+    options.controls.mouseButtons.MIDDLE = MOUSE.DOLLY;
+    options.controls.mouseButtons.RIGHT = MOUSE.PAN;
+    options.controls.touches.ONE = TOUCH.ROTATE;
+    options.controls.touches.TWO = TOUCH.DOLLY_PAN;
+    resetControlsInertia();
+  }
+
   function goTo(index: number, animate = true): void {
     if (!config || !sceneReady) return;
     const next = MathUtils.clamp(index, 0, config.shots.length - 1);
-    if (next === activeIndex && animate) return;
     activeIndex = next;
     const current = shot();
     const currentProfile = profile(current);
@@ -619,10 +656,12 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     const duration = state.transitionDuration;
     transition = gsap.timeline({
       defaults: { duration, ease: "power2.inOut", overwrite: true },
-      onStart: () => options.controls.enabled = false,
+      onStart: () => setControlsForTransition(true),
       onComplete: () => {
         options.applySceneState(destinationScene);
-        options.controls.enabled = !state.storyMode && !mobile();
+        options.controls.target.copy(target);
+        options.controls.update();
+        setControlsForTransition(false);
         updateUI();
         options.requestRender();
       },
@@ -657,9 +696,9 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
     document.body.classList.toggle("presentation-story-mode", enabled);
     overlay.classList.add("is-visible");
     overlay.classList.toggle("is-editor", !enabled);
-    options.controls.enabled = !enabled && !mobile();
-    options.controls.enableZoom = !mobile() && !enabled;
+    options.canvas.style.pointerEvents = "auto";
     options.canvas.style.touchAction = enabled || mobile() ? "none" : "auto";
+    setControlsForTransition(false);
     resetSceneRotation(state.sceneRotation);
     if (sceneReady) goTo(activeIndex, false);
   }
@@ -811,7 +850,9 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
       .name("Settings")
       .listen()
       .disable();
-    folder.add({ save: captureCurrent }, "save").name("Save full shot state");
+    folder
+      .add({ save: captureCurrent }, "save")
+      .name("Save authored shot baseline");
     folder.add({ preview: () => goTo(activeIndex, false) }, "preview").name("Apply current shot");
     folder.add({ previous: () => goTo(activeIndex - 1) }, "previous").name("Previous shot");
     folder.add({ next: () => goTo(activeIndex + 1) }, "next").name("Next shot");
@@ -856,24 +897,72 @@ export function createPresentationCameraSystem(options: Options): PresentationCa
   }
 
   window.addEventListener("wheel", (event) => {
-    if (!state.storyMode || mobile() || wheelLocked || Math.abs(event.deltaY) < 8) return;
+    if (!state.storyMode || mobile()) return;
+
+    // Trackpad pinch is reported as ctrl+wheel by browsers. Modified wheel
+    // is reserved for camera zoom; plain vertical wheel changes one shot.
+    if (event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+
+    if (
+      wheelLocked ||
+      transition?.isActive() ||
+      Math.abs(event.deltaY) < 8 ||
+      Math.abs(event.deltaY) < Math.abs(event.deltaX)
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+
     event.preventDefault();
+    event.stopImmediatePropagation();
     wheelLocked = true;
     navigate(event.deltaY > 0 ? 1 : -1);
     window.setTimeout(() => wheelLocked = false, 650);
-  }, { passive: false });
+  }, { passive: false, capture: true });
 
   window.addEventListener("touchstart", (event) => {
-    if (!state.storyMode || event.touches.length !== 1) return;
+    if (!state.storyMode) return;
+
+    if (event.touches.length > 1) {
+      gestureHadMultipleTouches = true;
+      return;
+    }
+
+    gestureHadMultipleTouches = false;
     touchStartY = event.touches[0].clientY;
     touchStartX = event.touches[0].clientX;
   }, { passive: true });
 
+  window.addEventListener("touchmove", (event) => {
+    if (event.touches.length > 1) {
+      gestureHadMultipleTouches = true;
+    }
+  }, { passive: true });
+
   window.addEventListener("touchend", (event) => {
-    if (!state.storyMode || event.changedTouches.length !== 1) return;
+    if (
+      !state.storyMode ||
+      gestureHadMultipleTouches ||
+      event.touches.length > 0 ||
+      event.changedTouches.length !== 1 ||
+      transition?.isActive()
+    ) {
+      if (event.touches.length === 0) {
+        gestureHadMultipleTouches = false;
+      }
+      return;
+    }
+
     const deltaY = touchStartY - event.changedTouches[0].clientY;
     const deltaX = touchStartX - event.changedTouches[0].clientX;
-    if (Math.abs(deltaY) > 48 && Math.abs(deltaY) > Math.abs(deltaX) * 1.15) {
+
+    if (
+      Math.abs(deltaY) > 64 &&
+      Math.abs(deltaY) > Math.abs(deltaX) * 1.35
+    ) {
       navigate(deltaY > 0 ? 1 : -1);
     }
   }, { passive: true });

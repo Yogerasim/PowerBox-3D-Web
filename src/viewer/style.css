@@ -301,8 +301,8 @@ body.presentation-story-mode
 
 body.presentation-story-mode
 .viewer-stage canvas {
-  pointer-events: none;
-  touch-action: pan-y !important;
+  pointer-events: auto;
+  touch-action: none !important;
 }
 
 /* Six-scene story composition */
@@ -472,6 +472,28 @@ body.presentation-story-mode {
   transform: scale(1.45);
 }
 
+.presentation-gesture-hint {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  max-width: min(520px, calc(100vw - 40px));
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, .58);
+  background: rgba(8, 8, 8, .56);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.25;
+  letter-spacing: .02em;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.gesture-mobile {
+  display: none;
+}
+
 body.presentation-story-mode .viewer-header,
 body.presentation-story-mode .viewer-help,
 body.presentation-story-mode > .lil-gui {
@@ -513,5 +535,21 @@ body.presentation-story-mode > .lil-gui {
   .presentation-dots { bottom: 18px; }
   body.presentation-story-mode .viewer-stage canvas {
     touch-action: none !important;
+  }
+
+  .presentation-gesture-hint {
+    right: 50%;
+    bottom: 42px;
+    width: max-content;
+    transform: translateX(50%);
+    font-size: 10px;
+  }
+
+  .gesture-desktop {
+    display: none;
+  }
+
+  .gesture-mobile {
+    display: inline;
   }
 }
